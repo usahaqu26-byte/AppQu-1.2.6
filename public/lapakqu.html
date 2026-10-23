@@ -1,0 +1,2210 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>LapakQu - Sewa Lapak & Properti Warga (Offline-First)</title>
+  <style>
+    /* ============================================================
+       LAPAKQU - OFFLINE-FIRST PURE SINGLE FILE APP
+       TAMPILAN MINIMALIS & FLAT (UNDERLINE LIST STYLE)
+       BEBAS KOTAK KAKU & SHADOW BERLEBIHAN, TANPA TOMBOL IKONIK
+       ============================================================ */
+    :root {
+      --bg-body: #0d0f12;
+      --bg-surface: #14181f;
+      --bg-surface-elevated: #1b212b;
+      --border-line: #232a36;
+      --border-subtle: #1c222c;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+
+      /* Dynamic Sub-Category Colors */
+      --color-kios: #556b2f;      /* Hijau Olive */
+      --color-kios-glow: #6b8e23;
+      --color-kost: #0d7377;      /* Biru Teal */
+      --color-kost-glow: #14b8a6;
+      --color-garasi: #4a2e18;    /* Cokelat Tua */
+      --color-garasi-glow: #78350f;
+      --color-gedung: #800020;    /* Merah Marun */
+      --color-gedung-glow: #9f1239;
+      --color-tenda: #b84a39;     /* Oranye Bata */
+      --color-tenda-glow: #ea580c;
+
+      /* Active Dynamic Header Color (default: Kios) */
+      --theme-active: var(--color-kios);
+      --theme-glow: var(--color-kios-glow);
+      --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-body);
+      color: var(--text-main);
+      font-family: var(--font-family);
+      line-height: 1.4;
+      padding-bottom: 86px;
+      padding-top: env(safe-area-inset-top, 0px);
+      min-height: 100vh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Minimalist underline list dividing style */
+    .underline-group {
+      border-top: 1px solid var(--border-line);
+      border-bottom: 1px solid var(--border-line);
+    }
+    .underline-item {
+      border-bottom: 1px solid var(--border-line);
+      padding: 13px 16px;
+      background: transparent;
+    }
+    .underline-item:last-child {
+      border-bottom: none;
+    }
+
+    /* BOLD TEXT TOUCH TARGETS - NO ICONIC BUTTONS */
+    .btn-bold {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 18px;
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      border: 1px solid transparent;
+      border-radius: 4px;
+      cursor: pointer;
+      text-align: center;
+      user-select: none;
+      transition: background-color 0.15s, opacity 0.15s;
+    }
+    .btn-bold:active {
+      opacity: 0.8;
+    }
+    .btn-bold-primary {
+      background: var(--theme-active);
+      color: #ffffff;
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+    .btn-bold-secondary {
+      background: #1e293b;
+      color: #cbd5e1;
+      border-color: #334155;
+    }
+    .btn-bold-accent {
+      background: #166534;
+      color: #ffffff;
+      border-color: #22c55e;
+    }
+    .btn-bold-danger {
+      background: #7f1d1d;
+      color: #fecaca;
+      border-color: #dc2626;
+    }
+    .btn-bold-block {
+      display: flex;
+      width: 100%;
+    }
+    .btn-bold-sm {
+      padding: 7px 12px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    /* Forms */
+    input, select, textarea {
+      width: 100%;
+      background: #11151c;
+      border: 1px solid #28303f;
+      border-radius: 3px;
+      padding: 11px 12px;
+      color: #f8fafc;
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--theme-glow);
+    }
+    label {
+      display: block;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    /* Header Bar */
+    header {
+      background: var(--theme-active);
+      color: #ffffff;
+      padding: 14px 16px;
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      border-bottom: 2px solid rgba(0, 0, 0, 0.3);
+      transition: background-color 0.3s ease;
+    }
+    .header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .header-title {
+      font-size: 17px;
+      font-weight: 900;
+      letter-spacing: -0.01em;
+      text-transform: uppercase;
+    }
+    .header-subcat {
+      font-size: 11px;
+      font-weight: 800;
+      padding: 3px 8px;
+      background: rgba(0, 0, 0, 0.35);
+      border-radius: 2px;
+      letter-spacing: 0.04em;
+    }
+
+    /* Subcat Pills Selector */
+    .subcat-bar {
+      display: flex;
+      overflow-x: auto;
+      gap: 6px;
+      padding: 10px 16px;
+      background: #0f131a;
+      border-bottom: 1px solid var(--border-line);
+      scrollbar-width: none;
+    }
+    .subcat-bar::-webkit-scrollbar {
+      display: none;
+    }
+    .subcat-btn {
+      white-space: nowrap;
+      padding: 7px 12px;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      background: #18202c;
+      color: var(--text-muted);
+      border: 1px solid #283344;
+      border-radius: 2px;
+      cursor: pointer;
+    }
+    .subcat-btn.active {
+      color: #ffffff;
+      border-color: #ffffff;
+      background: var(--theme-active);
+    }
+
+    /* Bottom Navigation Bar */
+    nav.bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 64px;
+      background: #0d1117;
+      border-top: 1px solid var(--border-line);
+      display: flex;
+      align-items: stretch;
+      z-index: 50;
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    .nav-btn {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      cursor: pointer;
+      position: relative;
+      transition: color 0.15s;
+    }
+    .nav-btn.active {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.04);
+    }
+    .nav-btn.active::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 15%;
+      right: 15%;
+      height: 3px;
+      background: var(--theme-active);
+    }
+    .nav-badge {
+      position: absolute;
+      top: 8px;
+      right: calc(50% - 18px);
+      background: #dc2626;
+      color: #ffffff;
+      font-size: 9px;
+      font-weight: 900;
+      padding: 1px 5px;
+      border-radius: 9px;
+    }
+
+    /* Content Views */
+    .view-container {
+      display: none;
+      padding: 14px 16px;
+    }
+    .view-container.active {
+      display: block;
+    }
+
+    /* Plain Text Badges */
+    .tag-bold {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 2px 7px;
+      border-radius: 2px;
+    }
+    .tag-green { background: #14532d; color: #86efac; border: 1px solid #166534; }
+    .tag-yellow { background: #713f12; color: #fde047; border: 1px solid #854d0e; }
+    .tag-red { background: #7f1d1d; color: #fca5a5; border: 1px solid #991b1b; }
+    .tag-blue { background: #1e3a8a; color: #93c5fd; border: 1px solid #1d4ed8; }
+    .tag-subtle { background: #1e293b; color: #94a3b8; border: 1px solid #334155; }
+
+    /* Switch toggle */
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px dashed #242c38;
+    }
+    .toggle-btn {
+      background: #1e293b;
+      color: #94a3b8;
+      border: 1px solid #334155;
+      padding: 6px 12px;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+      text-transform: uppercase;
+    }
+    .toggle-btn.on {
+      background: #15803d;
+      color: #ffffff;
+      border-color: #22c55e;
+    }
+
+    /* Thermal Receipt Simulation */
+    .receipt-paper {
+      background: #ffffff;
+      color: #111111;
+      font-family: 'Space Mono', 'Courier New', Courier, monospace;
+      padding: 18px 14px;
+      font-size: 12px;
+      line-height: 1.35;
+      border-radius: 2px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+      margin: 14px 0;
+    }
+    .receipt-paper hr {
+      border: none;
+      border-top: 1px dashed #444444;
+      margin: 8px 0;
+    }
+    .receipt-row {
+      display: flex;
+      justify-content: space-between;
+      margin: 3px 0;
+    }
+
+    /* Modal Sheet */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.8);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-overlay.active {
+      display: flex;
+    }
+    .modal-box {
+      background: #141820;
+      border: 1px solid #2d3748;
+      width: 100%;
+      max-width: 480px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 18px;
+    }
+
+    .stat-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border-line);
+    }
+    .stat-label {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+    .stat-val {
+      font-size: 16px;
+      font-weight: 900;
+      color: #ffffff;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ======================================================== -->
+  <!-- DYNAMIC COLOR-CODED HEADER                               -->
+  <!-- ======================================================== -->
+  <header id="mainHeader">
+    <div class="header-top">
+      <div>
+        <div style="font-size: 10px; opacity: 0.9; font-weight: 800; letter-spacing: 0.05em;">USAHAQU • PROPERTI WARGA RT 04</div>
+        <div class="header-title" id="headerTitle">LAPAKQU</div>
+      </div>
+      <div style="text-align: right;">
+        <span class="header-subcat" id="headerSubcatBadge">KIOS & LAPAK</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ======================================================== -->
+  <!-- 5 SUB-KATEGORI SELECTOR BAR                              -->
+  <!-- ======================================================== -->
+  <div class="subcat-bar">
+    <button class="subcat-btn active" data-subcat="kios" onclick="switchSubcat('kios')">[1] KIOS & LAPAK</button>
+    <button class="subcat-btn" data-subcat="kost" onclick="switchSubcat('kost')">[2] KONTRAKAN & KOST</button>
+    <button class="subcat-btn" data-subcat="garasi" onclick="switchSubcat('garasi')">[3] GARASI & PARKIR</button>
+    <button class="subcat-btn" data-subcat="gedung" onclick="switchSubcat('gedung')">[4] GEDUNG & ACARA</button>
+    <button class="subcat-btn" data-subcat="tenda" onclick="switchSubcat('tenda')">[5] TENDA & EVENT</button>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- 1. MENU: [KASIR] - SMART KALKULATOR DINAMIS              -->
+  <!-- ======================================================== -->
+  <div id="viewKasir" class="view-container active">
+    <div style="margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between;">
+      <div style="font-size: 14px; font-weight: 900; text-transform: uppercase;" id="kasirFormTitle">FORM INPUT SEWA KIOS & LAPAK</div>
+      <button class="btn-bold btn-bold-sm btn-bold-secondary" onclick="resetKasirForm()">[RESET]</button>
+    </div>
+
+    <!-- Pilihan Unit Terdaftar -->
+    <div style="margin-bottom: 12px;">
+      <label>PILIH UNIT TERDAFTAR (DARI KATALOG) ATAU TULIS BARU</label>
+      <select id="kasirUnitSelect" onchange="onSelectUnitPreset()">
+        <option value="">-- PILIH UNIT / TULIS MANUAL DI BAWAH --</option>
+      </select>
+    </div>
+
+    <!-- FORM ATRIBUT UMUM -->
+    <div class="underline-group" style="margin-bottom: 16px;">
+      <div class="underline-item">
+        <label>NAMA PENYEWA / WARGA</label>
+        <input type="text" id="kasirNamaPenyewa" placeholder="Contoh: Pak Budi / Bu Dewi" required>
+      </div>
+      <div class="underline-item">
+        <label>NO. WHATSAPP PENYEWA (UNTUK KIRIM NOTA & TAGIHAN)</label>
+        <input type="tel" id="kasirNoWa" placeholder="Contoh: 081234567890">
+      </div>
+      <div class="underline-item">
+        <label>NAMA UNIT / IDENTITAS LOKASI</label>
+        <input type="text" id="kasirNamaUnit" placeholder="Contoh: Kios Pujasera No. 03 / Kamar 2B">
+      </div>
+    </div>
+
+    <!-- ======================================== -->
+    <!-- DINAMIS BAGIAN 1: KIOS & LAPAK PEDAGANG  -->
+    <!-- ======================================== -->
+    <div id="dynKiosSection">
+      <div class="underline-group" style="margin-bottom: 16px;">
+        <div class="underline-item">
+          <label>PILIHAN DURASI SEWA</label>
+          <div style="display: flex; gap: 8px;">
+            <button type="button" class="btn-bold btn-bold-sm btn-bold-secondary durasi-btn active" data-durasi="harian" onclick="setKiosDurasi('harian')">HARIAN</button>
+            <button type="button" class="btn-bold btn-bold-sm btn-bold-secondary durasi-btn" data-durasi="mingguan" onclick="setKiosDurasi('mingguan')">MINGGUAN</button>
+            <button type="button" class="btn-bold btn-bold-sm btn-bold-secondary durasi-btn" data-durasi="bulanan" onclick="setKiosDurasi('bulanan')">BULANAN</button>
+          </div>
+        </div>
+        <div class="underline-item">
+          <div style="display: flex; gap: 10px;">
+            <div style="flex: 1;">
+              <label>JUMLAH PERIODE</label>
+              <input type="number" id="kiosQtyPeriod" value="1" min="1" oninput="hitungTotalLapak()">
+            </div>
+            <div style="flex: 2;">
+              <label>TARIF SEWA DASAR (RP)</label>
+              <input type="number" id="kiosTarif" value="25000" min="0" oninput="hitungTotalLapak()">
+            </div>
+          </div>
+        </div>
+        <div class="underline-item">
+          <label>TOGGLE BIAYA IURAN TAMBAHAN (OPERASIONAL LAPAK)</label>
+          <div class="toggle-row">
+            <span style="font-size: 13px; font-weight: 700;">Iuran Kebersihan Lapak (Rp 2.000 / Periode)</span>
+            <button type="button" class="toggle-btn" id="toggleKebersihan" onclick="toggleIuran('kebersihan')">[MATI]</button>
+          </div>
+          <div class="toggle-row">
+            <span style="font-size: 13px; font-weight: 700;">Iuran Keamanan Pasar/Malam (Rp 2.000 / Periode)</span>
+            <button type="button" class="toggle-btn" id="toggleKeamanan" onclick="toggleIuran('keamanan')">[MATI]</button>
+          </div>
+          <div class="toggle-row">
+            <span style="font-size: 13px; font-weight: 700;">Biaya Listrik Penerangan (Rp 5.000 / Periode)</span>
+            <button type="button" class="toggle-btn" id="toggleListrikKios" onclick="toggleIuran('listrik')">[MATI]</button>
+          </div>
+        </div>
+        <div class="underline-item">
+          <label>CATATAN JENIS USAHA PENYEWA</label>
+          <input type="text" id="kiosJenisUsaha" placeholder="Contoh: Gorengan, Warung Kopi & Indomie, Sayur, Jahit">
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================== -->
+    <!-- DINAMIS BAGIAN 2: KONTRAKAN & KOST       -->
+    <!-- ======================================== -->
+    <div id="dynKostSection" style="display: none;">
+      <div class="underline-group" style="margin-bottom: 16px;">
+        <div class="underline-item">
+          <label>DURASI KONTRAK / KOST</label>
+          <div style="display: flex; gap: 8px;">
+            <button type="button" class="btn-bold btn-bold-sm btn-bold-secondary kost-durasi-btn active" data-durasi="bulanan" onclick="setKostDurasi('bulanan')">BULANAN</button>
+            <button type="button" class="btn-bold btn-bold-sm btn-bold-secondary kost-durasi-btn" data-durasi="tahunan" onclick="setKostDurasi('tahunan')">TAHUNAN</button>
+          </div>
+        </div>
+        <div class="underline-item">
+          <div style="display: flex; gap: 10px;">
+            <div style="flex: 1;">
+              <label>JUMLAH BULAN/THN</label>
+              <input type="number" id="kostQty" value="1" min="1" oninput="hitungTotalLapak()">
+            </div>
+            <div style="flex: 2;">
+              <label>TARIF SEWA KAMAR (RP)</label>
+              <input type="number" id="kostTarif" value="650000" min="0" oninput="hitungTotalLapak()">
+            </div>
+          </div>
+        </div>
+        <div class="underline-item">
+          <label>KALKULATOR METERAN LISTRIK & AIR (METER INI - LALU x TARIF)</label>
+          <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+            <div style="flex: 1;">
+              <label>METER LALU</label>
+              <input type="number" id="kostMeterLalu" value="1420" oninput="hitungTotalLapak()">
+            </div>
+            <div style="flex: 1;">
+              <label>METER INI</label>
+              <input type="number" id="kostMeterIni" value="1465" oninput="hitungTotalLapak()">
+            </div>
+            <div style="flex: 1;">
+              <label>TARIF/KWH (RP)</label>
+              <input type="number" id="kostTarifKwh" value="2000" oninput="hitungTotalLapak()">
+            </div>
+          </div>
+          <div style="font-size: 12px; font-weight: 800; color: #a7f3d0;" id="kostMeteranResult">
+            Pemakaian: 45 kWh x Rp 2.000 = Rp 90.000
+          </div>
+        </div>
+        <div class="underline-item">
+          <label>UANG DEPOSIT JAMINAN KUNCI / KERUSAKAN (RP)</label>
+          <input type="number" id="kostDeposit" value="0" placeholder="Rp 0 jika tidak ada deposit" oninput="hitungTotalLapak()">
+          <span style="font-size: 11px; color: var(--text-dim); display: block; margin-top: 4px;">Uang deposit akan dicatat pada kuitansi sebagai jaminan yang dapat dikembalikan saat masa sewa selesai.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================== -->
+    <!-- DINAMIS BAGIAN 3: GARASI & LAHAN PARKIR  -->
+    <!-- ======================================== -->
+    <div id="dynGarasiSection" style="display: none;">
+      <div class="underline-group" style="margin-bottom: 16px;">
+        <div class="underline-item">
+          <label>NOMOR SLOT / GUDANG / TEMPAT PARKIR</label>
+          <input type="text" id="garasiSlotNo" placeholder="Contoh: Slot Mobil A-02 / Slot Motor #08">
+        </div>
+        <div class="underline-item">
+          <label>PLAT NOMOR KENDARAAN</label>
+          <input type="text" id="garasiPlatNo" placeholder="Contoh: B 1234 XYZ (Mobil / Motor)">
+        </div>
+        <div class="underline-item">
+          <label>PILIHAN DURASI SEWA PARKIR</label>
+          <div style="display: flex; gap: 8px;">
+            <button type="button" class="btn-bold btn-bold-sm btn-bold-secondary garasi-durasi-btn active" data-durasi="harian" onclick="setGarasiDurasi('harian')">HARIAN</button>
+            <button type="button" class="btn-bold btn-bold-sm btn-bold-secondary garasi-durasi-btn" data-durasi="bulanan" onclick="setGarasiDurasi('bulanan')">BULANAN</button>
+          </div>
+        </div>
+        <div class="underline-item">
+          <div style="display: flex; gap: 10px;">
+            <div style="flex: 1;">
+              <label>DURASI (HARI/BULAN)</label>
+              <input type="number" id="garasiQty" value="1" min="1" oninput="hitungTotalLapak()">
+            </div>
+            <div style="flex: 2;">
+              <label>TARIF PARKIR (RP)</label>
+              <input type="number" id="garasiTarif" value="25000" min="0" oninput="hitungTotalLapak()">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================== -->
+    <!-- DINAMIS BAGIAN 4: GEDUNG & AREA ACARA    -->
+    <!-- ======================================== -->
+    <div id="dynGedungSection" style="display: none;">
+      <div class="underline-group" style="margin-bottom: 16px;">
+        <div class="underline-item">
+          <label>TANGGAL PEMAKAIAN ACARA</label>
+          <input type="date" id="gedungTanggal">
+        </div>
+        <div class="underline-item">
+          <label>SESI & JAM PEMAKAIAN</label>
+          <select id="gedungSesi" onchange="hitungTotalLapak()">
+            <option value="Sesi Pagi (08:00 - 13:00)">Sesi Pagi (08:00 - 13:00)</option>
+            <option value="Sesi Siang (13:00 - 18:00)">Sesi Siang (13:00 - 18:00)</option>
+            <option value="Sesi Malam (18:00 - 23:00)">Sesi Malam (18:00 - 23:00)</option>
+            <option value="Seharian Penuh (08:00 - 22:00)">Seharian Penuh (08:00 - 22:00)</option>
+            <option value="Custom Jam">Custom Jam Sesuai Kesepakatan</option>
+          </select>
+        </div>
+        <div class="underline-item">
+          <label>TOTAL TARIF SEWA GEDUNG / AREA (RP)</label>
+          <input type="number" id="gedungTotalTarif" value="1500000" min="0" oninput="hitungTotalLapak()">
+        </div>
+        <div class="underline-item">
+          <div style="display: flex; gap: 10px;">
+            <div style="flex: 1;">
+              <label>DP BOOKING (UANG MUKA RP)</label>
+              <input type="number" id="gedungDp" value="500000" min="0" oninput="hitungTotalLapak()">
+            </div>
+            <div style="flex: 1;">
+              <label>TANGGAL JATUH TEMPO PELUNASAN</label>
+              <input type="date" id="gedungTglPelunasan">
+            </div>
+          </div>
+          <div style="font-size: 13px; font-weight: 800; color: #facc15; margin-top: 8px;" id="gedungSisaText">
+            Sisa Pelunasan: Rp 1.000.000
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================== -->
+    <!-- DINAMIS BAGIAN 5: TENDA & ALAT EVENT     -->
+    <!-- ======================================== -->
+    <div id="dynTendaSection" style="display: none;">
+      <div class="underline-group" style="margin-bottom: 16px;">
+        <div class="underline-item">
+          <label>STATUS BARANG DI LAPANGAN</label>
+          <select id="tendaStatus">
+            <option value="Sedang Disewa (Di Lapangan)">Sedang Disewa (Di Lapangan)</option>
+            <option value="Sebagian Sudah Kembali">Sebagian Sudah Kembali</option>
+            <option value="Lengkap & Selesai">Lengkap & Selesai</option>
+          </select>
+        </div>
+        <div class="underline-item">
+          <label>DAFTAR ITEM ALAT YANG DISEWA</label>
+          <div id="tendaItemsList" style="margin-bottom: 8px;">
+            <!-- Rendered list of rented items -->
+          </div>
+          <div style="display: flex; gap: 6px;">
+            <input type="text" id="tendaNewItemName" placeholder="Nama item (Tenda, Kursi, Sound)" style="flex: 2;">
+            <input type="number" id="tendaNewItemQty" placeholder="Qty" value="1" min="1" style="flex: 1;">
+            <input type="number" id="tendaNewItemPrice" placeholder="Harga/Hari" value="50000" min="0" style="flex: 1.5;">
+            <button type="button" class="btn-bold btn-bold-sm btn-bold-accent" onclick="addTendaItem()">[+ ITEM]</button>
+          </div>
+        </div>
+        <div class="underline-item">
+          <label>DURASI SEWA (HARI)</label>
+          <input type="number" id="tendaHari" value="1" min="1" oninput="hitungTotalLapak()">
+        </div>
+        <div class="underline-item">
+          <label>CATATAN DENDA KERUSAKAN / KEHILANGAN (RP)</label>
+          <div style="display: flex; gap: 8px;">
+            <input type="text" id="tendaDendaDesc" placeholder="Keterangan denda (misal: Kursi patah 1)" style="flex: 2;">
+            <input type="number" id="tendaDendaNominal" value="0" placeholder="Rp 0" style="flex: 1;" oninput="hitungTotalLapak()">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================== -->
+    <!-- RINGKASAN TOTAL & METODE PEMBAYARAN      -->
+    <!-- ======================================== -->
+    <div class="underline-group" style="margin-bottom: 16px; background: #161b24;">
+      <div class="underline-item" style="display: flex; justify-content: space-between; align-items: baseline;">
+        <span style="font-size: 13px; font-weight: 700; color: var(--text-muted);">TOTAL TAGIHAN</span>
+        <span style="font-size: 20px; font-weight: 900; color: #ffffff;" id="displayGrandTotal">Rp 0</span>
+      </div>
+      <div class="underline-item">
+        <label>METODE PEMBAYARAN</label>
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px;">
+          <button type="button" class="btn-bold btn-bold-sm btn-bold-secondary bayar-btn active" data-method="tunai" onclick="setPayMethod('tunai')">TUNAI</button>
+          <button type="button" class="btn-bold btn-bold-sm btn-bold-secondary bayar-btn" data-method="qris" onclick="setPayMethod('qris')">QRIS</button>
+          <button type="button" class="btn-bold btn-bold-sm btn-bold-secondary bayar-btn" data-method="transfer" onclick="setPayMethod('transfer')">TRANSFER</button>
+          <button type="button" class="btn-bold btn-bold-sm btn-bold-danger bayar-btn" data-method="bon" onclick="setPayMethod('bon')">BON/HUTANG</button>
+        </div>
+      </div>
+      <div class="underline-item" id="bonDueDateRow" style="display: none;">
+        <label>TANGGAL JATUH TEMPO PEMBAYARAN BON</label>
+        <input type="date" id="kasirBonDueDate">
+      </div>
+      <div class="underline-item">
+        <label>CATATAN KHUSUS PADA NOTA</label>
+        <input type="text" id="kasirCatatan" placeholder="Catatan opsional (misal: Diskon warga RT 04 / Titip kunci)">
+      </div>
+    </div>
+
+    <!-- ACTION BUTTONS -->
+    <div style="display: flex; gap: 8px;">
+      <button class="btn-bold btn-bold-primary btn-bold-block" onclick="simpanTransaksiSewa()">[SIMPAN TRANSAKSI SEWA]</button>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- 2. MENU: [BON] - CATATAN TUNGGAKAN & TAGIH WA            -->
+  <!-- ======================================================== -->
+  <div id="viewBon" class="view-container">
+    <div style="margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between;">
+      <div>
+        <div style="font-size: 15px; font-weight: 900; text-transform: uppercase;">CATATAN BON & TUNGGAKAN SEWA</div>
+        <div style="font-size: 11px; color: var(--text-muted);">Pantau jatuh tempo & tagih langsung via WhatsApp</div>
+      </div>
+      <span class="tag-bold tag-red" id="bonTotalCounter">0 Penunggak</span>
+    </div>
+
+    <div class="stat-row" style="margin-bottom: 12px;">
+      <span class="stat-label">TOTAL NOMINAL TUNGGAKAN PIUTANG:</span>
+      <span class="stat-val" style="color: #ef4444;" id="bonTotalAmountText">Rp 0</span>
+    </div>
+
+    <!-- Underline list of Bon -->
+    <div class="underline-group" id="bonListContainer">
+      <!-- Generated via JS -->
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- 3. MENU: [REKAP] - LAPORAN PEMASUKAN SEWA               -->
+  <!-- ======================================================== -->
+  <div id="viewRekap" class="view-container">
+    <div style="margin-bottom: 14px;">
+      <div style="font-size: 15px; font-weight: 900; text-transform: uppercase;">REKAP PEMASUKAN SEWA LAPAKQU</div>
+      <div style="font-size: 11px; color: var(--text-muted);">Pemasukan terbagi Tunai, QRIS, & Transfer Bank</div>
+    </div>
+
+    <!-- STATS -->
+    <div class="underline-group" style="margin-bottom: 16px;">
+      <div class="stat-row" style="padding: 12px 16px;">
+        <span class="stat-label">PEMASUKAN HARI INI:</span>
+        <span class="stat-val" style="color: #22c55e;" id="rekapHariIni">Rp 0</span>
+      </div>
+      <div class="stat-row" style="padding: 12px 16px;">
+        <span class="stat-label">PEMASUKAN BULAN INI:</span>
+        <span class="stat-val" style="color: #38bdf8;" id="rekapBulanIni">Rp 0</span>
+      </div>
+      <div class="stat-row" style="padding: 12px 16px;">
+        <span class="stat-label">TOTAL AKUMULASI:</span>
+        <span class="stat-val" id="rekapTotalAll">Rp 0</span>
+      </div>
+    </div>
+
+    <!-- METODE BREAKDOWN -->
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 16px;">
+      <div style="background: #161b24; padding: 10px; border-bottom: 2px solid #22c55e;">
+        <div style="font-size: 10px; font-weight: 800; color: #86efac;">TUNAI</div>
+        <div style="font-size: 13px; font-weight: 900; margin-top: 2px;" id="rekapTunai">Rp 0</div>
+      </div>
+      <div style="background: #161b24; padding: 10px; border-bottom: 2px solid #06b6d4;">
+        <div style="font-size: 10px; font-weight: 800; color: #67e8f9;">QRIS</div>
+        <div style="font-size: 13px; font-weight: 900; margin-top: 2px;" id="rekapQris">Rp 0</div>
+      </div>
+      <div style="background: #161b24; padding: 10px; border-bottom: 2px solid #a855f7;">
+        <div style="font-size: 10px; font-weight: 800; color: #d8b4fe;">TRANSFER</div>
+        <div style="font-size: 13px; font-weight: 900; margin-top: 2px;" id="rekapTransfer">Rp 0</div>
+      </div>
+    </div>
+
+    <!-- ACTIONS -->
+    <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+      <button class="btn-bold btn-bold-sm btn-bold-secondary btn-bold-block" onclick="bagikanRekapWA()">[BAGIKAN LAPORAN KE WA]</button>
+      <button class="btn-bold btn-bold-sm btn-bold-danger" onclick="konfirmasiHapusSemuaData()">[BERSIHKAN DATA]</button>
+    </div>
+
+    <div style="font-size: 12px; font-weight: 900; text-transform: uppercase; margin-bottom: 6px;">RIWAYAT TRANSAKSI TERAKHIR</div>
+    <div class="underline-group" id="rekapHistoryContainer">
+      <!-- Generated via JS -->
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- 4. MENU: [KATALOG] - KELOLA DAFTAR UNIT PROPERTI         -->
+  <!-- ======================================================== -->
+  <div id="viewKatalog" class="view-container">
+    <div style="margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between;">
+      <div>
+        <div style="font-size: 15px; font-weight: 900; text-transform: uppercase;">KATALOG UNIT & PROPERTI</div>
+        <div style="font-size: 11px; color: var(--text-muted);">Kelola tarif, ketersediaan unit & iuran rutin</div>
+      </div>
+      <button class="btn-bold btn-bold-sm btn-bold-accent" onclick="openAddUnitModal()">[+ TAMBAH UNIT]</button>
+    </div>
+
+    <!-- Underline list of catalog items -->
+    <div class="underline-group" id="katalogListContainer">
+      <!-- Rendered via JS -->
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- 5. MENU: [PENGATURAN] - SWITCH SUBCAT, PROFIL & STRUK   -->
+  <!-- ======================================================== -->
+  <div id="viewPengaturan" class="view-container">
+    <div style="margin-bottom: 16px;">
+      <div style="font-size: 15px; font-weight: 900; text-transform: uppercase;">PENGATURAN LAPAKQU</div>
+      <div style="font-size: 11px; color: var(--text-muted);">Switch 5 sub-kategori, profil properti, & pratinjau struk</div>
+    </div>
+
+    <!-- GANTI SUB-KATEGORI SECARA TEGAS -->
+    <div style="margin-bottom: 18px;">
+      <label>PILIH SUB-KATEGORI SEWA AKTIF</label>
+      <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 6px;">
+        <button class="btn-bold btn-bold-block" style="background: var(--color-kios); color: #fff;" onclick="switchSubcat('kios')">[1] KIOS & LAPAK PEDAGANG (HIJAU OLIVE)</button>
+        <button class="btn-bold btn-bold-block" style="background: var(--color-kost); color: #fff;" onclick="switchSubcat('kost')">[2] KONTRAKAN & KOST (BIRU TEAL)</button>
+        <button class="btn-bold btn-bold-block" style="background: var(--color-garasi); color: #fff;" onclick="switchSubcat('garasi')">[3] GARASI & LAHAN PARKIR (COKELAT TUA)</button>
+        <button class="btn-bold btn-bold-block" style="background: var(--color-gedung); color: #fff;" onclick="switchSubcat('gedung')">[4] GEDUNG & AREA ACARA (MERAH MARUN)</button>
+        <button class="btn-bold btn-bold-block" style="background: var(--color-tenda); color: #fff;" onclick="switchSubcat('tenda')">[5] TENDA & ALAT EVENT (ORANYE BATA)</button>
+      </div>
+    </div>
+
+    <!-- PROFIL PENGELOLA & PEMILIK -->
+    <div class="underline-group" style="margin-bottom: 18px;">
+      <div class="underline-item">
+        <label>NAMA USAHA / PROPERTI SEWA</label>
+        <input type="text" id="cfgNamaUsaha" value="LapakQu Properti Warga RT 04">
+      </div>
+      <div class="underline-item">
+        <label>NAMA PEMILIK / PENGELOLA</label>
+        <input type="text" id="cfgNamaPemilik" value="Bpk. Hendro & Paguyuban RT 04">
+      </div>
+      <div class="underline-item">
+        <label>ALAMAT PROPERTI / LOKASI</label>
+        <input type="text" id="cfgAlamat" value="Jl. Swadaya No. 12, RT 04 / RW 02">
+      </div>
+      <div class="underline-item">
+        <label>NO. KONTAK / WHATSAPP PENGELOLA</label>
+        <input type="tel" id="cfgNoWa" value="081298765432">
+      </div>
+      <div class="underline-item">
+        <label>INFORMASI REKENING BANK & QRIS PEMBAYARAN</label>
+        <input type="text" id="cfgRekening" value="BCA 5410928172 a.n Paguyuban RT 04 / QRIS LapakQu">
+      </div>
+      <div class="underline-item">
+        <button class="btn-bold btn-bold-accent btn-bold-block" onclick="simpanProfil()">[SIMPAN PROFIL USAHA]</button>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- FITUR WAJIB: PRATINJAU STRUK CETAK DUMMY INTERAKTIF      -->
+    <!-- ======================================================== -->
+    <div style="margin-bottom: 18px;">
+      <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 6px;">
+        <div style="font-size: 13px; font-weight: 900; text-transform: uppercase;">PRATINJAU STRUK / KUITANSI SEWA DUMMY</div>
+        <span class="tag-bold tag-blue" id="receiptSubcatTag">SESUAI SUB-KATEGORI</span>
+      </div>
+      <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 8px;">
+        Format struk menyesuaikan atribut khas sub-kategori yang sedang aktif (meteran listrik, slot garasi, DP booking, dsb).
+      </div>
+
+      <!-- EDIT HEADER & FOOTER STRUK -->
+      <div class="underline-group" style="margin-bottom: 12px; background: #161b24;">
+        <div class="underline-item">
+          <label>HEADER KUITANSI (PESAN ATAS)</label>
+          <input type="text" id="receiptHeaderInput" value="*** KUITANSI RESMI SEWA PROPERTI WARGA ***" oninput="updateReceiptPreview()">
+        </div>
+        <div class="underline-item">
+          <label>FOOTER KUITANSI (PESAN PENUTUP & ATURAN SEWA)</label>
+          <textarea id="receiptFooterInput" rows="2" oninput="updateReceiptPreview()">Terima kasih telah membayar tepat waktu. Kunci & fasilitas properti wajib dijaga bersama demi kenyamanan lingkungan.</textarea>
+        </div>
+      </div>
+
+      <!-- KERTAS STRUK THERMAL SIMULASI -->
+      <div class="receipt-paper" id="dummyReceiptContent">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <div style="display: flex; gap: 8px;">
+        <button class="btn-bold btn-bold-primary btn-bold-block" onclick="window.print()">[SIMULASI CETAK STRUK]</button>
+        <button class="btn-bold btn-bold-secondary" onclick="salinTeksStruk()">[SALIN NOTA]</button>
+      </div>
+    </div>
+
+    <!-- Kembali ke AppQu -->
+    <div style="padding-top: 14px; border-top: 1px solid var(--border-line);">
+      <button class="btn-bold btn-bold-secondary btn-bold-block" onclick="window.location.href='/'">[KEMBALI KE EKOSISTEM UTAMA APPQU]</button>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- MODAL: TAMBAH / EDIT UNIT KATALOG                        -->
+  <!-- ======================================================== -->
+  <div class="modal-overlay" id="modalAddUnit">
+    <div class="modal-box">
+      <div style="font-size: 15px; font-weight: 900; text-transform: uppercase; margin-bottom: 12px;" id="modalUnitTitle">TAMBAH UNIT SEWA PROPERTI</div>
+      <div class="underline-group" style="margin-bottom: 16px;">
+        <div class="underline-item">
+          <label>NAMA UNIT / KAMAR / SLOT / ALAT</label>
+          <input type="text" id="unitFormName" placeholder="Contoh: Kios Pujasera No. 05 / Kamar 3B / Slot Mobil 03" required>
+        </div>
+        <div class="underline-item">
+          <label>SUB-KATEGORI PROPERTI</label>
+          <select id="unitFormSubcat">
+            <option value="kios">Kios & Lapak Pedagang</option>
+            <option value="kost">Kontrakan & Kost</option>
+            <option value="garasi">Garasi & Lahan Parkir</option>
+            <option value="gedung">Gedung & Area Acara</option>
+            <option value="tenda">Tenda & Alat Event</option>
+          </select>
+        </div>
+        <div class="underline-item">
+          <label>TARIF STANDAR (RP)</label>
+          <input type="number" id="unitFormTarif" value="25000" min="0">
+        </div>
+        <div class="underline-item">
+          <label>PERIODE SEWA</label>
+          <select id="unitFormPeriode">
+            <option value="Harian">Per Hari</option>
+            <option value="Mingguan">Per Minggu</option>
+            <option value="Bulanan">Per Bulan</option>
+            <option value="Tahunan">Per Tahun</option>
+            <option value="Sesi Acara">Per Sesi Acara</option>
+          </select>
+        </div>
+        <div class="underline-item">
+          <label>STATUS UNIT</label>
+          <select id="unitFormStatus">
+            <option value="Tersedia">TERSEDIA (KOSONG)</option>
+            <option value="Terisi">TERISI (DISEWA)</option>
+          </select>
+        </div>
+        <div class="underline-item">
+          <label>KETERANGAN / FASILITAS</label>
+          <input type="text" id="unitFormDesc" placeholder="Contoh: Listrik token mandiri, air PDAM, ada rolling door">
+        </div>
+      </div>
+      <div style="display: flex; gap: 8px;">
+        <button class="btn-bold btn-bold-accent btn-bold-block" onclick="simpanUnitKatalog()">[SIMPAN UNIT]</button>
+        <button class="btn-bold btn-bold-secondary" onclick="closeAddUnitModal()">[BATAL]</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- MODAL: STRUK TRANSAKSI SUKSES                            -->
+  <!-- ======================================================== -->
+  <div class="modal-overlay" id="modalReceiptView">
+    <div class="modal-box">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+        <div style="font-size: 14px; font-weight: 900; text-transform: uppercase;">BUKTI KUITANSI SEWA</div>
+        <button class="btn-bold btn-bold-sm btn-bold-secondary" onclick="closeReceiptModal()">[TUTUP]</button>
+      </div>
+      <div class="receipt-paper" id="actualReceiptContent"></div>
+      <div style="display: flex; gap: 8px; margin-top: 10px;">
+        <button class="btn-bold btn-bold-primary btn-bold-block" onclick="window.print()">[CETAK STRUK]</button>
+        <button class="btn-bold btn-bold-accent btn-bold-block" id="btnShareNotaWa">[KIRIM KE WA]</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- 5 MENU NAVIGATION BOTTOM BAR                             -->
+  <!-- ======================================================== -->
+  <nav class="bottom-nav">
+    <button class="nav-btn active" data-view="Kasir" onclick="navTo('Kasir')">
+      [KASIR]
+    </button>
+    <button class="nav-btn" data-view="Bon" onclick="navTo('Bon')">
+      [BON]
+      <span class="nav-badge" id="navBonBadge" style="display: none;">0</span>
+    </button>
+    <button class="nav-btn" data-view="Rekap" onclick="navTo('Rekap')">
+      [REKAP]
+    </button>
+    <button class="nav-btn" data-view="Katalog" onclick="navTo('Katalog')">
+      [KATALOG]
+    </button>
+    <button class="nav-btn" data-view="Pengaturan" onclick="navTo('Pengaturan')">
+      [PENGATURAN]
+    </button>
+  </nav>
+
+  <!-- ======================================================== -->
+  <!-- PURE JAVASCRIPT LOGIC (OFFLINE-FIRST WITH LOCALSTORAGE)  -->
+  <!-- ======================================================== -->
+  <script>
+    // -------------------------------------------------------------
+    // DATA CONFIGURATION & CONSTANTS
+    // -------------------------------------------------------------
+    const SUBCATS = {
+      kios: {
+        id: 'kios',
+        title: 'Kios & Lapak Pedagang',
+        shortName: 'KIOS & LAPAK',
+        headerColor: '#556b2f', // Hijau Olive
+        glow: '#6b8e23',
+        defaultTarif: 25000,
+        durasi: 'harian'
+      },
+      kost: {
+        id: 'kost',
+        title: 'Kontrakan & Kost',
+        shortName: 'KONTRAKAN & KOST',
+        headerColor: '#0d7377', // Biru Teal
+        glow: '#14b8a6',
+        defaultTarif: 650000,
+        durasi: 'bulanan'
+      },
+      garasi: {
+        id: 'garasi',
+        title: 'Garasi & Lahan Parkir',
+        shortName: 'GARASI & PARKIR',
+        headerColor: '#4a2e18', // Cokelat Tua
+        glow: '#78350f',
+        defaultTarif: 25000,
+        durasi: 'harian'
+      },
+      gedung: {
+        id: 'gedung',
+        title: 'Gedung & Area Acara',
+        shortName: 'GEDUNG & ACARA',
+        headerColor: '#800020', // Merah Marun
+        glow: '#9f1239',
+        defaultTarif: 1500000,
+        durasi: 'sesi'
+      },
+      tenda: {
+        id: 'tenda',
+        title: 'Tenda & Alat Event',
+        shortName: 'TENDA & EVENT',
+        headerColor: '#b84a39', // Oranye Bata
+        glow: '#ea580c',
+        defaultTarif: 50000,
+        durasi: 'harian'
+      }
+    };
+
+    // Default Seed Catalog Units
+    const DEFAULT_CATALOG = [
+      { id: 'u-1', name: 'Kios Depan Pujasera No. 01', subcat: 'kios', tarif: 25000, periode: 'Harian', status: 'Terisi', desc: 'Ukuran 2x3m, iuran kebersihan aktif' },
+      { id: 'u-2', name: 'Lapak Kopi & Gorengan No. 04', subcat: 'kios', tarif: 20000, periode: 'Harian', status: 'Tersedia', desc: 'Ukuran 2x2m, dekat gerbang RT' },
+      { id: 'u-3', name: 'Kamar Kost No. 2A (Lantai 2)', subcat: 'kost', tarif: 650000, periode: 'Bulanan', status: 'Terisi', desc: 'Kamar mandi dalam, meteran listrik mandiri' },
+      { id: 'u-4', name: 'Kontrakan Pintu #3 Warga', subcat: 'kost', tarif: 1200000, periode: 'Bulanan', status: 'Tersedia', desc: '2 petak, ruang tamu + dapur, PAM terpisah' },
+      { id: 'u-5', name: 'Slot Parkir Mobil A-01', subcat: 'garasi', tarif: 250000, periode: 'Bulanan', status: 'Terisi', desc: 'Kanopi baja ringan, gerbang digembok jam 23' },
+      { id: 'u-6', name: 'Slot Parkir Motor #07', subcat: 'garasi', tarif: 50000, periode: 'Bulanan', status: 'Tersedia', desc: 'Area teduh dekat pos ronda' },
+      { id: 'u-7', name: 'Balai Warga & Aula Serbaguna RT 04', subcat: 'gedung', tarif: 1500000, periode: 'Sesi Acara', status: 'Tersedia', desc: 'Kapasitas 150 orang, include sound & 50 kursi' },
+      { id: 'u-8', name: 'Set Tenda Terop 4x6m + 50 Kursi', subcat: 'tenda', tarif: 250000, periode: 'Harian', status: 'Tersedia', desc: 'Lengkap plafon putih & kain penutup samping' }
+    ];
+
+    // LocalStorage Keys
+    const KEY_SUBCAT = 'lapakqu_active_subcat';
+    const KEY_PROFILE = 'lapakqu_profile';
+    const KEY_CATALOG = 'lapakqu_catalog';
+    const KEY_TRANSACTIONS = 'lapakqu_transactions';
+    const KEY_BON = 'lapakqu_bon';
+    const KEY_RECEIPT_CONFIG = 'lapakqu_receipt_config';
+
+    // Application State
+    let activeSubcat = localStorage.getItem(KEY_SUBCAT) || 'kios';
+    let profile = JSON.parse(localStorage.getItem(KEY_PROFILE) || 'null') || {
+      namaUsaha: 'LapakQu Properti Warga RT 04',
+      namaPemilik: 'Bpk. Hendro & Paguyuban RT 04',
+      alamat: 'Jl. Swadaya No. 12, RT 04 / RW 02',
+      noWa: '081298765432',
+      rekening: 'BCA 5410928172 a.n Paguyuban RT 04 / QRIS LapakQu'
+    };
+    let receiptConfig = JSON.parse(localStorage.getItem(KEY_RECEIPT_CONFIG) || 'null') || {
+      header: '*** KUITANSI RESMI SEWA PROPERTI WARGA ***',
+      footer: 'Terima kasih telah membayar tepat waktu. Kunci & fasilitas properti wajib dijaga bersama demi kenyamanan lingkungan.'
+    };
+    let catalog = JSON.parse(localStorage.getItem(KEY_CATALOG) || 'null') || DEFAULT_CATALOG;
+    let transactions = JSON.parse(localStorage.getItem(KEY_TRANSACTIONS) || 'null') || [];
+    let bonList = JSON.parse(localStorage.getItem(KEY_BON) || 'null') || [];
+
+    // Interactive form state
+    let payMethod = 'tunai';
+    let kiosDurasi = 'harian';
+    let kostDurasi = 'bulanan';
+    let garasiDurasi = 'harian';
+    let iuranState = { kebersihan: false, keamanan: false, listrik: false };
+    let tendaItems = [
+      { id: 't-1', name: 'Tenda Terop 4x6 Meter', qty: 1, price: 150000 },
+      { id: 't-2', name: 'Kursi Plastik Napolly', qty: 40, price: 2000 }
+    ];
+
+    // -------------------------------------------------------------
+    // INITIALIZATION
+    // -------------------------------------------------------------
+    function init() {
+      // Set Subcat
+      switchSubcat(activeSubcat, false);
+
+      // Set Profile in Inputs
+      document.getElementById('cfgNamaUsaha').value = profile.namaUsaha;
+      document.getElementById('cfgNamaPemilik').value = profile.namaPemilik;
+      document.getElementById('cfgAlamat').value = profile.alamat;
+      document.getElementById('cfgNoWa').value = profile.noWa;
+      document.getElementById('cfgRekening').value = profile.rekening;
+
+      document.getElementById('receiptHeaderInput').value = receiptConfig.header;
+      document.getElementById('receiptFooterInput').value = receiptConfig.footer;
+
+      // Set default dates
+      const todayStr = new Date().toISOString().split('T')[0];
+      const dueDate = new Date();
+      dueDate.setDate(dueDate.getDate() + 7);
+      const dueDateStr = dueDate.toISOString().split('T')[0];
+
+      const gedungTgl = document.getElementById('gedungTanggal');
+      if (gedungTgl) gedungTgl.value = todayStr;
+      const gedungPelunasan = document.getElementById('gedungTglPelunasan');
+      if (gedungPelunasan) gedungPelunasan.value = dueDateStr;
+      const bonDue = document.getElementById('kasirBonDueDate');
+      if (bonDue) bonDue.value = dueDateStr;
+
+      renderTendaItems();
+      renderCatalog();
+      renderBonList();
+      renderRekap();
+      updateUnitSelectOptions();
+      hitungTotalLapak();
+      updateReceiptPreview();
+    }
+
+    // -------------------------------------------------------------
+    // NAVIGATION BOTTOM BAR
+    // -------------------------------------------------------------
+    function navTo(viewName) {
+      document.querySelectorAll('.view-container').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+
+      const target = document.getElementById('view' + viewName);
+      if (target) target.classList.add('active');
+
+      const btn = document.querySelector(`.nav-btn[data-view="${viewName}"]`);
+      if (btn) btn.classList.add('active');
+
+      if (viewName === 'Rekap') renderRekap();
+      if (viewName === 'Bon') renderBonList();
+      if (viewName === 'Katalog') renderCatalog();
+      if (viewName === 'Pengaturan') updateReceiptPreview();
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // -------------------------------------------------------------
+    // SUB-CATEGORY SWITCHER & DYNAMIC HEADER COLOR
+    // -------------------------------------------------------------
+    function switchSubcat(subcatId, save = true) {
+      if (!SUBCATS[subcatId]) return;
+      activeSubcat = subcatId;
+      if (save) localStorage.setItem(KEY_SUBCAT, activeSubcat);
+
+      const catInfo = SUBCATS[subcatId];
+
+      // Update Header Theme
+      document.documentElement.style.setProperty('--theme-active', catInfo.headerColor);
+      document.documentElement.style.setProperty('--theme-glow', catInfo.glow);
+
+      document.getElementById('headerTitle').textContent = `LAPAKQU • ${catInfo.shortName}`;
+      document.getElementById('headerSubcatBadge').textContent = catInfo.shortName;
+      document.getElementById('kasirFormTitle').textContent = `FORM INPUT SEWA ${catInfo.shortName}`;
+
+      // Update Subcat Pills
+      document.querySelectorAll('.subcat-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-subcat') === subcatId);
+      });
+
+      // Show/Hide Dynamic Forms in Kasir
+      document.getElementById('dynKiosSection').style.display = subcatId === 'kios' ? 'block' : 'none';
+      document.getElementById('dynKostSection').style.display = subcatId === 'kost' ? 'block' : 'none';
+      document.getElementById('dynGarasiSection').style.display = subcatId === 'garasi' ? 'block' : 'none';
+      document.getElementById('dynGedungSection').style.display = subcatId === 'gedung' ? 'block' : 'none';
+      document.getElementById('dynTendaSection').style.display = subcatId === 'tenda' ? 'block' : 'none';
+
+      updateUnitSelectOptions();
+      hitungTotalLapak();
+      updateReceiptPreview();
+    }
+
+    // -------------------------------------------------------------
+    // KASIR: TOGGLES & SUB-CATEGORY SPECIFIC LOGIC
+    // -------------------------------------------------------------
+    function setKiosDurasi(durasi) {
+      kiosDurasi = durasi;
+      document.querySelectorAll('.durasi-btn').forEach(b => {
+        b.classList.toggle('active', b.getAttribute('data-durasi') === durasi);
+      });
+      const tarifInput = document.getElementById('kiosTarif');
+      if (durasi === 'harian') tarifInput.value = 25000;
+      else if (durasi === 'mingguan') tarifInput.value = 150000;
+      else if (durasi === 'bulanan') tarifInput.value = 500000;
+      hitungTotalLapak();
+    }
+
+    function toggleIuran(type) {
+      iuranState[type] = !iuranState[type];
+      const btnMap = {
+        kebersihan: 'toggleKebersihan',
+        keamanan: 'toggleKeamanan',
+        listrik: 'toggleListrikKios'
+      };
+      const btn = document.getElementById(btnMap[type]);
+      if (btn) {
+        btn.classList.toggle('on', iuranState[type]);
+        btn.textContent = iuranState[type] ? '[AKTIF]' : '[MATI]';
+      }
+      hitungTotalLapak();
+    }
+
+    function setKostDurasi(durasi) {
+      kostDurasi = durasi;
+      document.querySelectorAll('.kost-durasi-btn').forEach(b => {
+        b.classList.toggle('active', b.getAttribute('data-durasi') === durasi);
+      });
+      const tarifInput = document.getElementById('kostTarif');
+      if (durasi === 'bulanan') tarifInput.value = 650000;
+      else if (durasi === 'tahunan') tarifInput.value = 7500000;
+      hitungTotalLapak();
+    }
+
+    function setGarasiDurasi(durasi) {
+      garasiDurasi = durasi;
+      document.querySelectorAll('.garasi-durasi-btn').forEach(b => {
+        b.classList.toggle('active', b.getAttribute('data-durasi') === durasi);
+      });
+      const tarifInput = document.getElementById('garasiTarif');
+      if (durasi === 'harian') tarifInput.value = 25000;
+      else if (durasi === 'bulanan') tarifInput.value = 250000;
+      hitungTotalLapak();
+    }
+
+    function addTendaItem() {
+      const nameInput = document.getElementById('tendaNewItemName');
+      const qtyInput = document.getElementById('tendaNewItemQty');
+      const priceInput = document.getElementById('tendaNewItemPrice');
+
+      const name = nameInput.value.trim();
+      const qty = parseInt(qtyInput.value) || 1;
+      const price = parseInt(priceInput.value) || 0;
+
+      if (!name) {
+        alert('Tuliskan nama alat / item sewa!');
+        return;
+      }
+
+      tendaItems.push({
+        id: 't-' + Date.now(),
+        name,
+        qty,
+        price
+      });
+
+      nameInput.value = '';
+      qtyInput.value = 1;
+      priceInput.value = 50000;
+
+      renderTendaItems();
+      hitungTotalLapak();
+    }
+
+    function removeTendaItem(id) {
+      tendaItems = tendaItems.filter(item => item.id !== id);
+      renderTendaItems();
+      hitungTotalLapak();
+    }
+
+    function renderTendaItems() {
+      const container = document.getElementById('tendaItemsList');
+      if (!container) return;
+      if (tendaItems.length === 0) {
+        container.innerHTML = '<div style="font-size:12px; color:var(--text-dim); padding:6px 0;">Belum ada item sewa. Tambahkan di bawah.</div>';
+        return;
+      }
+      container.innerHTML = tendaItems.map(it => `
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px dashed #242d38;">
+          <div>
+            <span style="font-weight:800; font-size:13px;">${it.name}</span>
+            <span style="font-size:11px; color:var(--text-muted); margin-left:6px;">(${it.qty} unit x Rp ${it.price.toLocaleString('id-ID')})</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="font-weight:900; font-size:13px;">Rp ${(it.qty * it.price).toLocaleString('id-ID')}</span>
+            <button type="button" class="btn-bold btn-bold-sm btn-bold-danger" style="padding:2px 6px;" onclick="removeTendaItem('${it.id}')">[X]</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function setPayMethod(method) {
+      payMethod = method;
+      document.querySelectorAll('.bayar-btn').forEach(b => {
+        b.classList.toggle('active', b.getAttribute('data-method') === method);
+      });
+      const bonRow = document.getElementById('bonDueDateRow');
+      if (bonRow) bonRow.style.display = method === 'bon' ? 'block' : 'none';
+    }
+
+    // -------------------------------------------------------------
+    // SMART KALKULATOR DINAMIS CALCULATION
+    // -------------------------------------------------------------
+    function hitungTotalLapak() {
+      let total = 0;
+
+      if (activeSubcat === 'kios') {
+        const qty = parseInt(document.getElementById('kiosQtyPeriod')?.value) || 1;
+        const tarif = parseInt(document.getElementById('kiosTarif')?.value) || 0;
+        let subtotal = qty * tarif;
+
+        let iuranKebersihan = iuranState.kebersihan ? (2000 * qty) : 0;
+        let iuranKeamanan = iuranState.keamanan ? (2000 * qty) : 0;
+        let iuranListrik = iuranState.listrik ? (5000 * qty) : 0;
+
+        total = subtotal + iuranKebersihan + iuranKeamanan + iuranListrik;
+      } else if (activeSubcat === 'kost') {
+        const qty = parseInt(document.getElementById('kostQty')?.value) || 1;
+        const tarif = parseInt(document.getElementById('kostTarif')?.value) || 0;
+        const sewaKamar = qty * tarif;
+
+        // Meteran
+        const meterLalu = parseFloat(document.getElementById('kostMeterLalu')?.value) || 0;
+        const meterIni = parseFloat(document.getElementById('kostMeterIni')?.value) || 0;
+        const tarifKwh = parseFloat(document.getElementById('kostTarifKwh')?.value) || 0;
+        const kwhUsed = Math.max(0, meterIni - meterLalu);
+        const subtotalListrik = Math.round(kwhUsed * tarifKwh);
+
+        const meteranResult = document.getElementById('kostMeteranResult');
+        if (meteranResult) {
+          meteranResult.textContent = `Pemakaian Listrik: (${meterIni} - ${meterLalu}) = ${kwhUsed} kWh x Rp ${tarifKwh.toLocaleString('id-ID')} = Rp ${subtotalListrik.toLocaleString('id-ID')}`;
+        }
+
+        const deposit = parseInt(document.getElementById('kostDeposit')?.value) || 0;
+        total = sewaKamar + subtotalListrik + deposit;
+      } else if (activeSubcat === 'garasi') {
+        const qty = parseInt(document.getElementById('garasiQty')?.value) || 1;
+        const tarif = parseInt(document.getElementById('garasiTarif')?.value) || 0;
+        total = qty * tarif;
+      } else if (activeSubcat === 'gedung') {
+        const totalTarif = parseInt(document.getElementById('gedungTotalTarif')?.value) || 0;
+        const dp = parseInt(document.getElementById('gedungDp')?.value) || 0;
+        const sisa = Math.max(0, totalTarif - dp);
+
+        const sisaEl = document.getElementById('gedungSisaText');
+        if (sisaEl) {
+          sisaEl.textContent = `Sisa Pelunasan: Rp ${sisa.toLocaleString('id-ID')} (DP Masuk: Rp ${dp.toLocaleString('id-ID')})`;
+        }
+        total = totalTarif;
+      } else if (activeSubcat === 'tenda') {
+        const hari = parseInt(document.getElementById('tendaHari')?.value) || 1;
+        const denda = parseInt(document.getElementById('tendaDendaNominal')?.value) || 0;
+        let subtotalAlat = tendaItems.reduce((acc, it) => acc + (it.qty * it.price), 0);
+        total = (subtotalAlat * hari) + denda;
+      }
+
+      const totalDisplay = document.getElementById('displayGrandTotal');
+      if (totalDisplay) {
+        totalDisplay.textContent = `Rp ${total.toLocaleString('id-ID')}`;
+      }
+
+      return total;
+    }
+
+    // -------------------------------------------------------------
+    // PRESETS / KATALOG SYNC IN KASIR
+    // -------------------------------------------------------------
+    function updateUnitSelectOptions() {
+      const select = document.getElementById('kasirUnitSelect');
+      if (!select) return;
+
+      const filtered = catalog.filter(u => u.subcat === activeSubcat);
+      select.innerHTML = '<option value="">-- PILIH UNIT TERDAFTAR (ATAU INPUT MANUAL) --</option>' +
+        filtered.map(u => `
+          <option value="${u.id}">${u.name} - Rp ${u.tarif.toLocaleString('id-ID')} (${u.periode}) [${u.status}]</option>
+        `).join('');
+    }
+
+    function onSelectUnitPreset() {
+      const select = document.getElementById('kasirUnitSelect');
+      const unitId = select.value;
+      if (!unitId) return;
+
+      const unit = catalog.find(u => u.id === unitId);
+      if (!unit) return;
+
+      document.getElementById('kasirNamaUnit').value = unit.name;
+
+      if (activeSubcat === 'kios') {
+        document.getElementById('kiosTarif').value = unit.tarif;
+      } else if (activeSubcat === 'kost') {
+        document.getElementById('kostTarif').value = unit.tarif;
+      } else if (activeSubcat === 'garasi') {
+        document.getElementById('garasiTarif').value = unit.tarif;
+        document.getElementById('garasiSlotNo').value = unit.name;
+      } else if (activeSubcat === 'gedung') {
+        document.getElementById('gedungTotalTarif').value = unit.tarif;
+      }
+
+      hitungTotalLapak();
+    }
+
+    function resetKasirForm() {
+      document.getElementById('kasirNamaPenyewa').value = '';
+      document.getElementById('kasirNoWa').value = '';
+      document.getElementById('kasirNamaUnit').value = '';
+      document.getElementById('kasirCatatan').value = '';
+      document.getElementById('kasirUnitSelect').value = '';
+
+      iuranState = { kebersihan: false, keamanan: false, listrik: false };
+      ['toggleKebersihan', 'toggleKeamanan', 'toggleListrikKios'].forEach(id => {
+        const btn = document.getElementById(id);
+        if (btn) {
+          btn.classList.remove('on');
+          btn.textContent = '[MATI]';
+        }
+      });
+
+      hitungTotalLapak();
+    }
+
+    // -------------------------------------------------------------
+    // SIMPAN TRANSAKSI SEWA & CETAK STRUK
+    // -------------------------------------------------------------
+    function simpanTransaksiSewa() {
+      const namaPenyewa = document.getElementById('kasirNamaPenyewa').value.trim();
+      const noWa = document.getElementById('kasirNoWa').value.trim();
+      const namaUnit = document.getElementById('kasirNamaUnit').value.trim() || `Unit ${SUBCATS[activeSubcat].shortName}`;
+      const catatan = document.getElementById('kasirCatatan').value.trim();
+
+      if (!namaPenyewa) {
+        alert('Mohon isi Nama Penyewa / Warga!');
+        document.getElementById('kasirNamaPenyewa').focus();
+        return;
+      }
+
+      const grandTotal = hitungTotalLapak();
+      if (grandTotal <= 0) {
+        alert('Total nominal tagihan tidak boleh Rp 0.');
+        return;
+      }
+
+      const invoiceNo = 'LPQ-' + Date.now().toString().slice(-6);
+      const now = new Date();
+      const dateStr = now.toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+      // Build Subcat Details Snapshot
+      let details = {};
+      if (activeSubcat === 'kios') {
+        details = {
+          durasiType: kiosDurasi,
+          qtyPeriod: parseInt(document.getElementById('kiosQtyPeriod').value) || 1,
+          tarif: parseInt(document.getElementById('kiosTarif').value) || 0,
+          kebersihan: iuranState.kebersihan,
+          keamanan: iuranState.keamanan,
+          listrik: iuranState.listrik,
+          jenisUsaha: document.getElementById('kiosJenisUsaha').value.trim() || 'Perdagangan Umum'
+        };
+      } else if (activeSubcat === 'kost') {
+        const meterLalu = parseFloat(document.getElementById('kostMeterLalu').value) || 0;
+        const meterIni = parseFloat(document.getElementById('kostMeterIni').value) || 0;
+        const tarifKwh = parseFloat(document.getElementById('kostTarifKwh').value) || 0;
+        details = {
+          durasiType: kostDurasi,
+          qtyPeriod: parseInt(document.getElementById('kostQty').value) || 1,
+          tarif: parseInt(document.getElementById('kostTarif').value) || 0,
+          meterLalu,
+          meterIni,
+          kwhUsed: Math.max(0, meterIni - meterLalu),
+          tarifKwh,
+          subtotalListrik: Math.round(Math.max(0, meterIni - meterLalu) * tarifKwh),
+          deposit: parseInt(document.getElementById('kostDeposit').value) || 0
+        };
+      } else if (activeSubcat === 'garasi') {
+        details = {
+          slotNo: document.getElementById('garasiSlotNo').value.trim() || namaUnit,
+          platNo: document.getElementById('garasiPlatNo').value.trim() || 'Plat Belum Diisi',
+          durasiType: garasiDurasi,
+          qtyPeriod: parseInt(document.getElementById('garasiQty').value) || 1,
+          tarif: parseInt(document.getElementById('garasiTarif').value) || 0
+        };
+      } else if (activeSubcat === 'gedung') {
+        const totalTarif = parseInt(document.getElementById('gedungTotalTarif').value) || 0;
+        const dp = parseInt(document.getElementById('gedungDp').value) || 0;
+        details = {
+          tanggalAcara: document.getElementById('gedungTanggal').value,
+          sesi: document.getElementById('gedungSesi').value,
+          totalTarif,
+          dpBooking: dp,
+          sisaPelunasan: Math.max(0, totalTarif - dp),
+          tglPelunasan: document.getElementById('gedungTglPelunasan').value
+        };
+      } else if (activeSubcat === 'tenda') {
+        details = {
+          statusAlat: document.getElementById('tendaStatus').value,
+          items: [...tendaItems],
+          hari: parseInt(document.getElementById('tendaHari').value) || 1,
+          dendaNominal: parseInt(document.getElementById('tendaDendaNominal').value) || 0,
+          dendaDesc: document.getElementById('tendaDendaDesc').value.trim()
+        };
+      }
+
+      const tx = {
+        id: 'tx-' + Date.now(),
+        invoiceNo,
+        date: dateStr,
+        timestamp: Date.now(),
+        subcat: activeSubcat,
+        subcatName: SUBCATS[activeSubcat].shortName,
+        namaPenyewa,
+        noWa,
+        namaUnit,
+        details,
+        catatan,
+        total: grandTotal,
+        method: payMethod,
+        isBon: payMethod === 'bon',
+        bonStatus: payMethod === 'bon' ? 'belum_lunas' : 'lunas',
+        bonDueDate: payMethod === 'bon' ? document.getElementById('kasirBonDueDate').value : null
+      };
+
+      // Save Transaction
+      transactions.unshift(tx);
+      localStorage.setItem(KEY_TRANSACTIONS, JSON.stringify(transactions));
+
+      // If Bon, save to Bon List
+      if (payMethod === 'bon') {
+        bonList.unshift({
+          id: 'bon-' + tx.id,
+          txId: tx.id,
+          invoiceNo,
+          namaPenyewa,
+          noWa,
+          namaUnit,
+          subcat: activeSubcat,
+          subcatName: SUBCATS[activeSubcat].shortName,
+          amount: grandTotal,
+          date: dateStr,
+          dueDate: tx.bonDueDate,
+          details
+        });
+        localStorage.setItem(KEY_BON, JSON.stringify(bonList));
+      }
+
+      // Show Receipt Modal
+      renderActualReceipt(tx);
+      document.getElementById('modalReceiptView').classList.add('active');
+
+      // Update counters
+      renderBonList();
+      renderRekap();
+    }
+
+    // -------------------------------------------------------------
+    // STRUK GENERATOR: SESUAI ATRIBUT SUB-KATEGORI AKTIF
+    // -------------------------------------------------------------
+    function generateReceiptHtml(txOrDummy, isDummy = false) {
+      const data = txOrDummy;
+      const subcat = data.subcat || activeSubcat;
+      const subcatDef = SUBCATS[subcat] || SUBCATS.kios;
+
+      let subcatSpecificHtml = '';
+
+      if (subcat === 'kios') {
+        const d = data.details || {};
+        subcatSpecificHtml = `
+          <div class="receipt-row"><span>Unit Lapak:</span><strong>${data.namaUnit || 'Kios Depan No. 03'}</strong></div>
+          <div class="receipt-row"><span>Jenis Usaha:</span><span>${d.jenisUsaha || 'Gorengan & Kopi'}</span></div>
+          <div class="receipt-row"><span>Durasi:</span><span>${d.qtyPeriod || 1} ${d.durasiType || 'Harian'}</span></div>
+          <div class="receipt-row"><span>Tarif Pokok:</span><span>Rp ${(d.tarif || 25000).toLocaleString('id-ID')}</span></div>
+          ${d.kebersihan ? '<div class="receipt-row"><span>+ Iuran Kebersihan:</span><span>Rp 2.000</span></div>' : ''}
+          ${d.keamanan ? '<div class="receipt-row"><span>+ Iuran Keamanan:</span><span>Rp 2.000</span></div>' : ''}
+          ${d.listrik ? '<div class="receipt-row"><span>+ Iuran Listrik:</span><span>Rp 5.000</span></div>' : ''}
+        `;
+      } else if (subcat === 'kost') {
+        const d = data.details || {};
+        const kwh = d.kwhUsed !== undefined ? d.kwhUsed : 45;
+        const tarifKwh = d.tarifKwh || 2000;
+        const subListrik = d.subtotalListrik || (kwh * tarifKwh);
+        const dep = d.deposit || 200000;
+        subcatSpecificHtml = `
+          <div class="receipt-row"><span>Kamar / Rumah:</span><strong>${data.namaUnit || 'Kamar Kost 2B'}</strong></div>
+          <div class="receipt-row"><span>Durasi Sewa:</span><span>${d.qtyPeriod || 1} ${d.durasiType || 'Bulan'}</span></div>
+          <div class="receipt-row"><span>Tarif Pokok:</span><span>Rp ${(d.tarif || 650000).toLocaleString('id-ID')}</span></div>
+          <hr>
+          <div style="font-size:11px; font-weight:bold; margin-bottom:2px;">[RINCIAN METERAN LISTRIK]</div>
+          <div class="receipt-row"><span>Meter Lalu - Ini:</span><span>${d.meterLalu || 1420} - ${d.meterIni || 1465} kWh</span></div>
+          <div class="receipt-row"><span>Pemakaian Listrik:</span><span>${kwh} kWh x Rp ${tarifKwh} = Rp ${subListrik.toLocaleString('id-ID')}</span></div>
+          ${dep > 0 ? `<div class="receipt-row"><span>Deposit Jaminan:</span><span>Rp ${dep.toLocaleString('id-ID')} (Ditahan)</span></div>` : ''}
+        `;
+      } else if (subcat === 'garasi') {
+        const d = data.details || {};
+        subcatSpecificHtml = `
+          <div class="receipt-row"><span>Nomor Slot:</span><strong>${d.slotNo || data.namaUnit || 'Slot Mobil A-02'}</strong></div>
+          <div class="receipt-row"><span>Plat Nomor:</span><strong>${d.platNo || 'B 1234 SAK'}</strong></div>
+          <div class="receipt-row"><span>Durasi Parkir:</span><span>${d.qtyPeriod || 1} ${d.durasiType || 'Bulan'}</span></div>
+          <div class="receipt-row"><span>Tarif Parkir:</span><span>Rp ${(d.tarif || 250000).toLocaleString('id-ID')}</span></div>
+        `;
+      } else if (subcat === 'gedung') {
+        const d = data.details || {};
+        const total = d.totalTarif || data.total || 1500000;
+        const dp = d.dpBooking !== undefined ? d.dpBooking : 500000;
+        const sisa = d.sisaPelunasan !== undefined ? d.sisaPelunasan : (total - dp);
+        subcatSpecificHtml = `
+          <div class="receipt-row"><span>Gedung / Aula:</span><strong>${data.namaUnit || 'Balai Serbaguna RT 04'}</strong></div>
+          <div class="receipt-row"><span>Tgl Pemakaian:</span><span>${d.tanggalAcara || '28 Okt 2026'}</span></div>
+          <div class="receipt-row"><span>Sesi Acara:</span><span>${d.sesi || 'Sesi Siang (13:00 - 18:00)'}</span></div>
+          <div class="receipt-row"><span>Total Biaya Sewa:</span><span>Rp ${total.toLocaleString('id-ID')}</span></div>
+          <hr>
+          <div class="receipt-row"><span>DP Booking Masuk:</span><strong style="color:#15803d;">Rp ${dp.toLocaleString('id-ID')}</strong></div>
+          <div class="receipt-row"><span>Sisa Pelunasan:</span><strong style="color:#b91c1c;">Rp ${sisa.toLocaleString('id-ID')}</strong></div>
+          <div class="receipt-row"><span>Jatuh Tempo Lunas:</span><span>${d.tglPelunasan || '25 Okt 2026'}</span></div>
+        `;
+      } else if (subcat === 'tenda') {
+        const d = data.details || {};
+        const items = d.items || tendaItems;
+        subcatSpecificHtml = `
+          <div class="receipt-row"><span>Unit Paket:</span><strong>${data.namaUnit || 'Sewa Tenda & Kursi'}</strong></div>
+          <div class="receipt-row"><span>Status Lapangan:</span><span>${d.statusAlat || 'Sedang Disewa (Di Lapangan)'}</span></div>
+          <div class="receipt-row"><span>Durasi Pemakaian:</span><span>${d.hari || 1} Hari</span></div>
+          <hr>
+          <div style="font-size:11px; font-weight:bold; margin-bottom:2px;">[RINCIAN BARANG DISEWA]</div>
+          ${items.map(it => `
+            <div class="receipt-row" style="font-size:11px;">
+              <span>- ${it.name} (${it.qty}x)</span>
+              <span>Rp ${(it.qty * it.price).toLocaleString('id-ID')}</span>
+            </div>
+          `).join('')}
+          ${d.dendaNominal > 0 ? `
+            <hr>
+            <div class="receipt-row" style="color:#b91c1c;">
+              <span>Denda: ${d.dendaDesc || 'Kerusakan'}</span>
+              <span>Rp ${d.dendaNominal.toLocaleString('id-ID')}</span>
+            </div>
+          ` : ''}
+        `;
+      }
+
+      const invoiceNum = data.invoiceNo || 'LPQ-DUMMY88';
+      const dateStr = data.date || new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+      const totalAmount = data.total || (isDummy ? 550000 : 0);
+      const payStatus = data.isBon ? '[BON / HUTANG TEMPO]' : `[LUNAS - ${(data.method || 'TUNAI').toUpperCase()}]`;
+
+      return `
+        <div style="text-align: center; margin-bottom: 8px;">
+          <div style="font-size: 15px; font-weight: 900; letter-spacing: -0.01em;">${profile.namaUsaha}</div>
+          <div style="font-size: 11px;">${profile.alamat}</div>
+          <div style="font-size: 11px;">Telp/WA: ${profile.noWa}</div>
+          <div style="font-size: 10px; margin-top: 4px; font-weight: bold; border-top: 1px dashed #666; border-bottom: 1px dashed #666; padding: 2px 0;">
+            ${receiptConfig.header}
+          </div>
+        </div>
+
+        <div class="receipt-row"><span>No. Bukti:</span><span>${invoiceNum}</span></div>
+        <div class="receipt-row"><span>Tanggal:</span><span>${dateStr}</span></div>
+        <div class="receipt-row"><span>Sub-Kategori:</span><strong>${subcatDef.title}</strong></div>
+        <div class="receipt-row"><span>Penyewa:</span><strong>${data.namaPenyewa || 'Warga RT 04'}</strong></div>
+        <div class="receipt-row"><span>Kontak WA:</span><span>${data.noWa || '-'}</span></div>
+        
+        <hr>
+        ${subcatSpecificHtml}
+        <hr>
+
+        <div class="receipt-row" style="font-size: 14px; font-weight: 900;">
+          <span>TOTAL PEMBAYARAN:</span>
+          <span>Rp ${totalAmount.toLocaleString('id-ID')}</span>
+        </div>
+        <div class="receipt-row" style="font-weight: 900; margin-top: 4px;">
+          <span>STATUS TRANSAKSI:</span>
+          <span style="color: ${data.isBon ? '#b91c1c' : '#15803d'};">${payStatus}</span>
+        </div>
+        ${data.isBon && data.bonDueDate ? `
+          <div class="receipt-row" style="color: #b91c1c; font-weight: bold;">
+            <span>Jatuh Tempo:</span>
+            <span>${data.bonDueDate}</span>
+          </div>
+        ` : ''}
+        ${data.catatan ? `<div style="font-size: 11px; margin-top: 6px; font-style: italic;">Catatan: ${data.catatan}</div>` : ''}
+
+        <hr>
+        <div style="text-align: center; font-size: 10px; margin-top: 8px;">
+          <div>Info Rekening: ${profile.rekening}</div>
+          <div style="margin-top: 6px; white-space: pre-wrap;">${receiptConfig.footer}</div>
+        </div>
+      `;
+    }
+
+    // Update Interactive Dummy Preview in Settings
+    function updateReceiptPreview() {
+      const dummyContainer = document.getElementById('dummyReceiptContent');
+      if (!dummyContainer) return;
+
+      const subcatDef = SUBCATS[activeSubcat];
+      const tag = document.getElementById('receiptSubcatTag');
+      if (tag) {
+        tag.textContent = subcatDef.shortName;
+        tag.style.background = subcatDef.headerColor;
+      }
+
+      // Sample dummy object reflecting current sub-category
+      const dummyTx = {
+        invoiceNo: 'LPQ-CONTOH',
+        date: new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
+        subcat: activeSubcat,
+        namaPenyewa: 'Pak H. Wahyudi (Warga RT 04)',
+        noWa: '081234567890',
+        namaUnit: activeSubcat === 'kios' ? 'Kios Pujasera No. 02' :
+                  activeSubcat === 'kost' ? 'Kamar Kost Paviliun #3' :
+                  activeSubcat === 'garasi' ? 'Slot Parkir Mobil A-03' :
+                  activeSubcat === 'gedung' ? 'Aula Pertemuan Warga RT 04' :
+                  'Paket Tenda Pernikahan & 60 Kursi',
+        catatan: 'Contoh pratinjau struk sewa otomatis',
+        method: 'transfer',
+        isBon: false,
+        total: activeSubcat === 'kios' ? 534000 :
+               activeSubcat === 'kost' ? 940000 :
+               activeSubcat === 'garasi' ? 250000 :
+               activeSubcat === 'gedung' ? 1500000 :
+               350000,
+        details: {
+          durasiType: 'Bulanan',
+          qtyPeriod: 1,
+          tarif: 500000,
+          kebersihan: true,
+          keamanan: true,
+          listrik: true,
+          jenisUsaha: 'Warung Nasi Uduk & Kopi',
+          meterLalu: 1200,
+          meterIni: 1245,
+          tarifKwh: 2000,
+          kwhUsed: 45,
+          subtotalListrik: 90000,
+          deposit: 200000,
+          slotNo: 'Slot Mobil A-03',
+          platNo: 'B 2940 KZX',
+          tanggalAcara: '29 Okt 2026',
+          sesi: 'Sesi Siang (13:00 - 18:00)',
+          totalTarif: 1500000,
+          dpBooking: 500000,
+          sisaPelunasan: 1000000,
+          tglPelunasan: '25 Okt 2026',
+          statusAlat: 'Sedang Disewa (Di Lapangan)',
+          hari: 2,
+          items: tendaItems,
+          dendaNominal: 0
+        }
+      };
+
+      dummyContainer.innerHTML = generateReceiptHtml(dummyTx, true);
+    }
+
+    function renderActualReceipt(tx) {
+      const container = document.getElementById('actualReceiptContent');
+      if (container) {
+        container.innerHTML = generateReceiptHtml(tx, false);
+      }
+      const shareBtn = document.getElementById('btnShareNotaWa');
+      if (shareBtn) {
+        shareBtn.onclick = () => shareNotaViaWa(tx);
+      }
+    }
+
+    function closeReceiptModal() {
+      document.getElementById('modalReceiptView').classList.remove('active');
+      resetKasirForm();
+    }
+
+    function shareNotaViaWa(tx) {
+      const cleanWa = (tx.noWa || '').replace(/[^0-9]/g, '');
+      const waNumber = cleanWa.startsWith('0') ? '62' + cleanWa.slice(1) : cleanWa;
+
+      const subcatTitle = SUBCATS[tx.subcat]?.title || 'Sewa Properti';
+      const msg = `*BUKTI PEMBAYARAN SEWA PROPERTI LAPAKQU*
+----------------------------------------
+Pengelola: *${profile.namaUsaha}*
+No. Bukti: *${tx.invoiceNo}*
+Tanggal: ${tx.date}
+Penyewa: *${tx.namaPenyewa}*
+Unit/Objek: *${tx.namaUnit}* (${subcatTitle})
+Metode Bayar: *${(tx.method || 'TUNAI').toUpperCase()}*
+----------------------------------------
+*TOTAL BAYAR: Rp ${tx.total.toLocaleString('id-ID')}*
+Status: *${tx.isBon ? 'HUTANG TEMPO (Jatuh tempo: ' + tx.bonDueDate + ')' : 'LUNAS TERBAYAR'}*
+----------------------------------------
+Info Rekening: ${profile.rekening}
+_${receiptConfig.footer}_`;
+
+      const url = waNumber
+        ? `https://wa.me/${waNumber}?text=${encodeURIComponent(msg)}`
+        : `https://wa.me/?text=${encodeURIComponent(msg)}`;
+      window.open(url, '_blank');
+    }
+
+    function salinTeksStruk() {
+      const el = document.getElementById('dummyReceiptContent');
+      if (!el) return;
+      navigator.clipboard.writeText(el.innerText).then(() => {
+        alert('Teks nota kuitansi dummy berhasil disalin ke clipboard!');
+      });
+    }
+
+    // -------------------------------------------------------------
+    // 2. MENU BON: CATATAN TUNGGAKAN & TAGIH WA
+    // -------------------------------------------------------------
+    function renderBonList() {
+      const container = document.getElementById('bonListContainer');
+      const counter = document.getElementById('bonTotalCounter');
+      const amountEl = document.getElementById('bonTotalAmountText');
+      const badgeNav = document.getElementById('navBonBadge');
+
+      if (!container) return;
+
+      const activeBons = bonList;
+      const totalAmount = activeBons.reduce((acc, b) => acc + (b.amount || 0), 0);
+
+      if (counter) counter.textContent = `${activeBons.length} Penunggak`;
+      if (amountEl) amountEl.textContent = `Rp ${totalAmount.toLocaleString('id-ID')}`;
+
+      if (badgeNav) {
+        if (activeBons.length > 0) {
+          badgeNav.style.display = 'block';
+          badgeNav.textContent = activeBons.length;
+        } else {
+          badgeNav.style.display = 'none';
+        }
+      }
+
+      if (activeBons.length === 0) {
+        container.innerHTML = `
+          <div style="padding: 24px 16px; text-align: center; color: var(--text-dim);">
+            <div style="font-size: 14px; font-weight: 800; color: #22c55e;">SEMUA TUNGGAKAN SEWA LUNAS!</div>
+            <div style="font-size: 12px; margin-top: 4px;">Tidak ada catatan bon atau piutang aktif saat ini.</div>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = activeBons.map(b => {
+        return `
+          <div class="underline-item">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+              <div>
+                <div style="font-size: 15px; font-weight: 900; color: #f8fafc;">${b.namaPenyewa}</div>
+                <div style="font-size: 12px; color: var(--text-muted); font-weight: 700;">
+                  ${b.namaUnit} • <span class="tag-bold tag-subtle">${b.subcatName}</span>
+                </div>
+              </div>
+              <div style="text-align: right;">
+                <div style="font-size: 16px; font-weight: 900; color: #ef4444;">Rp ${b.amount.toLocaleString('id-ID')}</div>
+                <span class="tag-bold tag-red">BELUM LUNAS</span>
+              </div>
+            </div>
+            
+            <div style="font-size: 11px; color: var(--text-dim); margin-bottom: 10px;">
+              Tgl Transaksi: ${b.date} | Jatuh Tempo: <strong style="color: #facc15;">${b.dueDate || '-'}</strong>
+            </div>
+
+            <div style="display: flex; gap: 6px;">
+              <button class="btn-bold btn-bold-sm btn-bold-primary" style="flex: 2;" onclick="tagihBonViaWa('${b.id}')">[TAGIH WHATSAPP]</button>
+              <button class="btn-bold btn-bold-sm btn-bold-accent" style="flex: 1;" onclick="lunasiBon('${b.id}')">[LUNASI]</button>
+              <button class="btn-bold btn-bold-sm btn-bold-danger" onclick="hapusBon('${b.id}')">[HAPUS]</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function tagihBonViaWa(bonId) {
+      const b = bonList.find(x => x.id === bonId);
+      if (!b) return;
+
+      const cleanWa = (b.noWa || '').replace(/[^0-9]/g, '');
+      const waNumber = cleanWa.startsWith('0') ? '62' + cleanWa.slice(1) : cleanWa;
+
+      const msg = `*PEMBERITAHUAN JATUH TEMPO SEWA LAPAKQU*
+----------------------------------------
+Yth. Bpk/Ibu *${b.namaPenyewa}*,
+Kami dari pengelola *${profile.namaUsaha}* menginformasikan catatan sewa properti:
+
+• Objek Sewa: *${b.namaUnit}* (${b.subcatName})
+• No. Bukti: *${b.invoiceNo}*
+• Tanggal Transaksi: ${b.date}
+• Batas Jatuh Tempo: *${b.dueDate || 'Segera'}*
+----------------------------------------
+*TOTAL TAGIHAN: Rp ${b.amount.toLocaleString('id-ID')}*
+----------------------------------------
+Pembayaran dapat ditransfer melalui:
+*${profile.rekening}*
+
+Mohon konfirmasi bukti transfer jika sudah melakukan pembayaran. Terima kasih banyak atas kerja sama yang baik!`;
+
+      const url = waNumber
+        ? `https://wa.me/${waNumber}?text=${encodeURIComponent(msg)}`
+        : `https://wa.me/?text=${encodeURIComponent(msg)}`;
+      window.open(url, '_blank');
+    }
+
+    function lunasiBon(bonId) {
+      if (!confirm('Tandai tagihan sewa ini sudah LUNAS?')) return;
+
+      const idx = bonList.findIndex(x => x.id === bonId);
+      if (idx !== -1) {
+        const bonItem = bonList[idx];
+        bonList.splice(idx, 1);
+        localStorage.setItem(KEY_BON, JSON.stringify(bonList));
+
+        // Update corresponding transaction if exists
+        const tx = transactions.find(t => t.id === bonItem.txId);
+        if (tx) {
+          tx.isBon = false;
+          tx.bonStatus = 'lunas';
+          tx.method = 'transfer';
+          localStorage.setItem(KEY_TRANSACTIONS, JSON.stringify(transactions));
+        }
+
+        renderBonList();
+        renderRekap();
+        alert('Tunggakan sewa berhasil ditandai Lunas!');
+      }
+    }
+
+    function hapusBon(bonId) {
+      if (!confirm('Hapus catatan bon ini secara permanen?')) return;
+      bonList = bonList.filter(x => x.id !== bonId);
+      localStorage.setItem(KEY_BON, JSON.stringify(bonList));
+      renderBonList();
+    }
+
+    // -------------------------------------------------------------
+    // 3. MENU REKAP: LAPORAN PENJUALAN & PEMASUKAN
+    // -------------------------------------------------------------
+    function renderRekap() {
+      const container = document.getElementById('rekapHistoryContainer');
+      const hariIniEl = document.getElementById('rekapHariIni');
+      const bulanIniEl = document.getElementById('rekapBulanIni');
+      const totalAllEl = document.getElementById('rekapTotalAll');
+      const tunaiEl = document.getElementById('rekapTunai');
+      const qrisEl = document.getElementById('rekapQris');
+      const transferEl = document.getElementById('rekapTransfer');
+
+      const now = new Date();
+      const currentMonth = now.getMonth();
+      const currentYear = now.getFullYear();
+      const todayDateStr = now.toISOString().split('T')[0];
+
+      let sumHariIni = 0;
+      let sumBulanIni = 0;
+      let sumTotal = 0;
+      let sumTunai = 0;
+      let sumQris = 0;
+      let sumTransfer = 0;
+
+      transactions.forEach(t => {
+        // Exclude unpaid bon from revenue totals
+        if (t.isBon && t.bonStatus === 'belum_lunas') return;
+
+        const val = t.total || 0;
+        sumTotal += val;
+
+        const tDate = new Date(t.timestamp || Date.now());
+        if (tDate.getMonth() === currentMonth && tDate.getFullYear() === currentYear) {
+          sumBulanIni += val;
+        }
+
+        const tDateStr = tDate.toISOString().split('T')[0];
+        if (tDateStr === todayDateStr) {
+          sumHariIni += val;
+        }
+
+        if (t.method === 'tunai') sumTunai += val;
+        else if (t.method === 'qris') sumQris += val;
+        else sumTransfer += val;
+      });
+
+      if (hariIniEl) hariIniEl.textContent = `Rp ${sumHariIni.toLocaleString('id-ID')}`;
+      if (bulanIniEl) bulanIniEl.textContent = `Rp ${sumBulanIni.toLocaleString('id-ID')}`;
+      if (totalAllEl) totalAllEl.textContent = `Rp ${sumTotal.toLocaleString('id-ID')}`;
+      if (tunaiEl) tunaiEl.textContent = `Rp ${sumTunai.toLocaleString('id-ID')}`;
+      if (qrisEl) qrisEl.textContent = `Rp ${sumQris.toLocaleString('id-ID')}`;
+      if (transferEl) transferEl.textContent = `Rp ${sumTransfer.toLocaleString('id-ID')}`;
+
+      if (!container) return;
+
+      if (transactions.length === 0) {
+        container.innerHTML = `
+          <div style="padding: 24px 16px; text-align: center; color: var(--text-dim);">
+            Belum ada catatan transaksi sewa. Lakukan input di menu [KASIR].
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = transactions.slice(0, 30).map(tx => {
+        const isBonUnpaid = tx.isBon && tx.bonStatus === 'belum_lunas';
+        return `
+          <div class="underline-item">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+              <div>
+                <div style="font-size: 14px; font-weight: 800; color: #f8fafc;">${tx.namaPenyewa}</div>
+                <div style="font-size: 12px; color: var(--text-muted);">
+                  ${tx.namaUnit} • <span class="tag-bold tag-subtle">${tx.subcatName}</span>
+                </div>
+                <div style="font-size: 11px; color: var(--text-dim); margin-top: 2px;">
+                  ${tx.date} • No. ${tx.invoiceNo}
+                </div>
+              </div>
+              <div style="text-align: right;">
+                <div style="font-size: 15px; font-weight: 900; color: ${isBonUnpaid ? '#ef4444' : '#22c55e'};">
+                  Rp ${tx.total.toLocaleString('id-ID')}
+                </div>
+                <span class="tag-bold ${isBonUnpaid ? 'tag-red' : 'tag-green'}">
+                  ${isBonUnpaid ? 'BON' : (tx.method || 'TUNAI').toUpperCase()}
+                </span>
+              </div>
+            </div>
+            <div style="margin-top: 8px; display: flex; gap: 6px;">
+              <button class="btn-bold btn-bold-sm btn-bold-secondary" onclick="bukaUlangStruk('${tx.id}')">[LIHAT STRUK]</button>
+              <button class="btn-bold btn-bold-sm btn-bold-secondary" onclick="shareNotaViaWa(transactions.find(t => t.id === '${tx.id}'))">[WA NOTA]</button>
+              <button class="btn-bold btn-bold-sm btn-bold-danger" style="margin-left: auto;" onclick="hapusTransaksi('${tx.id}')">[HAPUS]</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function bukaUlangStruk(txId) {
+      const tx = transactions.find(t => t.id === txId);
+      if (!tx) return;
+      renderActualReceipt(tx);
+      document.getElementById('modalReceiptView').classList.add('active');
+    }
+
+    function hapusTransaksi(txId) {
+      if (!confirm('Hapus transaksi ini dari rekap?')) return;
+      transactions = transactions.filter(t => t.id !== txId);
+      localStorage.setItem(KEY_TRANSACTIONS, JSON.stringify(transactions));
+      renderRekap();
+    }
+
+    function bagikanRekapWA() {
+      let sumTotal = 0;
+      let count = 0;
+      transactions.forEach(t => {
+        if (!t.isBon || t.bonStatus === 'lunas') {
+          sumTotal += (t.total || 0);
+          count++;
+        }
+      });
+
+      const todayStr = new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
+      const msg = `*LAPORAN REKAP PEMASUKAN LAPAKQU*
+----------------------------------------
+Usaha: *${profile.namaUsaha}*
+Pengelola: *${profile.namaPemilik}*
+Tanggal Laporan: ${todayStr}
+----------------------------------------
+• Jumlah Transaksi Lunas: ${count} sewa
+• Piutang/Bon Belum Lunas: ${bonList.length} orang
+----------------------------------------
+*TOTAL PEMASUKAN BERSIH: Rp ${sumTotal.toLocaleString('id-ID')}*
+----------------------------------------
+_Laporan otomatis sistem LapakQu (Sewa Properti Akar Rumput Offline-First)_`;
+
+      window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+    }
+
+    function konfirmasiHapusSemuaData() {
+      if (confirm('PERINGATAN: Apakah Anda yakin ingin mengosongkan riwayat transaksi sewa? (Unit katalog tidak dihapus)')) {
+        transactions = [];
+        bonList = [];
+        localStorage.removeItem(KEY_TRANSACTIONS);
+        localStorage.removeItem(KEY_BON);
+        renderRekap();
+        renderBonList();
+        alert('Data transaksi dan bon berhasil dibersihkan.');
+      }
+    }
+
+    // -------------------------------------------------------------
+    // 4. MENU KATALOG: KELOLA UNIT SEWA PROPERTI
+    // -------------------------------------------------------------
+    function renderCatalog() {
+      const container = document.getElementById('katalogListContainer');
+      if (!container) return;
+
+      if (catalog.length === 0) {
+        container.innerHTML = `
+          <div style="padding: 24px 16px; text-align: center; color: var(--text-dim);">
+            Belum ada unit properti terdaftar. Klik [+ TAMBAH UNIT] di atas.
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = catalog.map(u => {
+        const isTersedia = u.status === 'Tersedia';
+        const subcatInfo = SUBCATS[u.subcat] || SUBCATS.kios;
+
+        return `
+          <div class="underline-item">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px;">
+              <div>
+                <div style="font-size: 15px; font-weight: 900; color: #f8fafc;">${u.name}</div>
+                <div style="font-size: 12px; color: var(--text-muted); font-weight: 700;">
+                  <span class="tag-bold tag-subtle">${subcatInfo.shortName}</span> • ${u.periode}
+                </div>
+              </div>
+              <div style="text-align: right;">
+                <div style="font-size: 15px; font-weight: 900; color: #ffffff;">Rp ${u.tarif.toLocaleString('id-ID')}</div>
+                <span class="tag-bold ${isTersedia ? 'tag-green' : 'tag-yellow'}">${u.status}</span>
+              </div>
+            </div>
+            
+            ${u.desc ? `<div style="font-size: 11px; color: var(--text-dim); margin-bottom: 8px;">${u.desc}</div>` : ''}
+
+            <div style="display: flex; gap: 6px;">
+              <button class="btn-bold btn-bold-sm btn-bold-primary" style="flex: 2;" onclick="pakaiUnitKeKasir('${u.id}')">[PAKAI KE KASIR]</button>
+              <button class="btn-bold btn-bold-sm btn-bold-secondary" style="flex: 1;" onclick="toggleStatusUnit('${u.id}')">[GANTI STATUS]</button>
+              <button class="btn-bold btn-bold-sm btn-bold-danger" onclick="hapusUnitKatalog('${u.id}')">[HAPUS]</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function openAddUnitModal() {
+      document.getElementById('unitFormSubcat').value = activeSubcat;
+      document.getElementById('unitFormName').value = '';
+      document.getElementById('unitFormTarif').value = SUBCATS[activeSubcat].defaultTarif;
+      document.getElementById('unitFormDesc').value = '';
+      document.getElementById('modalAddUnit').classList.add('active');
+    }
+
+    function closeAddUnitModal() {
+      document.getElementById('modalAddUnit').classList.remove('active');
+    }
+
+    function simpanUnitKatalog() {
+      const name = document.getElementById('unitFormName').value.trim();
+      const subcat = document.getElementById('unitFormSubcat').value;
+      const tarif = parseInt(document.getElementById('unitFormTarif').value) || 0;
+      const periode = document.getElementById('unitFormPeriode').value;
+      const status = document.getElementById('unitFormStatus').value;
+      const desc = document.getElementById('unitFormDesc').value.trim();
+
+      if (!name) {
+        alert('Tulis nama unit properti!');
+        return;
+      }
+
+      catalog.unshift({
+        id: 'u-' + Date.now(),
+        name,
+        subcat,
+        tarif,
+        periode,
+        status,
+        desc
+      });
+
+      localStorage.setItem(KEY_CATALOG, JSON.stringify(catalog));
+      closeAddUnitModal();
+      renderCatalog();
+      updateUnitSelectOptions();
+      alert(`Unit ${name} berhasil disimpan ke Katalog!`);
+    }
+
+    function toggleStatusUnit(id) {
+      const unit = catalog.find(u => u.id === id);
+      if (!unit) return;
+      unit.status = unit.status === 'Tersedia' ? 'Terisi' : 'Tersedia';
+      localStorage.setItem(KEY_CATALOG, JSON.stringify(catalog));
+      renderCatalog();
+    }
+
+    function hapusUnitKatalog(id) {
+      if (!confirm('Hapus unit properti ini dari katalog?')) return;
+      catalog = catalog.filter(u => u.id !== id);
+      localStorage.setItem(KEY_CATALOG, JSON.stringify(catalog));
+      renderCatalog();
+      updateUnitSelectOptions();
+    }
+
+    function pakaiUnitKeKasir(id) {
+      const unit = catalog.find(u => u.id === id);
+      if (!unit) return;
+
+      // Switch to that subcat
+      switchSubcat(unit.subcat);
+      navTo('Kasir');
+
+      document.getElementById('kasirNamaUnit').value = unit.name;
+      if (unit.subcat === 'kios') document.getElementById('kiosTarif').value = unit.tarif;
+      if (unit.subcat === 'kost') document.getElementById('kostTarif').value = unit.tarif;
+      if (unit.subcat === 'garasi') {
+        document.getElementById('garasiTarif').value = unit.tarif;
+        document.getElementById('garasiSlotNo').value = unit.name;
+      }
+      if (unit.subcat === 'gedung') document.getElementById('gedungTotalTarif').value = unit.tarif;
+
+      hitungTotalLapak();
+    }
+
+    // -------------------------------------------------------------
+    // 5. PENGATURAN: SIMPAN PROFIL & RECEIPT CONFIG
+    // -------------------------------------------------------------
+    function simpanProfil() {
+      profile.namaUsaha = document.getElementById('cfgNamaUsaha').value.trim() || 'LapakQu Properti Warga RT 04';
+      profile.namaPemilik = document.getElementById('cfgNamaPemilik').value.trim();
+      profile.alamat = document.getElementById('cfgAlamat').value.trim();
+      profile.noWa = document.getElementById('cfgNoWa').value.trim();
+      profile.rekening = document.getElementById('cfgRekening').value.trim();
+
+      receiptConfig.header = document.getElementById('receiptHeaderInput').value.trim();
+      receiptConfig.footer = document.getElementById('receiptFooterInput').value.trim();
+
+      localStorage.setItem(KEY_PROFILE, JSON.stringify(profile));
+      localStorage.setItem(KEY_RECEIPT_CONFIG, JSON.stringify(receiptConfig));
+
+      updateReceiptPreview();
+      alert('Profil usaha dan konfigurasi struk berhasil disimpan!');
+    }
+
+    // Auto Run on DOM Ready
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>

@@ -33,6 +33,7 @@ interface RoleSwitcherModalProps {
   onSwitchToTransportasiQu?: () => void;
   onSwitchToPelayananQu?: () => void;
   onSwitchToProyekQu?: () => void;
+  onSwitchToLapakQu?: () => void;
   onOpenArsitektur: () => void;
 }
 
@@ -49,6 +50,7 @@ export const RoleSwitcherModal: React.FC<RoleSwitcherModalProps> = ({
   onSwitchToTransportasiQu,
   onSwitchToPelayananQu,
   onSwitchToProyekQu,
+  onSwitchToLapakQu,
   onOpenArsitektur,
 }) => {
   if (!isOpen) return null;
@@ -336,6 +338,20 @@ export const RoleSwitcherModal: React.FC<RoleSwitcherModalProps> = ({
                 >
                   <HardHat className="w-4 h-4 text-amber-400 shrink-0" />
                   <span className="truncate">ProyekQu</span>
+                </button>
+              )}
+
+              {onSwitchToLapakQu && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    onClose();
+                    onSwitchToLapakQu();
+                  }}
+                  className="p-2.5 rounded-xl bg-[#556B2F]/40 hover:bg-[#556B2F]/60 text-emerald-300 font-bold border border-[#556B2F] flex items-center gap-2 shadow-xs transition-transform active:scale-95 cursor-pointer"
+                >
+                  <Building2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <span className="truncate">LapakQu</span>
                 </button>
               )}
             </div>

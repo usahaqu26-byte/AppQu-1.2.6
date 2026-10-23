@@ -355,14 +355,14 @@ export interface LocalProduct {
 export interface LocalBusiness {
   id: string;
   name: string;
-  category: 'kuliner' | 'jasa' | 'sembako' | 'laundry' | 'kerajinan' | 'otomotif' | 'kesehatan';
+  category: 'kuliner' | 'jasa' | 'sembako' | 'laundry' | 'kerajinan' | 'otomotif' | 'kesehatan' | 'properti';
   ownerName: string;
   blockNumber: string;
   phone: string;
   description: string;
   rating: number;
   isPosActive?: boolean;
-  posModuleKey?: 'baksoqu' | 'bengkelqu' | 'klinikqu' | 'ritelqu' | 'kulinerqu' | 'transportasiqu' | 'pelayananqu' | 'proyekqu';
+  posModuleKey?: 'baksoqu' | 'bengkelqu' | 'klinikqu' | 'ritelqu' | 'kulinerqu' | 'transportasiqu' | 'pelayananqu' | 'proyekqu' | 'lapakqu';
   businessMode?: BusinessMode;
   osmTag?: string; // Tag auto-detect OSM (e.g. amenity=restaurant, shop=convenience)
   badge?: string;

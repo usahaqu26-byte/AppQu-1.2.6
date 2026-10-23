@@ -33,6 +33,7 @@ import { KulinerQuView } from './components/kuliner/KulinerQuView';
 import { TransportasiQuView } from './components/transportasi/TransportasiQuView';
 import { PelayananQuView } from './components/pelayanan/PelayananQuView';
 import { ProyekQuView } from './components/proyek/ProyekQuView';
+import { LapakQuView } from './components/lapak/LapakQuView';
 
 import {
   TableItem,
@@ -67,10 +68,10 @@ import { Sparkles } from 'lucide-react';
 
 export default function App() {
   // ====================================================
-  // MASTER APPLICATION MODE: 'appqu' | 'baksoqu' | 'bengkelqu' | 'klinikqu' | 'ritelqu' | 'kulinerqu' | 'transportasiqu' | 'pelayananqu' | 'proyekqu'
+  // MASTER APPLICATION MODE: 'appqu' | 'baksoqu' | 'bengkelqu' | 'klinikqu' | 'ritelqu' | 'kulinerqu' | 'transportasiqu' | 'pelayananqu' | 'proyekqu' | 'lapakqu'
   // ====================================================
   const [appMode, setAppMode] = useState<
-    'appqu' | 'baksoqu' | 'bengkelqu' | 'klinikqu' | 'ritelqu' | 'kulinerqu' | 'transportasiqu' | 'pelayananqu' | 'proyekqu'
+    'appqu' | 'baksoqu' | 'bengkelqu' | 'klinikqu' | 'ritelqu' | 'kulinerqu' | 'transportasiqu' | 'pelayananqu' | 'proyekqu' | 'lapakqu'
   >('appqu');
 
   // AppQu Active Module (With AreaQu, ChatQu, and Setting)
@@ -311,6 +312,12 @@ export default function App() {
   const handleSwitchToProyekQu = () => {
     setAppMode('proyekqu');
     showNotification('Beralih ke UsahaQu - Proyek: Estimator & RAB Borongan');
+  };
+
+  // Switch to LapakQu (Sewa Lapak & Properti Warga)
+  const handleSwitchToLapakQu = () => {
+    setAppMode('lapakqu');
+    showNotification('Beralih ke LapakQu: Sewa Lapak & Properti Warga (5 Sub-Kategori)');
   };
 
   // Return to AppQu Ecosystem
@@ -606,6 +613,10 @@ export default function App() {
           ? 'KulinerQu'
           : appMode === 'transportasiqu'
           ? 'TransportasiQu'
+          : appMode === 'proyekqu'
+          ? 'ProyekQu'
+          : appMode === 'lapakqu'
+          ? 'LapakQu'
           : 'PelayananQu'
       }
     >
@@ -731,6 +742,7 @@ export default function App() {
                 onSwitchToTransportasiQu={handleSwitchToTransportasiQu}
                 onSwitchToPelayananQu={handleSwitchToPelayananQu}
                 onSwitchToProyekQu={handleSwitchToProyekQu}
+                onSwitchToLapakQu={handleSwitchToLapakQu}
                 onOpenAreaQu={() => setActiveAppQuModule('area')}
                 onOpenChat={(threadId) => {
                   setSelectedChatThreadId(threadId || null);
@@ -899,6 +911,7 @@ export default function App() {
             onSwitchToTransportasiQu={handleSwitchToTransportasiQu}
             onSwitchToPelayananQu={handleSwitchToPelayananQu}
             onSwitchToProyekQu={handleSwitchToProyekQu}
+            onSwitchToLapakQu={handleSwitchToLapakQu}
             onOpenArsitektur={() => setActiveAppQuModule('arsitektur')}
           />
         </div>
@@ -1181,6 +1194,17 @@ export default function App() {
           onBackToAppQu={handleReturnToAppQu}
           onSwitchToRitelQu={handleSwitchToRitelQu}
           onSwitchToPelayananQu={handleSwitchToPelayananQu}
+          showNotification={showNotification}
+        />
+      )}
+
+      {/* ========================================================= */}
+      {/* 10. LAPAKQU (SEWA LAPAK & PROPERTI WARGA)                 */}
+      {/* ========================================================= */}
+      {appMode === 'lapakqu' && (
+        <LapakQuView
+          currentUser={currentUser}
+          onBackToAppQu={handleReturnToAppQu}
           showNotification={showNotification}
         />
       )}

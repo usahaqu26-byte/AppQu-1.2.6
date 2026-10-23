@@ -25,6 +25,7 @@ import {
   Truck,
   Scissors,
   HardHat,
+  Building,
 } from 'lucide-react';
 import { LocalBusiness, UserProfile, LocalProduct, BusinessMode } from '../../types';
 
@@ -39,6 +40,7 @@ interface UsahaQuViewProps {
   onSwitchToTransportasiQu?: () => void;
   onSwitchToPelayananQu?: () => void;
   onSwitchToProyekQu?: () => void;
+  onSwitchToLapakQu?: () => void;
   onOpenAreaQu?: () => void;
   onOpenChat?: (threadId?: string) => void;
   onUpdateBusinesses: (businesses: LocalBusiness[]) => void;
@@ -56,6 +58,7 @@ export const UsahaQuView: React.FC<UsahaQuViewProps> = ({
   onSwitchToTransportasiQu,
   onSwitchToPelayananQu,
   onSwitchToProyekQu,
+  onSwitchToLapakQu,
   onOpenAreaQu,
   onOpenChat,
   onUpdateBusinesses,
@@ -136,7 +139,7 @@ export const UsahaQuView: React.FC<UsahaQuViewProps> = ({
             <h2 className="text-base font-black tracking-tight text-stone-900">UsahaQu</h2>
           </div>
           <span className="text-xs bg-stone-100 text-stone-700 font-extrabold px-2.5 py-0.5 rounded-full border border-stone-200">
-            8 Unit Usaha
+            9 Unit Usaha
           </span>
         </div>
 
@@ -144,10 +147,20 @@ export const UsahaQuView: React.FC<UsahaQuViewProps> = ({
         <div className="divide-y divide-stone-200/90 border-y border-stone-200/90 bg-transparent">
           {[
             {
+              id: 'lapakqu',
+              name: 'LapakQu (Sewa Properti)',
+              tagline: '5 Sub-Kategori: Kios, Kost, Garasi, Gedung Acara & Tenda Event',
+              badge: 'Baru • Sewa Properti',
+              icon: Building,
+              bg: 'bg-[#556B2F]',
+              textBadge: 'bg-emerald-100 text-emerald-950 border-emerald-400',
+              onClick: onSwitchToLapakQu,
+            },
+            {
               id: 'proyekqu',
               name: 'UsahaQu - Proyek',
               tagline: '7 Kategori Borongan: Besi, Kayu, Aluminium, Sipil, Bor & EO',
-              badge: 'Baru • RAB & Termin',
+              badge: 'RAB & Termin',
               icon: HardHat,
               bg: 'bg-stone-900',
               textBadge: 'bg-amber-100 text-stone-900 border-amber-400',
@@ -157,7 +170,7 @@ export const UsahaQuView: React.FC<UsahaQuViewProps> = ({
               id: 'pelayananqu',
               name: 'PelayananQu',
               tagline: '6 Sub-Kategori Usaha Layanan Jasa Akar Rumput',
-              badge: 'Baru • JasaQu',
+              badge: 'JasaQu',
               icon: Scissors,
               bg: 'bg-orange-600',
               textBadge: 'bg-orange-50 text-orange-800 border-orange-300',
@@ -259,6 +272,40 @@ export const UsahaQuView: React.FC<UsahaQuViewProps> = ({
             );
           })}
         </div>
+
+        {/* Highlight Banner Khusus: LapakQu */}
+        {onSwitchToLapakQu && (
+          <div className="pt-2">
+            <div className="p-3 bg-gradient-to-r from-[#556B2F] via-[#3d4f20] to-[#2d3b16] rounded-2xl text-white shadow-xs flex items-center justify-between gap-3 border border-emerald-500/30">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <div className="w-9 h-9 rounded-xl bg-white/20 backdrop-blur-xs flex items-center justify-center shrink-0">
+                  <Building className="w-5 h-5 text-white" />
+                </div>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <span className="text-[9px] font-black uppercase tracking-wider bg-black/35 px-2 py-0.5 rounded-md text-emerald-200">
+                      SEWA PROPERTI
+                    </span>
+                    <span className="text-xs font-black truncate">LapakQu (5 Sub-Kategori)</span>
+                  </div>
+                  <p className="text-[11px] text-emerald-100 font-medium truncate mt-0.5">
+                    Kios, Kost, Garasi Parkir, Gedung Acara & Tenda Event
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-1.5 shrink-0">
+                <button
+                  type="button"
+                  onClick={onSwitchToLapakQu}
+                  className="px-3 py-1.5 bg-white hover:bg-emerald-50 text-emerald-950 rounded-xl text-xs font-black flex items-center gap-1 shadow-sm active:scale-95 transition-all cursor-pointer"
+                >
+                  <span>Buka</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Highlight Banner Khusus: PelayananQu */}
         {onSwitchToPelayananQu && (
