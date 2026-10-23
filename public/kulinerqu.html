@@ -1,0 +1,2033 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>KulinerQu - POS Offline-First</title>
+  <style>
+    /* ============================================================
+       HIGH CONTRAST OUTDOOR DARK THEME (NEON ACCENTS & BOLD TYPO)
+       ============================================================ */
+    :root {
+      --bg-dark: #0a0a0a;
+      --bg-surface: #121212;
+      --bg-surface-elevated: #1a1a1a;
+      --neon-green: #22c55e;
+      --neon-green-glow: #10b981;
+      --neon-yellow: #facc15;
+      --neon-yellow-bright: #ffe600;
+      --neon-orange: #fb923c;
+      --neon-red: #ef4444;
+      --neon-cyan: #06b6d4;
+      --border-thin: #27272a;
+      --border-subtle: #1f1f23;
+      --text-main: #ffffff;
+      --text-muted: #a1a1aa;
+      --text-dim: #71717a;
+      --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    input, textarea, select {
+      user-select: text;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: var(--font-family);
+      line-height: 1.35;
+      padding-bottom: 84px;
+      padding-top: env(safe-area-inset-top, 0px);
+      min-height: 100vh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Minimalist list without box/card, just thin dividing lines */
+    .list-minimal {
+      border-top: 1px solid var(--border-thin);
+    }
+    .list-minimal-item {
+      border-bottom: 1px solid var(--border-thin);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: background-color 0.15s ease;
+    }
+    .list-minimal-item:active {
+      background-color: var(--bg-surface-elevated);
+    }
+
+    /* Typography Hierarchy */
+    .text-huge-bold {
+      font-size: 26px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+    }
+    .text-lg-bold {
+      font-size: 18px;
+      font-weight: 800;
+    }
+    .text-md-bold {
+      font-size: 15px;
+      font-weight: 700;
+    }
+    .text-sm-bold {
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    /* Neon Text & Badges */
+    .text-neon-green { color: var(--neon-green); }
+    .text-neon-yellow { color: var(--neon-yellow); }
+    .text-neon-cyan { color: var(--neon-cyan); }
+    .text-neon-orange { color: var(--neon-orange); }
+
+    .badge-subcat {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 900;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      letter-spacing: 0.5px;
+    }
+    .badge-kios { background: rgba(6, 182, 212, 0.2); color: var(--neon-cyan); border: 1px solid rgba(6, 182, 212, 0.4); }
+    .badge-mangkal { background: rgba(250, 204, 21, 0.2); color: var(--neon-yellow); border: 1px solid rgba(250, 204, 21, 0.4); }
+    .badge-keliling { background: rgba(34, 197, 94, 0.2); color: var(--neon-green); border: 1px solid rgba(34, 197, 94, 0.4); }
+
+    /* Top Sticky App Header */
+    .header-bar {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      background: rgba(10, 10, 10, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border-thin);
+      padding: 10px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .brand-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 19px;
+      font-weight: 900;
+      color: #fff;
+    }
+    .brand-title span.accent {
+      color: var(--neon-yellow);
+    }
+
+    /* Realtime Countdown Sisa Porsi (Keliling & Mangkal) */
+    .countdown-banner {
+      background: #141414;
+      border-radius: 10px;
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border: 1px solid var(--border-thin);
+    }
+    .progress-bar-bg {
+      height: 6px;
+      background: #27272a;
+      border-radius: 9999px;
+      width: 100%;
+      margin-top: 4px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--neon-yellow), var(--neon-green));
+      border-radius: 9999px;
+      transition: width 0.3s ease;
+    }
+
+    /* Sub-Kategori Switcher Bar */
+    .subcat-switcher {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding: 8px 16px;
+      background: #0d0d0d;
+      border-bottom: 1px solid var(--border-thin);
+    }
+    .subcat-btn {
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 800;
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid var(--border-thin);
+      cursor: pointer;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .subcat-btn.active {
+      background: var(--text-main);
+      color: #000;
+      border-color: #fff;
+    }
+
+    /* Operational Mode: KIOS (Open Bill / Hold Orders) */
+    .kios-bar {
+      padding: 10px 16px;
+      background: #141414;
+      border-bottom: 1px solid var(--border-thin);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .order-toggle-btn {
+      flex: 1;
+      padding: 10px;
+      text-align: center;
+      font-weight: 900;
+      font-size: 13px;
+      border-radius: 8px;
+      border: 1px solid var(--border-thin);
+      background: #18181b;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+    .order-toggle-btn.active {
+      background: var(--neon-cyan);
+      color: #000;
+      border-color: var(--neon-cyan);
+    }
+
+    /* Quick Preset Grid (Mangkal / Gerobak) */
+    .preset-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      padding: 12px 16px;
+    }
+    .preset-card {
+      background: #141414;
+      border: 1px solid var(--border-thin);
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 6px;
+      cursor: pointer;
+      position: relative;
+      transition: transform 0.08s ease, border-color 0.15s ease;
+    }
+    .preset-card:active {
+      transform: scale(0.97);
+      border-color: var(--neon-yellow);
+    }
+    .preset-card .price {
+      font-size: 17px;
+      font-weight: 900;
+      color: var(--neon-yellow);
+    }
+
+    /* Quick Cash Row */
+    .quick-cash-row {
+      display: flex;
+      gap: 6px;
+      padding: 8px 16px;
+      overflow-x: auto;
+    }
+    .cash-pill {
+      flex: 1;
+      min-width: 62px;
+      padding: 10px 4px;
+      text-align: center;
+      background: #18181b;
+      border: 1px solid var(--border-thin);
+      color: #fff;
+      font-weight: 900;
+      font-size: 13px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .cash-pill.pas {
+      background: #27272a;
+      color: var(--neon-yellow);
+      border-color: var(--neon-yellow);
+    }
+    .cash-pill:active {
+      background: var(--neon-yellow);
+      color: #000;
+    }
+
+    /* 3 Action Buttons: CASH, QRIS, CATAT BON */
+    .action-trio {
+      display: grid;
+      grid-template-columns: 1.3fr 1fr 1fr;
+      gap: 8px;
+      padding: 12px 16px;
+      background: #0d0d0d;
+      border-top: 1px solid var(--border-thin);
+    }
+    .btn-action-big {
+      border: none;
+      border-radius: 12px;
+      padding: 14px 6px;
+      font-size: 15px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      transition: transform 0.08s ease;
+    }
+    .btn-action-big:active {
+      transform: scale(0.96);
+    }
+    .btn-cash {
+      background: var(--neon-green);
+      color: #052e16;
+    }
+    .btn-qris {
+      background: #0ea5e9;
+      color: #082f49;
+    }
+    .btn-bon {
+      background: #ef4444;
+      color: #450a0a;
+    }
+
+    /* Voice Command Simulated & Speech API */
+    .voice-banner {
+      background: #141414;
+      border: 1px dashed var(--neon-green);
+      border-radius: 12px;
+      margin: 10px 16px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .mic-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--neon-green);
+      color: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      cursor: pointer;
+      shrink: 0;
+    }
+    .mic-btn.listening {
+      animation: pulse-ring 1.2s infinite;
+      background: var(--neon-red);
+      color: #fff;
+    }
+    @keyframes pulse-ring {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+      70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    }
+
+    /* Floating Bottom Nav (5 Menus) */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 72px;
+      background: rgba(10, 10, 10, 0.98);
+      border-top: 1px solid var(--border-thin);
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      z-index: 50;
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    .nav-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+      height: 100%;
+      transition: color 0.15s ease;
+    }
+    .nav-item.active {
+      color: var(--neon-yellow);
+    }
+    .nav-item svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    /* Modal / Bottom Sheets */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .modal-backdrop.open {
+      display: flex;
+    }
+    .modal-content {
+      background: var(--bg-surface);
+      border-top: 1px solid var(--border-thin);
+      border-radius: 20px 20px 0 0;
+      width: 100%;
+      max-width: 600px;
+      max-height: 85vh;
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      animation: slide-up 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes slide-up {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
+    /* Common Form Elements */
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .form-label {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .form-input {
+      background: #18181b;
+      border: 1px solid var(--border-thin);
+      border-radius: 10px;
+      padding: 12px 14px;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 700;
+      outline: none;
+    }
+    .form-input:focus {
+      border-color: var(--neon-yellow);
+    }
+
+    /* Kitchen Slip Print Style */
+    .kitchen-slip {
+      background: #fff;
+      color: #000;
+      padding: 16px;
+      border-radius: 8px;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+    .kitchen-slip hr {
+      border: none;
+      border-top: 1px dashed #000;
+      margin: 8px 0;
+    }
+
+    /* Hide unused views */
+    .view-container {
+      display: none;
+    }
+    .view-container.active {
+      display: block;
+    }
+
+    /* Utility */
+    .gap-sm { gap: 6px; }
+    .gap-md { gap: 12px; }
+    .flex-row { display: flex; align-items: center; }
+    .flex-between { display: flex; align-items: center; justify-content: space-between; }
+    .w-full { width: 100%; }
+    .btn-full {
+      width: 100%;
+      padding: 14px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 900;
+      border: none;
+      cursor: pointer;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+       TOP HEADER & ACTIVE STATUS
+       ============================================================ -->
+  <header class="header-bar">
+    <div class="header-top">
+      <div class="brand-title">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-neon-yellow"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line></svg>
+        <span>Kuliner<span class="accent">Qu</span></span>
+      </div>
+      <div id="subcatBadge" class="badge-subcat badge-mangkal">
+        Mangkal / Gerobak
+      </div>
+    </div>
+
+    <!-- Sisa Porsi Bawaan (Realtime Countdown) -->
+    <div class="countdown-banner" id="portionCountdownBanner">
+      <div style="flex: 1;">
+        <div class="flex-between">
+          <span style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Stok Berangkat (Hari Ini)</span>
+          <span id="portionCountText" style="font-size: 14px; font-weight: 900; color: var(--neon-yellow);">80 / 80 Porsi</span>
+        </div>
+        <div class="progress-bar-bg">
+          <div id="portionProgressBar" class="progress-bar-fill" style="width: 100%;"></div>
+        </div>
+      </div>
+      <button onclick="openPortionModal()" style="margin-left: 12px; background: #27272a; border: none; color: #fff; font-size: 11px; font-weight: 800; padding: 6px 10px; border-radius: 6px; cursor: pointer;">
+        Atur
+      </button>
+    </div>
+  </header>
+
+  <!-- ============================================================
+       SUB-KATEGORI SELECTOR BAR (1-TAP SWITCH)
+       ============================================================ -->
+  <div class="subcat-switcher">
+    <button class="subcat-btn" id="btnSubcatKios" onclick="switchSubCategory('kios_ruko')">
+      🏢 Kios / Ruko / Depot
+    </button>
+    <button class="subcat-btn active" id="btnSubcatMangkal" onclick="switchSubCategory('mangkal_gerobak')">
+      🛒 Mangkal / Gerobak
+    </button>
+    <button class="subcat-btn" id="btnSubcatKeliling" onclick="switchSubCategory('keliling_asongan')">
+      🛵 Keliling / Asongan
+    </button>
+  </div>
+
+  <!-- ============================================================
+       1. VIEW: KASIR / KALKULATOR UTAMA
+       ============================================================ -->
+  <main id="viewKasir" class="view-container active">
+    
+    <!-- KIOS SPECIFIC: Open Bill / Hold Orders & Dine-In Toggle -->
+    <div id="kiosBarContainer" class="kios-bar" style="display: none;">
+      <div style="display: flex; gap: 8px; flex: 1;">
+        <button id="toggleDineIn" class="order-toggle-btn active" onclick="setOrderType('dine_in')">
+          🍽️ Makan di Tempat
+        </button>
+        <button id="toggleBungkus" class="order-toggle-btn" onclick="setOrderType('bungkus')">
+          🥡 Bungkus
+        </button>
+      </div>
+      <button onclick="openHoldOrdersModal()" style="background: #27272a; border: 1px solid var(--border-thin); color: var(--neon-cyan); font-weight: 900; font-size: 12px; padding: 10px 12px; border-radius: 8px; cursor: pointer; white-space: nowrap;">
+        ⏳ Hold Bill (<span id="holdCountBadge">0</span>)
+      </button>
+    </div>
+
+    <!-- KELILING SPECIFIC: Voice Command Banner -->
+    <div id="kelilingVoiceBanner" class="voice-banner" style="display: none;">
+      <div style="flex: 1;">
+        <div style="font-size: 13px; font-weight: 900; color: #fff;">🎤 Pesan Tanpa Sentuh (Hands-Free)</div>
+        <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Tekan mic & bicara (misal: "Dua porsi bungkus, satu es teh")</div>
+      </div>
+      <button id="micBtn" class="mic-btn" onclick="toggleVoiceRecognition()" title="Rekam Suara">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="22"></line></svg>
+      </button>
+    </div>
+
+    <!-- VOICE SIMULATION QUICK CHIPS (Ideal for mobile without mic permissions) -->
+    <div id="voiceSimChips" style="display: none; padding: 0 16px 8px 16px; gap: 6px; overflow-x: auto;">
+      <button onclick="simulateVoice('2 Porsi Biasa Bungkus, 1 Es Teh')" style="font-size: 11px; font-weight: 700; background: #18181b; border: 1px solid var(--border-thin); color: #ddd; padding: 5px 10px; border-radius: 9999px; white-space: nowrap; cursor: pointer;">
+        🗣️ "2 Porsi Bungkus + 1 Es Teh"
+      </button>
+      <button onclick="simulateVoice('1 Porsi Jumbo Meja 2')" style="font-size: 11px; font-weight: 700; background: #18181b; border: 1px solid var(--border-thin); color: #ddd; padding: 5px 10px; border-radius: 9999px; white-space: nowrap; cursor: pointer;">
+        🗣️ "1 Porsi Jumbo Meja 2"
+      </button>
+      <button onclick="simulateVoice('3 Porsi Biasa Pedas Bayar Pas')" style="font-size: 11px; font-weight: 700; background: #18181b; border: 1px solid var(--border-thin); color: #ddd; padding: 5px 10px; border-radius: 9999px; white-space: nowrap; cursor: pointer;">
+        🗣️ "3 Porsi Biasa Pedas"
+      </button>
+    </div>
+
+    <!-- PRESET PORSI CEPAT GRID -->
+    <div style="padding: 10px 16px 4px 16px;" class="flex-between">
+      <span class="text-form-label" style="font-size: 12px; font-weight: 900; color: var(--text-muted); text-transform: uppercase;">
+        ⚡ Porsi Cepat (1-Tap Masuk Tagihan)
+      </span>
+      <span style="font-size: 11px; color: var(--neon-yellow); font-weight: 800;">High Velocity</span>
+    </div>
+
+    <div class="preset-grid" id="presetItemsContainer">
+      <!-- Populated via JS -->
+    </div>
+
+    <!-- ACTIVE ORDER / CART (Minimalist List Line by Line) -->
+    <div style="padding: 12px 16px 6px 16px;" class="flex-between">
+      <span style="font-size: 13px; font-weight: 900; color: #fff; text-transform: uppercase;">
+        🧾 Rincian Pesanan (<span id="cartCountBadge">0</span>)
+      </span>
+      <button onclick="clearCurrentCart()" style="background: none; border: none; color: var(--neon-red); font-size: 12px; font-weight: 800; cursor: pointer;">
+        Hapus Semua
+      </button>
+    </div>
+
+    <div class="list-minimal" id="cartListContainer">
+      <div style="padding: 24px 16px; text-align: center; color: var(--text-dim); font-size: 14px; font-weight: 700;">
+        Belum ada item pesanan. Ketuk preset di atas atau pakai suara.
+      </div>
+    </div>
+
+    <!-- REQUEST DAPUR / CATATAN RINGKAS (Kios & Mangkal) -->
+    <div style="padding: 12px 16px; border-top: 1px solid var(--border-thin);">
+      <div class="form-label" style="margin-bottom: 6px;">Catatan Dapur / Selera:</div>
+      <div style="display: flex; gap: 6px; overflow-x: auto; margin-bottom: 8px;">
+        <button onclick="appendNote('Pedas')" style="background: #18181b; border: 1px solid var(--border-thin); color: #fff; font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 6px; cursor: pointer;">🔥 Pedas</button>
+        <button onclick="appendNote('Gak Pedas')" style="background: #18181b; border: 1px solid var(--border-thin); color: #fff; font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 6px; cursor: pointer;">🌱 Gak Pedas</button>
+        <button onclick="appendNote('Tanpa Bawang')" style="background: #18181b; border: 1px solid var(--border-thin); color: #fff; font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 6px; cursor: pointer;">🧅 Tanpa Bawang</button>
+        <button onclick="appendNote('Kuah Pisah')" style="background: #18181b; border: 1px solid var(--border-thin); color: #fff; font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 6px; cursor: pointer;">🥣 Kuah Pisah</button>
+        <button onclick="appendNote('Banyakin Sayur')" style="background: #18181b; border: 1px solid var(--border-thin); color: #fff; font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 6px; cursor: pointer;">🥬 Banyak Sayur</button>
+      </div>
+      <input type="text" id="orderKitchenNoteInput" class="form-input w-full" placeholder="Ketik catatan khusus (misal: Meja 3 / Pedas Sedang)...">
+    </div>
+
+    <!-- TOTAL & NOMINAL UANG PAS -->
+    <div style="background: #121212; border-top: 2px solid var(--border-thin); padding: 14px 16px;">
+      <div class="flex-between">
+        <span style="font-size: 14px; font-weight: 900; color: var(--text-muted); text-transform: uppercase;">Total Tagihan</span>
+        <span id="grandTotalDisplay" class="text-huge-bold text-neon-yellow">Rp 0</span>
+      </div>
+
+      <!-- Quick Cash Nominal Buttons -->
+      <div style="margin-top: 10px;">
+        <div style="font-size: 11px; font-weight: 800; color: var(--text-dim); text-transform: uppercase; margin-bottom: 6px;">
+          Uang Tunai Diterima (Kembalian Otomatis):
+        </div>
+        <div class="quick-cash-row">
+          <button class="cash-pill pas" onclick="setQuickCash('pas')">UANG PAS</button>
+          <button class="cash-pill" onclick="setQuickCash(10000)">10k</button>
+          <button class="cash-pill" onclick="setQuickCash(20000)">20k</button>
+          <button class="cash-pill" onclick="setQuickCash(50000)">50k</button>
+          <button class="cash-pill" onclick="setQuickCash(100000)">100k</button>
+        </div>
+      </div>
+
+      <!-- Kembalian Display -->
+      <div class="flex-between" style="margin-top: 10px; padding: 10px 12px; background: #000; border-radius: 8px; border: 1px solid var(--border-thin);">
+        <span style="font-size: 13px; font-weight: 800; color: var(--text-muted);">Uang Tunai / Kembali:</span>
+        <div style="text-align: right;">
+          <div id="cashGivenDisplay" style="font-size: 12px; color: #fff; font-weight: 700;">Diterima: Rp 0</div>
+          <div id="cashChangeDisplay" style="font-size: 15px; font-weight: 900; color: var(--neon-green);">Kembali: Rp 0</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 DIRECT ACTION BUTTONS (CASH, QRIS, CATAT BON) -->
+    <div class="action-trio">
+      <button class="btn-action-big btn-cash" onclick="executeCheckout('cash')">
+        <span>💵 CASH</span>
+        <span style="font-size: 10px; font-weight: 800; opacity: 0.85;">BAYAR TUNAI</span>
+      </button>
+      <button class="btn-action-big btn-qris" onclick="executeCheckout('qris')">
+        <span>📱 QRIS</span>
+        <span style="font-size: 10px; font-weight: 800; opacity: 0.85;">DIGITAL</span>
+      </button>
+      <button class="btn-action-big btn-bon" onclick="openBonModal()">
+        <span>📝 CATAT BON</span>
+        <span style="font-size: 10px; font-weight: 800; opacity: 0.85;">UTANG WARGA</span>
+      </button>
+    </div>
+
+    <!-- KIOS ONLY: SIMPAN PESANAN SEMENTARA (HOLD / OPEN BILL) -->
+    <div id="kiosHoldActions" style="display: none; padding: 0 16px 14px 16px; background: #0d0d0d;">
+      <button onclick="executeHoldOrder()" class="btn-full" style="background: #27272a; color: var(--neon-cyan); border: 1px dashed var(--neon-cyan);">
+        ⏳ Simpan Pesanan Sementara (Hold Order Meja)
+      </button>
+    </div>
+
+  </main>
+
+  <!-- ============================================================
+       2. VIEW: CATATAN BON / PIUTANG WARGA
+       ============================================================ -->
+  <main id="viewBon" class="view-container">
+    <div style="padding: 16px; border-bottom: 1px solid var(--border-thin);" class="flex-between">
+      <div>
+        <div class="text-lg-bold text-neon-red">📝 Buku Catatan Bon / Piutang</div>
+        <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">Tracking utang warga RT 04 & penagihan WhatsApp</div>
+      </div>
+      <div id="totalBonBadge" style="background: rgba(239, 68, 68, 0.15); color: var(--neon-red); border: 1px solid rgba(239, 68, 68, 0.3); padding: 4px 10px; border-radius: 9999px; font-size: 12px; font-weight: 900;">
+        Rp 0
+      </div>
+    </div>
+
+    <!-- Minimalist List of Bon -->
+    <div class="list-minimal" id="bonListContainer">
+      <!-- Populated via JS -->
+    </div>
+  </main>
+
+  <!-- ============================================================
+       3. VIEW: RIWAYAT & REKAP TRANSAKSI
+       ============================================================ -->
+  <main id="viewRekap" class="view-container">
+    <div style="padding: 16px; border-bottom: 1px solid var(--border-thin);">
+      <div class="text-lg-bold">📊 Rasio Arus Kas (Cash Flow)</div>
+      <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">Rekapitulasi penjualan tunai laci, QRIS & bon</div>
+    </div>
+
+    <!-- CASH FLOW RATIO 3 CARDS -->
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 14px 16px;">
+      <div style="background: #141414; border: 1px solid var(--border-thin); border-radius: 10px; padding: 12px 10px; text-align: center;">
+        <div style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Tunai Laci</div>
+        <div id="rekapCashTotal" class="text-md-bold text-neon-green" style="margin-top: 4px;">Rp 0</div>
+      </div>
+      <div style="background: #141414; border: 1px solid var(--border-thin); border-radius: 10px; padding: 12px 10px; text-align: center;">
+        <div style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Digital QRIS</div>
+        <div id="rekapQrisTotal" class="text-md-bold text-neon-cyan" style="margin-top: 4px;">Rp 0</div>
+      </div>
+      <div style="background: #141414; border: 1px solid var(--border-thin); border-radius: 10px; padding: 12px 10px; text-align: center;">
+        <div style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Belum Lunas</div>
+        <div id="rekapBonTotal" class="text-md-bold text-neon-red" style="margin-top: 4px;">Rp 0</div>
+      </div>
+    </div>
+
+    <div style="padding: 0 16px 12px 16px;" class="flex-between">
+      <span class="text-sm-bold" style="color: var(--text-muted); text-transform: uppercase;">Riwayat Transaksi Terakhir</span>
+      <span id="rekapOrderCount" style="font-size: 12px; font-weight: 800; color: #fff;">0 Transaksi</span>
+    </div>
+
+    <!-- Minimalist List of History -->
+    <div class="list-minimal" id="historyListContainer">
+      <!-- Populated via JS -->
+    </div>
+  </main>
+
+  <!-- ============================================================
+       4. VIEW: STOK & KATALOG MENU
+       ============================================================ -->
+  <main id="viewStok" class="view-container">
+    <div style="padding: 16px; border-bottom: 1px solid var(--border-thin);" class="flex-between">
+      <div>
+        <div class="text-lg-bold">🍲 Stok & Preset Porsi</div>
+        <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">Kelola harga jual, modal (COGS) & margin untung</div>
+      </div>
+      <button onclick="openAddMenuModal()" style="background: var(--neon-yellow); color: #000; border: none; padding: 8px 12px; border-radius: 8px; font-size: 12px; font-weight: 900; cursor: pointer;">
+        + Tambah Menu
+      </button>
+    </div>
+
+    <div class="list-minimal" id="stockListContainer">
+      <!-- Populated via JS -->
+    </div>
+  </main>
+
+  <!-- ============================================================
+       5. VIEW: PENGATURAN & SYNC DATA
+       ============================================================ -->
+  <main id="viewSetting" class="view-container">
+    <div style="padding: 16px; border-bottom: 1px solid var(--border-thin);">
+      <div class="text-lg-bold">⚙️ Pengaturan KulinerQu</div>
+      <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">Identitas lapak, sub-kategori & ekspor/impor JSON</div>
+    </div>
+
+    <div class="list-minimal">
+      <div class="list-minimal-item" onclick="openProfileEditModal()">
+        <div>
+          <div class="text-md-bold" id="settingStoreNameDisplay">KulinerQu Gerobak Berkah RT 04</div>
+          <div style="font-size: 12px; color: var(--text-muted);" id="settingOwnerDisplay">Pemilik: Pak Joko / Bu Siti</div>
+        </div>
+        <span style="color: var(--neon-yellow); font-size: 12px; font-weight: 800;">Ubah ›</span>
+      </div>
+
+      <div class="list-minimal-item" onclick="openPortionModal()">
+        <div>
+          <div class="text-md-bold">Target Porsi Bawaan Harian</div>
+          <div style="font-size: 12px; color: var(--text-muted);">Reset otomatis tiap hari atau atur kuota berangkat</div>
+        </div>
+        <span id="settingPortionTargetDisplay" style="color: var(--neon-green); font-size: 13px; font-weight: 900;">80 Porsi ›</span>
+      </div>
+
+      <div class="list-minimal-item" onclick="exportDataJSON()">
+        <div>
+          <div class="text-md-bold">💾 Backup Data (Ekspor JSON)</div>
+          <div style="font-size: 12px; color: var(--text-muted);">Simpan rekaman transaksi & menu ke file HP</div>
+        </div>
+        <span style="font-size: 12px; font-weight: 800; color: var(--neon-cyan);">Unduh ›</span>
+      </div>
+
+      <div class="list-minimal-item" onclick="document.getElementById('importFileInput').click()">
+        <div>
+          <div class="text-md-bold">📥 Restore Data (Impor JSON)</div>
+          <div style="font-size: 12px; color: var(--text-muted);">Pulihkan data dari cadangan offline</div>
+        </div>
+        <span style="font-size: 12px; font-weight: 800; color: var(--neon-orange);">Pilih File ›</span>
+      </div>
+
+      <div class="list-minimal-item" onclick="resetToSampleData()">
+        <div>
+          <div class="text-md-bold" style="color: var(--neon-red);">🔄 Reset ke Data Sampel</div>
+          <div style="font-size: 12px; color: var(--text-muted);">Kembalikan ke preset awal (demo data)</div>
+        </div>
+        <span style="color: var(--neon-red); font-size: 12px; font-weight: 800;">Reset ›</span>
+      </div>
+    </div>
+
+    <input type="file" id="importFileInput" style="display: none;" accept=".json" onchange="importDataJSON(event)">
+
+    <div style="padding: 24px 16px; text-align: center; color: var(--text-dim); font-size: 11px;">
+      KulinerQu Offline-First Single-File Engine v1.0<br>
+      Didesain khusus pedagang Kios, Mangkal & Keliling Warga RT 04
+    </div>
+  </main>
+
+  <!-- ============================================================
+       FLOATING BOTTOM NAVIGATION BAR (5 MENUS)
+       ============================================================ -->
+  <nav class="bottom-nav">
+    <button class="nav-item active" onclick="switchNavTab('kasir')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"></rect><line x1="8" y1="6" x2="16" y2="6"></line><line x1="16" y1="14" x2="16" y2="14.01"></line><line x1="12" y1="14" x2="12" y2="14.01"></line><line x1="8" y1="14" x2="8" y2="14.01"></line><line x1="16" y1="18" x2="16" y2="18.01"></line><line x1="12" y1="18" x2="12" y2="18.01"></line><line x1="8" y1="18" x2="8" y2="18.01"></line></svg>
+      <span>Kasir</span>
+    </button>
+    <button class="nav-item" onclick="switchNavTab('bon')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+      <span>Catat Bon</span>
+    </button>
+    <button class="nav-item" onclick="switchNavTab('rekap')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"></line><line x1="18" y1="20" x2="18" y2="4"></line><line x1="6" y1="20" x2="6" y2="16"></line></svg>
+      <span>Rekap</span>
+    </button>
+    <button class="nav-item" onclick="switchNavTab('stok')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+      <span>Stok</span>
+    </button>
+    <button class="nav-item" onclick="switchNavTab('setting')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+      <span>Opsi</span>
+    </button>
+  </nav>
+
+  <!-- ============================================================
+       MODALS
+       ============================================================ -->
+  
+  <!-- MODAL: CATAT BON WARGA -->
+  <div id="bonModal" class="modal-backdrop">
+    <div class="modal-content">
+      <div class="flex-between">
+        <span class="text-lg-bold text-neon-red">📝 Catat Piutang / Bon Warga</span>
+        <button onclick="closeModal('bonModal')" style="background: none; border: none; color: #fff; font-size: 20px; cursor: pointer;">✕</button>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Nama Warga / Pemesan:</label>
+        <input type="text" id="bonCustNameInput" class="form-input" placeholder="Misal: Bu Siti (Blok B4)">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Nomor WhatsApp (Untuk Reminder):</label>
+        <input type="tel" id="bonCustPhoneInput" class="form-input" placeholder="Misal: 0812xxxxxxxx">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Alamat / Blok Rumah:</label>
+        <input type="text" id="bonCustAddressInput" class="form-input" placeholder="Misal: Blok B4 No 12">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Jatuh Tempo:</label>
+        <input type="date" id="bonDueDateInput" class="form-input">
+      </div>
+
+      <div style="background: #000; padding: 12px; border-radius: 8px; border: 1px solid var(--border-thin);" class="flex-between">
+        <span style="font-size: 13px; font-weight: 800; color: var(--text-muted);">Total Utang:</span>
+        <span id="bonTotalDisplay" class="text-lg-bold text-neon-red">Rp 0</span>
+      </div>
+
+      <button class="btn-full" style="background: var(--neon-red); color: #fff;" onclick="saveBonOrder()">
+        Simpan Catatan Bon
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL: HOLD ORDERS / OPEN BILLS LIST (KIOS) -->
+  <div id="holdOrdersModal" class="modal-backdrop">
+    <div class="modal-content">
+      <div class="flex-between">
+        <span class="text-lg-bold text-neon-cyan">⏳ Daftar Pesanan Ditahan (Open Bill)</span>
+        <button onclick="closeModal('holdOrdersModal')" style="background: none; border: none; color: #fff; font-size: 20px; cursor: pointer;">✕</button>
+      </div>
+
+      <div id="holdListContainer" class="list-minimal" style="border-top: none;">
+        <!-- Populated via JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: KITCHEN SLIP / NOTA DAPUR PREVIEW -->
+  <div id="kitchenSlipModal" class="modal-backdrop">
+    <div class="modal-content">
+      <div class="flex-between">
+        <span class="text-lg-bold">🍳 Nota Dapur / Antrean</span>
+        <button onclick="closeModal('kitchenSlipModal')" style="background: none; border: none; color: #fff; font-size: 20px; cursor: pointer;">✕</button>
+      </div>
+
+      <div id="kitchenSlipContent" class="kitchen-slip">
+        <!-- Rendered slip -->
+      </div>
+
+      <div style="display: flex; gap: 8px;">
+        <button class="btn-full" style="background: #27272a; color: #fff;" onclick="window.print()">
+          🖨️ Cetak / Simpan
+        </button>
+        <button class="btn-full" style="background: var(--neon-green); color: #000;" onclick="closeModal('kitchenSlipModal')">
+          Selesai
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: ATUR TARGET PORSI HARIAN -->
+  <div id="portionModal" class="modal-backdrop">
+    <div class="modal-content">
+      <div class="flex-between">
+        <span class="text-lg-bold text-neon-yellow">🎯 Target Porsi Berangkat Harian</span>
+        <button onclick="closeModal('portionModal')" style="background: none; border: none; color: #fff; font-size: 20px; cursor: pointer;">✕</button>
+      </div>
+      <div style="font-size: 13px; color: var(--text-muted);">
+        Atur jumlah porsi awal yang dibawa saat berangkat keliling/mangkal. Setiap kali ada penjualan porsi biasa/jumbo/setengah, angka akan berkurang otomatis.
+      </div>
+      <div class="form-group">
+        <label class="form-label">Total Porsi Awal:</label>
+        <input type="number" id="portionTargetInput" class="form-input" min="1" max="1000">
+      </div>
+      <button class="btn-full" style="background: var(--neon-yellow); color: #000;" onclick="savePortionTarget()">
+        Simpan Target Porsi
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL: TAMBAH / EDIT MENU -->
+  <div id="menuModal" class="modal-backdrop">
+    <div class="modal-content">
+      <div class="flex-between">
+        <span class="text-lg-bold" id="menuModalTitle">+ Tambah Item Menu</span>
+        <button onclick="closeModal('menuModal')" style="background: none; border: none; color: #fff; font-size: 20px; cursor: pointer;">✕</button>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Nama Menu / Porsi:</label>
+        <input type="text" id="menuNameInput" class="form-input" placeholder="Misal: Porsi Dobel Tetelan">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Kategori:</label>
+        <select id="menuCatInput" class="form-input">
+          <option value="porsi_preset">Porsi Utama (Preset Cepat)</option>
+          <option value="makanan">Makanan Lain</option>
+          <option value="minuman">Minuman</option>
+          <option value="ekstra">Ekstra / Toping</option>
+        </select>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+        <div class="form-group">
+          <label class="form-label">Harga Jual (Rp):</label>
+          <input type="number" id="menuPriceInput" class="form-input" placeholder="15000">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Harga Modal/COGS (Rp):</label>
+          <input type="number" id="menuCogsInput" class="form-input" placeholder="8000">
+        </div>
+      </div>
+      <button class="btn-full" style="background: var(--neon-green); color: #000;" onclick="saveNewMenuItem()">
+        Simpan Menu
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL: PROFIL USAHA -->
+  <div id="profileModal" class="modal-backdrop">
+    <div class="modal-content">
+      <div class="flex-between">
+        <span class="text-lg-bold text-neon-yellow">🏪 Ubah Profil Lapak</span>
+        <button onclick="closeModal('profileModal')" style="background: none; border: none; color: #fff; font-size: 20px; cursor: pointer;">✕</button>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Nama Usaha / Gerobak:</label>
+        <input type="text" id="profStoreNameInput" class="form-input">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Nama Pemilik:</label>
+        <input type="text" id="profOwnerNameInput" class="form-input">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Nomor HP/WA:</label>
+        <input type="tel" id="profPhoneInput" class="form-input">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Lokasi Mangkal / Kios:</label>
+        <input type="text" id="profAddressInput" class="form-input">
+      </div>
+      <button class="btn-full" style="background: var(--neon-yellow); color: #000;" onclick="saveStoreProfile()">
+        Simpan Profil
+      </button>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       JAVASCRIPT LOGIC (100% OFFLINE, ZERO EXTERNAL DEPENDENCY)
+       ============================================================ -->
+  <script>
+    const STORAGE_KEY = 'kulinerqu_data_v1';
+
+    // State Variables
+    let appData = {
+      profile: {
+        storeName: 'KulinerQu Gerobak Berkah RT 04',
+        ownerName: 'Pak Joko / Bu Siti',
+        phone: '081298765432',
+        address: 'Pojok Pos Ronda RT 04 / RW 01',
+        subCategory: 'mangkal_gerobak',
+        dailyPortionTarget: 80,
+        dailyPortionRemaining: 80,
+        lastResetDate: new Date().toISOString().split('T')[0]
+      },
+      menu: [
+        { id: 'k-1', name: 'Porsi Biasa', category: 'porsi_preset', portionType: 'biasa', price: 15000, cogs: 8000, isPreset: true, icon: '🍜' },
+        { id: 'k-2', name: 'Porsi Jumbo', category: 'porsi_preset', portionType: 'jumbo', price: 22000, cogs: 11000, isPreset: true, icon: '🍲' },
+        { id: 'k-3', name: 'Setengah Porsi', category: 'porsi_preset', portionType: 'setengah', price: 10000, cogs: 5000, isPreset: true, icon: '🥣' },
+        { id: 'k-4', name: '+ Toping Telur', category: 'ekstra', portionType: 'toping', price: 4000, cogs: 2000, isPreset: true, icon: '🥚' },
+        { id: 'k-5', name: '+ Pangsit Goreng', category: 'ekstra', portionType: 'toping', price: 2000, cogs: 1000, isPreset: true, icon: '🥟' },
+        { id: 'k-6', name: 'Es Teh Manis', category: 'minuman', portionType: 'custom', price: 4000, cogs: 1200, isPreset: true, icon: '🧊' },
+        { id: 'k-7', name: 'Es Jeruk Peras', category: 'minuman', portionType: 'custom', price: 6000, cogs: 2500, isPreset: true, icon: '🍊' },
+      ],
+      orders: [],
+      openBills: []
+    };
+
+    let currentCart = [];
+    let currentOrderType = 'dine_in';
+    let cashGiven = 0;
+    let isVoiceListening = false;
+    let speechRecognitionInstance = null;
+
+    // Load Data from LocalStorage
+    function initData() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed.profile) appData.profile = parsed.profile;
+          if (parsed.menu && parsed.menu.length) appData.menu = parsed.menu;
+          if (parsed.orders) appData.orders = parsed.orders;
+          if (parsed.openBills) appData.openBills = parsed.openBills;
+
+          // Daily countdown reset check
+          const today = new Date().toISOString().split('T')[0];
+          if (appData.profile.lastResetDate !== today) {
+            appData.profile.lastResetDate = today;
+            appData.profile.dailyPortionRemaining = appData.profile.dailyPortionTarget || 80;
+            saveData();
+          }
+        } else {
+          saveData();
+        }
+      } catch (e) {
+        console.error('Failed to load storage', e);
+      }
+
+      applySubCategoryUI();
+      renderPresets();
+      renderCart();
+      updatePortionDisplay();
+      initSpeechRecognition();
+    }
+
+    function saveData() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+      } catch (e) {
+        console.error('Failed to save storage', e);
+      }
+    }
+
+    // Audio Feedback Generator via Web Audio API (Zero-Dependency)
+    function playBeep(type) {
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = new AudioCtx();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        if (type === 'tap') {
+          osc.frequency.setValueAtTime(800, ctx.currentTime);
+          gain.gain.setValueAtTime(0.08, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.06);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.07);
+        } else if (type === 'cash') {
+          osc.frequency.setValueAtTime(587.33, ctx.currentTime);
+          osc.frequency.setValueAtTime(880, ctx.currentTime + 0.08);
+          gain.gain.setValueAtTime(0.12, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.26);
+        } else if (type === 'bon') {
+          osc.frequency.setValueAtTime(350, ctx.currentTime);
+          gain.gain.setValueAtTime(0.1, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.18);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.19);
+        }
+      } catch (e) {}
+    }
+
+    // Sub-Category Switcher Logic
+    function switchSubCategory(cat) {
+      playBeep('tap');
+      appData.profile.subCategory = cat;
+      saveData();
+      applySubCategoryUI();
+    }
+
+    function applySubCategoryUI() {
+      const cat = appData.profile.subCategory;
+      const btnKios = document.getElementById('btnSubcatKios');
+      const btnMangkal = document.getElementById('btnSubcatMangkal');
+      const btnKeliling = document.getElementById('btnSubcatKeliling');
+      const badge = document.getElementById('subcatBadge');
+
+      btnKios.classList.remove('active');
+      btnMangkal.classList.remove('active');
+      btnKeliling.classList.remove('active');
+
+      const kiosBar = document.getElementById('kiosBarContainer');
+      const kiosHold = document.getElementById('kiosHoldActions');
+      const kelilingVoice = document.getElementById('kelilingVoiceBanner');
+      const voiceChips = document.getElementById('voiceSimChips');
+
+      if (cat === 'kios_ruko') {
+        btnKios.classList.add('active');
+        badge.className = 'badge-subcat badge-kios';
+        badge.innerText = '🏢 Kios / Ruko / Depot';
+        kiosBar.style.display = 'flex';
+        kiosHold.style.display = 'block';
+        kelilingVoice.style.display = 'none';
+        voiceChips.style.display = 'none';
+      } else if (cat === 'mangkal_gerobak') {
+        btnMangkal.classList.add('active');
+        badge.className = 'badge-subcat badge-mangkal';
+        badge.innerText = '🛒 Mangkal / Gerobak';
+        kiosBar.style.display = 'none';
+        kiosHold.style.display = 'none';
+        kelilingVoice.style.display = 'none';
+        voiceChips.style.display = 'none';
+      } else {
+        btnKeliling.classList.add('active');
+        badge.className = 'badge-subcat badge-keliling';
+        badge.innerText = '🛵 Keliling / Asongan';
+        kiosBar.style.display = 'none';
+        kiosHold.style.display = 'none';
+        kelilingVoice.style.display = 'flex';
+        voiceChips.style.display = 'flex';
+      }
+
+      document.getElementById('holdCountBadge').innerText = appData.openBills.length;
+    }
+
+    // Render Preset Grid
+    function renderPresets() {
+      const container = document.getElementById('presetItemsContainer');
+      container.innerHTML = '';
+      appData.menu.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'preset-card';
+        div.onclick = () => addPresetToCart(item.id);
+        div.innerHTML = `
+          <div>
+            <div style="font-size: 20px;">${item.icon || '🍲'}</div>
+            <div style="font-size: 14px; font-weight: 800; color: #fff; margin-top: 4px;">${item.name}</div>
+          </div>
+          <div class="flex-between">
+            <span class="price">Rp ${formatRupiah(item.price)}</span>
+            <span style="font-size: 11px; background: #27272a; padding: 2px 6px; border-radius: 4px; font-weight: 800;">+ Tap</span>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    // Cart Management
+    function addPresetToCart(menuId) {
+      playBeep('tap');
+      const item = appData.menu.find(m => m.id === menuId);
+      if (!item) return;
+
+      const existing = currentCart.find(c => c.menuId === menuId);
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        currentCart.push({
+          id: 'c-' + Date.now() + Math.random(),
+          menuId: item.id,
+          name: item.name,
+          portionType: item.portionType || 'custom',
+          price: item.price,
+          cogs: item.cogs || Math.round(item.price * 0.5),
+          qty: 1
+        });
+      }
+      renderCart();
+    }
+
+    function updateCartQty(cartId, delta) {
+      playBeep('tap');
+      const idx = currentCart.findIndex(c => c.id === cartId);
+      if (idx >= 0) {
+        currentCart[idx].qty += delta;
+        if (currentCart[idx].qty <= 0) {
+          currentCart.splice(idx, 1);
+        }
+      }
+      renderCart();
+    }
+
+    function clearCurrentCart() {
+      playBeep('tap');
+      currentCart = [];
+      cashGiven = 0;
+      document.getElementById('orderKitchenNoteInput').value = '';
+      renderCart();
+    }
+
+    function renderCart() {
+      const container = document.getElementById('cartListContainer');
+      const countBadge = document.getElementById('cartCountBadge');
+      const grandTotalDisplay = document.getElementById('grandTotalDisplay');
+
+      const totalItems = currentCart.reduce((sum, it) => sum + it.qty, 0);
+      countBadge.innerText = totalItems;
+
+      if (currentCart.length === 0) {
+        container.innerHTML = `
+          <div style="padding: 24px 16px; text-align: center; color: var(--text-dim); font-size: 14px; font-weight: 700;">
+            Belum ada item pesanan. Ketuk tombol porsi di atas.
+          </div>
+        `;
+        grandTotalDisplay.innerText = 'Rp 0';
+        updateCashDisplay(0);
+        return;
+      }
+
+      container.innerHTML = '';
+      let grandTotal = 0;
+
+      currentCart.forEach(item => {
+        const itemTotal = item.price * item.qty;
+        grandTotal += itemTotal;
+
+        const row = document.createElement('div');
+        row.className = 'list-minimal-item';
+        row.innerHTML = `
+          <div style="flex: 1;">
+            <div class="text-md-bold" style="color: #fff;">${item.name}</div>
+            <div style="font-size: 12px; color: var(--text-muted); font-weight: 700;">
+              Rp ${formatRupiah(item.price)} × ${item.qty} = <span class="text-neon-yellow">Rp ${formatRupiah(itemTotal)}</span>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <button onclick="updateCartQty('${item.id}', -1)" style="width: 32px; height: 32px; background: #27272a; border: 1px solid var(--border-thin); color: #fff; font-size: 16px; font-weight: 900; border-radius: 6px; cursor: pointer;">-</button>
+            <span style="font-size: 15px; font-weight: 900; min-width: 20px; text-align: center;">${item.qty}</span>
+            <button onclick="updateCartQty('${item.id}', 1)" style="width: 32px; height: 32px; background: #27272a; border: 1px solid var(--border-thin); color: #fff; font-size: 16px; font-weight: 900; border-radius: 6px; cursor: pointer;">+</button>
+          </div>
+        `;
+        container.appendChild(row);
+      });
+
+      grandTotalDisplay.innerText = 'Rp ' + formatRupiah(grandTotal);
+      updateCashDisplay(grandTotal);
+    }
+
+    function setOrderType(type) {
+      playBeep('tap');
+      currentOrderType = type;
+      document.getElementById('toggleDineIn').classList.toggle('active', type === 'dine_in');
+      document.getElementById('toggleBungkus').classList.toggle('active', type === 'bungkus');
+    }
+
+    function appendNote(note) {
+      playBeep('tap');
+      const input = document.getElementById('orderKitchenNoteInput');
+      if (input.value) {
+        input.value += ', ' + note;
+      } else {
+        input.value = note;
+      }
+    }
+
+    // Quick Cash Handling
+    function setQuickCash(val) {
+      playBeep('tap');
+      const total = getCartTotal();
+      if (val === 'pas') {
+        cashGiven = total;
+      } else {
+        cashGiven = Number(val);
+      }
+      updateCashDisplay(total);
+    }
+
+    function updateCashDisplay(total) {
+      const givenEl = document.getElementById('cashGivenDisplay');
+      const changeEl = document.getElementById('cashChangeDisplay');
+
+      givenEl.innerText = 'Diterima: Rp ' + formatRupiah(cashGiven);
+      const change = cashGiven > total ? cashGiven - total : 0;
+      changeEl.innerText = 'Kembali: Rp ' + formatRupiah(change);
+    }
+
+    function getCartTotal() {
+      return currentCart.reduce((sum, it) => sum + (it.price * it.qty), 0);
+    }
+
+    function getCartCogs() {
+      return currentCart.reduce((sum, it) => sum + (it.cogs * it.qty), 0);
+    }
+
+    // Direct 1-Tap Execution Checkout: CASH, QRIS
+    function executeCheckout(method) {
+      const total = getCartTotal();
+      if (total <= 0) {
+        alert('Keranjang masih kosong!');
+        return;
+      }
+
+      playBeep('cash');
+      const orderNumber = 'KUL-' + (appData.orders.length + 1).toString().padStart(3, '0');
+      const kitchenNote = document.getElementById('orderKitchenNoteInput').value;
+
+      const order = {
+        id: 'ord-' + Date.now(),
+        orderNumber: orderNumber,
+        subCategory: appData.profile.subCategory,
+        orderType: currentOrderType,
+        tableOrCustomer: currentOrderType === 'dine_in' ? 'Makan di Tempat' : 'Bungkus',
+        items: [...currentCart],
+        subtotal: total,
+        discount: 0,
+        total: total,
+        cogsTotal: getCartCogs(),
+        paymentMethod: method,
+        cashGiven: method === 'cash' ? (cashGiven >= total ? cashGiven : total) : total,
+        change: method === 'cash' ? (cashGiven > total ? cashGiven - total : 0) : 0,
+        status: 'paid',
+        kitchenNotes: kitchenNote,
+        createdAt: new Date().toISOString(),
+        paidAt: new Date().toISOString()
+      };
+
+      appData.orders.unshift(order);
+
+      // Decrement portions
+      const portionsSold = currentCart
+        .filter(it => it.portionType === 'biasa' || it.portionType === 'jumbo' || it.portionType === 'setengah')
+        .reduce((sum, it) => sum + it.qty, 0);
+
+      if (portionsSold > 0) {
+        appData.profile.dailyPortionRemaining = Math.max(0, appData.profile.dailyPortionRemaining - portionsSold);
+      }
+
+      saveData();
+      updatePortionDisplay();
+
+      // Show Kitchen Slip for Kios/Mangkal
+      showKitchenSlip(order);
+      clearCurrentCart();
+    }
+
+    // KIOS: HOLD ORDER (Simpan Pesanan Sementara)
+    function executeHoldOrder() {
+      const total = getCartTotal();
+      if (total <= 0) {
+        alert('Keranjang masih kosong!');
+        return;
+      }
+
+      const label = prompt('Masukkan Nomor Meja atau Nama Pemesan untuk Hold Bill:', 'Meja ' + (appData.openBills.length + 1));
+      if (!label) return;
+
+      playBeep('tap');
+      const kitchenNote = document.getElementById('orderKitchenNoteInput').value;
+      const bill = {
+        id: 'hld-' + Date.now(),
+        orderNumber: 'HLD-' + (appData.openBills.length + 1),
+        subCategory: 'kios_ruko',
+        orderType: currentOrderType,
+        tableOrCustomer: label,
+        items: [...currentCart],
+        subtotal: total,
+        discount: 0,
+        total: total,
+        cogsTotal: getCartCogs(),
+        paymentMethod: 'cash',
+        status: 'open_bill',
+        kitchenNotes: kitchenNote,
+        createdAt: new Date().toISOString()
+      };
+
+      appData.openBills.unshift(bill);
+      saveData();
+      document.getElementById('holdCountBadge').innerText = appData.openBills.length;
+      clearCurrentCart();
+      alert(`Pesanan ${label} berhasil disimpan di Hold Bill.`);
+    }
+
+    function openHoldOrdersModal() {
+      const container = document.getElementById('holdListContainer');
+      container.innerHTML = '';
+
+      if (appData.openBills.length === 0) {
+        container.innerHTML = `
+          <div style="padding: 24px; text-align: center; color: var(--text-muted); font-size: 14px;">
+            Tidak ada pesanan yang sedang di-hold.
+          </div>
+        `;
+      } else {
+        appData.openBills.forEach(b => {
+          const itemSummary = b.items.map(it => `${it.qty}x ${it.name}`).join(', ');
+          const div = document.createElement('div');
+          div.className = 'list-minimal-item';
+          div.innerHTML = `
+            <div>
+              <div class="text-md-bold text-neon-cyan">${b.tableOrCustomer}</div>
+              <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">${itemSummary}</div>
+              <div style="font-size: 14px; font-weight: 900; color: var(--neon-yellow); margin-top: 4px;">Rp ${formatRupiah(b.total)}</div>
+            </div>
+            <div style="display: flex; gap: 6px;">
+              <button onclick="resumeHoldOrder('${b.id}')" style="background: var(--neon-cyan); color: #000; border: none; font-weight: 800; font-size: 12px; padding: 8px 12px; border-radius: 6px; cursor: pointer;">
+                Lanjutkan
+              </button>
+              <button onclick="deleteHoldOrder('${b.id}')" style="background: #27272a; color: var(--neon-red); border: none; font-weight: 800; font-size: 12px; padding: 8px 10px; border-radius: 6px; cursor: pointer;">
+                ✕
+              </button>
+            </div>
+          `;
+          container.appendChild(div);
+        });
+      }
+
+      openModal('holdOrdersModal');
+    }
+
+    function resumeHoldOrder(billId) {
+      const bill = appData.openBills.find(b => b.id === billId);
+      if (!bill) return;
+
+      currentCart = [...bill.items];
+      currentOrderType = bill.orderType;
+      document.getElementById('orderKitchenNoteInput').value = bill.kitchenNotes || bill.tableOrCustomer;
+      setOrderType(currentOrderType);
+      renderCart();
+
+      // Remove from open bills
+      appData.openBills = appData.openBills.filter(b => b.id !== billId);
+      saveData();
+      document.getElementById('holdCountBadge').innerText = appData.openBills.length;
+      closeModal('holdOrdersModal');
+    }
+
+    function deleteHoldOrder(billId) {
+      if (!confirm('Hapus hold order ini?')) return;
+      appData.openBills = appData.openBills.filter(b => b.id !== billId);
+      saveData();
+      document.getElementById('holdCountBadge').innerText = appData.openBills.length;
+      openHoldOrdersModal();
+    }
+
+    // CATAT BON / PIUTANG MODAL & EXECUTION
+    function openBonModal() {
+      const total = getCartTotal();
+      if (total <= 0) {
+        alert('Keranjang masih kosong!');
+        return;
+      }
+      playBeep('bon');
+      document.getElementById('bonTotalDisplay').innerText = 'Rp ' + formatRupiah(total);
+      const todayPlus7 = new Date(Date.now() + 86400000 * 7).toISOString().split('T')[0];
+      document.getElementById('bonDueDateInput').value = todayPlus7;
+      openModal('bonModal');
+    }
+
+    function saveBonOrder() {
+      const name = document.getElementById('bonCustNameInput').value.trim();
+      const phone = document.getElementById('bonCustPhoneInput').value.trim();
+      const address = document.getElementById('bonCustAddressInput').value.trim();
+      const dueDate = document.getElementById('bonDueDateInput').value;
+      const total = getCartTotal();
+
+      if (!name) {
+        alert('Harap isi nama warga pemutang!');
+        return;
+      }
+
+      playBeep('cash');
+      const orderNumber = 'BON-' + (appData.orders.length + 1).toString().padStart(3, '0');
+      const order = {
+        id: 'bon-' + Date.now(),
+        orderNumber: orderNumber,
+        subCategory: appData.profile.subCategory,
+        orderType: currentOrderType,
+        tableOrCustomer: name,
+        items: [...currentCart],
+        subtotal: total,
+        discount: 0,
+        total: total,
+        cogsTotal: getCartCogs(),
+        paymentMethod: 'bon',
+        status: 'bon_unpaid',
+        bonCustomerName: name,
+        bonCustomerPhone: phone,
+        bonCustomerAddress: address,
+        bonDueDate: dueDate,
+        bonPaidAmount: 0,
+        kitchenNotes: document.getElementById('orderKitchenNoteInput').value,
+        createdAt: new Date().toISOString()
+      };
+
+      appData.orders.unshift(order);
+      saveData();
+      closeModal('bonModal');
+      clearCurrentCart();
+      alert(`Catatan Bon ${name} berhasil disimpan! Anda bisa memantau dan mengingatkan via WhatsApp di menu 'Catat Bon'.`);
+      switchNavTab('bon');
+    }
+
+    // Settle Bon (Bayar Lunas / Cicil)
+    function settleBon(orderId) {
+      const order = appData.orders.find(o => o.id === orderId);
+      if (!order) return;
+
+      const remaining = order.total - (order.bonPaidAmount || 0);
+      const action = confirm(`Lunasi seluruh sisa bon Rp ${formatRupiah(remaining)} dari ${order.bonCustomerName}?`);
+      if (action) {
+        playBeep('cash');
+        order.status = 'paid';
+        order.bonPaidAmount = order.total;
+        order.paidAt = new Date().toISOString();
+        saveData();
+        renderBonList();
+        alert('Bon dinyatakan LUNAS!');
+      }
+    }
+
+    function sendWhatsAppReminder(orderId) {
+      const order = appData.orders.find(o => o.id === orderId);
+      if (!order || !order.bonCustomerPhone) {
+        alert('Nomor HP/WhatsApp tidak terdaftar pada bon ini.');
+        return;
+      }
+
+      const sisa = order.total - (order.bonPaidAmount || 0);
+      const itemDesc = order.items.map(it => `${it.qty}x ${it.name}`).join(', ');
+      let cleanPhone = order.bonCustomerPhone.replace(/[^0-9]/g, '');
+      if (cleanPhone.startsWith('0')) cleanPhone = '62' + cleanPhone.substring(1);
+
+      const msg = encodeURIComponent(
+        `Halo ${order.bonCustomerName}, salam hangat dari ${appData.profile.storeName}. 🙏\n\n` +
+        `Sekadar catatan ramah mengenai pesanan (${itemDesc}) dengan sisa tagihan sebesar *Rp ${formatRupiah(sisa)}* (Jatuh tempo: ${order.bonDueDate || '-'}).\n\n` +
+        `Bisa ditransfer melalui QRIS atau dititipkan saat kami lewat. Terima kasih banyak atas rezeki dan kerjasamanya! 😊`
+      );
+
+      window.open(`https://wa.me/${cleanPhone}?text=${msg}`, '_blank');
+    }
+
+    // KELILING: VOICE COMMAND (Simulasi & Web Speech Recognition)
+    function initSpeechRecognition() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) return;
+
+      speechRecognitionInstance = new SpeechRecognition();
+      speechRecognitionInstance.lang = 'id-ID';
+      speechRecognitionInstance.continuous = false;
+      speechRecognitionInstance.interimResults = false;
+
+      speechRecognitionInstance.onstart = () => {
+        isVoiceListening = true;
+        document.getElementById('micBtn').classList.add('listening');
+      };
+
+      speechRecognitionInstance.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        simulateVoice(transcript);
+      };
+
+      speechRecognitionInstance.onerror = () => {
+        stopVoiceRecognition();
+      };
+
+      speechRecognitionInstance.onend = () => {
+        stopVoiceRecognition();
+      };
+    }
+
+    function toggleVoiceRecognition() {
+      if (!speechRecognitionInstance) {
+        alert('Web Speech API belum didukung di browser ini. Silakan gunakan tombol simulasi suara di bawah.');
+        return;
+      }
+      if (isVoiceListening) {
+        speechRecognitionInstance.stop();
+      } else {
+        speechRecognitionInstance.start();
+      }
+    }
+
+    function stopVoiceRecognition() {
+      isVoiceListening = false;
+      document.getElementById('micBtn').classList.remove('listening');
+    }
+
+    function simulateVoice(text) {
+      playBeep('tap');
+      alert(`🎤 Suara terdeteksi: "${text}"\nMemproses pesanan otomatis ke keranjang...`);
+      const lower = text.toLowerCase();
+
+      // Check numbers
+      let qty = 1;
+      if (lower.includes('dua') || lower.includes('2')) qty = 2;
+      else if (lower.includes('tiga') || lower.includes('3')) qty = 3;
+      else if (lower.includes('empat') || lower.includes('4')) qty = 4;
+      else if (lower.includes('lima') || lower.includes('5')) qty = 5;
+
+      // Match item
+      if (lower.includes('jumbo')) {
+        const item = appData.menu.find(m => m.portionType === 'jumbo');
+        if (item) addCustomQty(item, qty);
+      } else if (lower.includes('setengah')) {
+        const item = appData.menu.find(m => m.portionType === 'setengah');
+        if (item) addCustomQty(item, qty);
+      } else {
+        const item = appData.menu.find(m => m.portionType === 'biasa');
+        if (item) addCustomQty(item, qty);
+      }
+
+      if (lower.includes('es teh') || lower.includes('teh')) {
+        const drink = appData.menu.find(m => m.name.toLowerCase().includes('es teh'));
+        if (drink) addCustomQty(drink, 1);
+      }
+
+      if (lower.includes('bungkus')) {
+        setOrderType('bungkus');
+      } else if (lower.includes('meja') || lower.includes('tempat')) {
+        setOrderType('dine_in');
+      }
+
+      if (lower.includes('pedas')) appendNote('Pedas');
+      if (lower.includes('tanpa bawang')) appendNote('Tanpa Bawang');
+    }
+
+    function addCustomQty(item, qty) {
+      const existing = currentCart.find(c => c.menuId === item.id);
+      if (existing) {
+        existing.qty += qty;
+      } else {
+        currentCart.push({
+          id: 'c-' + Date.now() + Math.random(),
+          menuId: item.id,
+          name: item.name,
+          portionType: item.portionType || 'custom',
+          price: item.price,
+          cogs: item.cogs,
+          qty: qty
+        });
+      }
+      renderCart();
+    }
+
+    // Countdown Sisa Porsi Update
+    function updatePortionDisplay() {
+      const rem = appData.profile.dailyPortionRemaining || 0;
+      const target = appData.profile.dailyPortionTarget || 80;
+      const pct = Math.max(0, Math.min(100, Math.round((rem / target) * 100)));
+
+      document.getElementById('portionCountText').innerText = `${rem} / ${target} Porsi`;
+      const pBar = document.getElementById('portionProgressBar');
+      pBar.style.width = pct + '%';
+
+      if (pct < 20) {
+        pBar.style.background = 'var(--neon-red)';
+      } else {
+        pBar.style.background = 'linear-gradient(90deg, var(--neon-yellow), var(--neon-green))';
+      }
+
+      document.getElementById('settingPortionTargetDisplay').innerText = target + ' Porsi ›';
+    }
+
+    function openPortionModal() {
+      document.getElementById('portionTargetInput').value = appData.profile.dailyPortionTarget || 80;
+      openModal('portionModal');
+    }
+
+    function savePortionTarget() {
+      const val = parseInt(document.getElementById('portionTargetInput').value);
+      if (val > 0) {
+        appData.profile.dailyPortionTarget = val;
+        appData.profile.dailyPortionRemaining = val;
+        saveData();
+        updatePortionDisplay();
+        closeModal('portionModal');
+        alert('Target kuota porsi harian berhasil diperbarui.');
+      }
+    }
+
+    // Kitchen Slip Modal
+    function showKitchenSlip(order) {
+      const container = document.getElementById('kitchenSlipContent');
+      const timeStr = new Date(order.createdAt).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+      
+      let itemsHtml = order.items.map(it => `
+        <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 15px;">
+          <span>${it.qty}x ${it.name}</span>
+          <span>Rp ${formatRupiah(it.price * it.qty)}</span>
+        </div>
+      `).join('');
+
+      container.innerHTML = `
+        <div style="text-align: center; font-weight: bold; font-size: 16px;">${appData.profile.storeName}</div>
+        <div style="text-align: center; font-size: 11px;">${appData.profile.address}</div>
+        <hr>
+        <div style="display: flex; justify-content: space-between;">
+          <span>No: ${order.orderNumber}</span>
+          <span>${timeStr}</span>
+        </div>
+        <div>Tipe: <b>${order.orderType === 'dine_in' ? 'MAKAN DI TEMPAT' : 'BUNGKUS / TAKEAWAY'}</b></div>
+        <div>Catatan: <b>${order.kitchenNotes || '-'}</b></div>
+        <hr>
+        ${itemsHtml}
+        <hr>
+        <div style="display: flex; justify-content: space-between; font-size: 16px; font-weight: 900;">
+          <span>TOTAL:</span>
+          <span>Rp ${formatRupiah(order.total)}</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 12px; margin-top: 4px;">
+          <span>Bayar (${order.paymentMethod.toUpperCase()}):</span>
+          <span>Rp ${formatRupiah(order.cashGiven || order.total)}</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 12px;">
+          <span>Kembalian:</span>
+          <span>Rp ${formatRupiah(order.change || 0)}</span>
+        </div>
+        <hr>
+        <div style="text-align: center; font-size: 11px;">Terima Kasih atas Kunjungan Anda!</div>
+      `;
+
+      openModal('kitchenSlipModal');
+    }
+
+    // Navigation Switcher (5 Menus)
+    function switchNavTab(tab) {
+      playBeep('tap');
+      const tabs = ['kasir', 'bon', 'rekap', 'stok', 'setting'];
+      tabs.forEach((t, idx) => {
+        const view = document.getElementById('view' + capitalize(t));
+        const btn = document.querySelectorAll('.nav-item')[idx];
+        if (t === tab) {
+          view.classList.add('active');
+          btn.classList.add('active');
+        } else {
+          view.classList.remove('active');
+          btn.classList.remove('active');
+        }
+      });
+
+      if (tab === 'bon') renderBonList();
+      else if (tab === 'rekap') renderRekapList();
+      else if (tab === 'stok') renderStockList();
+    }
+
+    // Render Bon List
+    function renderBonList() {
+      const container = document.getElementById('bonListContainer');
+      const bonOrders = appData.orders.filter(o => o.paymentMethod === 'bon' && o.status !== 'paid');
+      const totalUnpaid = bonOrders.reduce((sum, o) => sum + (o.total - (o.bonPaidAmount || 0)), 0);
+
+      document.getElementById('totalBonBadge').innerText = 'Total Bon: Rp ' + formatRupiah(totalUnpaid);
+
+      if (bonOrders.length === 0) {
+        container.innerHTML = `
+          <div style="padding: 32px 16px; text-align: center; color: var(--text-dim); font-size: 14px; font-weight: 700;">
+            🎉 Tidak ada catatan piutang/bon yang belum lunas. Semua beres!
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = '';
+      bonOrders.forEach(b => {
+        const sisa = b.total - (b.bonPaidAmount || 0);
+        const itemNames = b.items.map(it => `${it.qty}x ${it.name}`).join(', ');
+        const dateStr = new Date(b.createdAt).toLocaleDateString('id-ID');
+
+        const div = document.createElement('div');
+        div.className = 'list-minimal-item';
+        div.innerHTML = `
+          <div style="flex: 1;">
+            <div class="flex-between" style="margin-bottom: 2px;">
+              <span class="text-md-bold text-neon-red">${b.bonCustomerName}</span>
+              <span class="text-lg-bold text-neon-red">Rp ${formatRupiah(sisa)}</span>
+            </div>
+            <div style="font-size: 12px; color: var(--text-muted);">${itemNames}</div>
+            <div style="font-size: 11px; color: var(--text-dim); margin-top: 4px;">
+              ${b.bonCustomerAddress || 'Blok RT 04'} • Tgl: ${dateStr} • Jatuh Tempo: ${b.bonDueDate || '-'}
+            </div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px; margin-left: 14px;">
+            <button onclick="settleBon('${b.id}')" style="background: var(--neon-green); color: #000; border: none; font-size: 12px; font-weight: 900; padding: 7px 12px; border-radius: 6px; cursor: pointer; white-space: nowrap;">
+              ✓ Lunas
+            </button>
+            <button onclick="sendWhatsAppReminder('${b.id}')" style="background: #25D366; color: #fff; border: none; font-size: 11px; font-weight: 800; padding: 6px 10px; border-radius: 6px; cursor: pointer; white-space: nowrap;">
+              📲 WA
+            </button>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    // Render Rekap & Cash Flow
+    function renderRekapList() {
+      let cashTotal = 0;
+      let qrisTotal = 0;
+      let bonTotal = 0;
+
+      appData.orders.forEach(o => {
+        if (o.status === 'paid') {
+          if (o.paymentMethod === 'cash') cashTotal += o.total;
+          else if (o.paymentMethod === 'qris') qrisTotal += o.total;
+          else if (o.paymentMethod === 'bon') cashTotal += o.total;
+        } else if (o.paymentMethod === 'bon') {
+          bonTotal += (o.total - (o.bonPaidAmount || 0));
+          if (o.bonPaidAmount) cashTotal += o.bonPaidAmount;
+        }
+      });
+
+      document.getElementById('rekapCashTotal').innerText = 'Rp ' + formatRupiah(cashTotal);
+      document.getElementById('rekapQrisTotal').innerText = 'Rp ' + formatRupiah(qrisTotal);
+      document.getElementById('rekapBonTotal').innerText = 'Rp ' + formatRupiah(bonTotal);
+      document.getElementById('rekapOrderCount').innerText = `${appData.orders.length} Transaksi`;
+
+      const container = document.getElementById('historyListContainer');
+      if (appData.orders.length === 0) {
+        container.innerHTML = `
+          <div style="padding: 24px; text-align: center; color: var(--text-dim); font-size: 14px;">
+            Belum ada riwayat transaksi tersimpan.
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = '';
+      appData.orders.slice(0, 30).forEach(o => {
+        const timeStr = new Date(o.createdAt).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+        const isPaid = o.status === 'paid';
+        const div = document.createElement('div');
+        div.className = 'list-minimal-item';
+        div.innerHTML = `
+          <div>
+            <div class="text-md-bold">${o.orderNumber} • ${o.tableOrCustomer}</div>
+            <div style="font-size: 12px; color: var(--text-muted);">${o.items.map(it => `${it.qty}x ${it.name}`).join(', ')}</div>
+            <div style="font-size: 11px; color: var(--text-dim); margin-top: 2px;">${timeStr} • Metode: ${o.paymentMethod.toUpperCase()}</div>
+          </div>
+          <div style="text-align: right;">
+            <div class="text-lg-bold ${isPaid ? 'text-neon-green' : 'text-neon-red'}">Rp ${formatRupiah(o.total)}</div>
+            <span style="font-size: 11px; font-weight: 800; color: ${isPaid ? 'var(--neon-green)' : 'var(--neon-red)'};">${isPaid ? 'LUNAS' : 'BELUM LUNAS'}</span>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    // Render Stok List
+    function renderStockList() {
+      const container = document.getElementById('stockListContainer');
+      container.innerHTML = '';
+      appData.menu.forEach(item => {
+        const margin = item.price - (item.cogs || 0);
+        const marginPct = item.price > 0 ? Math.round((margin / item.price) * 100) : 0;
+        const div = document.createElement('div');
+        div.className = 'list-minimal-item';
+        div.innerHTML = `
+          <div>
+            <div class="text-md-bold">${item.icon || '🍲'} ${item.name}</div>
+            <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
+              Modal: Rp ${formatRupiah(item.cogs)} • Jual: <b class="text-neon-yellow">Rp ${formatRupiah(item.price)}</b>
+            </div>
+          </div>
+          <div style="text-align: right;">
+            <div style="font-size: 13px; font-weight: 900; color: var(--neon-green);">+Rp ${formatRupiah(margin)}</div>
+            <div style="font-size: 11px; color: var(--text-dim); font-weight: 800;">Margin: ${marginPct}%</div>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function openAddMenuModal() {
+      document.getElementById('menuNameInput').value = '';
+      document.getElementById('menuPriceInput').value = '';
+      document.getElementById('menuCogsInput').value = '';
+      openModal('menuModal');
+    }
+
+    function saveNewMenuItem() {
+      const name = document.getElementById('menuNameInput').value.trim();
+      const cat = document.getElementById('menuCatInput').value;
+      const price = parseInt(document.getElementById('menuPriceInput').value);
+      const cogs = parseInt(document.getElementById('menuCogsInput').value) || Math.round(price * 0.5);
+
+      if (!name || isNaN(price)) {
+        alert('Harap isi nama dan harga jual!');
+        return;
+      }
+
+      appData.menu.push({
+        id: 'k-' + Date.now(),
+        name: name,
+        category: cat,
+        portionType: cat === 'porsi_preset' ? 'custom' : undefined,
+        price: price,
+        cogs: cogs,
+        isPreset: cat === 'porsi_preset',
+        icon: cat === 'minuman' ? '🥤' : '🍜'
+      });
+
+      saveData();
+      renderPresets();
+      renderStockList();
+      closeModal('menuModal');
+      alert('Menu baru berhasil ditambahkan!');
+    }
+
+    // Profile Settings
+    function openProfileEditModal() {
+      document.getElementById('profStoreNameInput').value = appData.profile.storeName;
+      document.getElementById('profOwnerNameInput').value = appData.profile.ownerName;
+      document.getElementById('profPhoneInput').value = appData.profile.phone;
+      document.getElementById('profAddressInput').value = appData.profile.address;
+      openModal('profileModal');
+    }
+
+    function saveStoreProfile() {
+      appData.profile.storeName = document.getElementById('profStoreNameInput').value.trim();
+      appData.profile.ownerName = document.getElementById('profOwnerNameInput').value.trim();
+      appData.profile.phone = document.getElementById('profPhoneInput').value.trim();
+      appData.profile.address = document.getElementById('profAddressInput').value.trim();
+      saveData();
+      closeModal('profileModal');
+      document.getElementById('settingStoreNameDisplay').innerText = appData.profile.storeName;
+      document.getElementById('settingOwnerDisplay').innerText = 'Pemilik: ' + appData.profile.ownerName;
+      alert('Profil lapak berhasil diperbarui.');
+    }
+
+    // Backup & Restore JSON
+    function exportDataJSON() {
+      const jsonStr = JSON.stringify(appData, null, 2);
+      const blob = new Blob([jsonStr], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `kulinerqu_backup_${new Date().toISOString().split('T')[0]}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function importDataJSON(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const parsed = JSON.parse(e.target.result);
+          if (parsed.profile && parsed.menu) {
+            appData = parsed;
+            saveData();
+            initData();
+            alert('Data KulinerQu berhasil dipulihkan dari file backup!');
+          } else {
+            alert('Format file JSON tidak sesuai.');
+          }
+        } catch (err) {
+          alert('Gagal membaca file JSON: ' + err.message);
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function resetToSampleData() {
+      if (!confirm('Yakin ingin mereset seluruh data kembali ke setelan sampel awal?')) return;
+      localStorage.removeItem(STORAGE_KEY);
+      location.reload();
+    }
+
+    // Modal Helpers
+    function openModal(id) {
+      document.getElementById(id).classList.add('open');
+    }
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('open');
+    }
+
+    // Format Number Helper
+    function formatRupiah(num) {
+      if (!num) return '0';
+      return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    }
+    function capitalize(str) {
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
+    // Auto-run on load
+    window.addEventListener('DOMContentLoaded', initData);
+  </script>
+</body>
+</html>

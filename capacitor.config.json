@@ -1,0 +1,16 @@
+{
+  "appId": "com.baksoqu.pos",
+  "appName": "Bakso Qu 1.0",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "server": {
+    "androidScheme": "https",
+    "cleartext": true
+  },
+  "android": {
+    "allowMixedContent": true,
+    "captureInput": true,
+    "webContentsDebuggingEnabled": true,
+    "backgroundColor": "#064e3b"
+  }
+}

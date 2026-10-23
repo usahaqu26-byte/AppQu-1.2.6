@@ -1,0 +1,8 @@
+{
+  "name": "AppQu 1.2.5",
+  "description": "Solusi Cerdas Masa Kini",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

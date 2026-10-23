@@ -1,0 +1,2231 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>RitelQu - POS Eceran Akar Rumput 7 Sub-Kategori</title>
+  <style>
+    /* ============================================================
+       HIGH CONTRAST OUTDOOR DARK THEME (COLOR-CODED 7 SUB-CATEGORIES)
+       ============================================================ */
+    :root {
+      --bg-dark: #0a0a0a;
+      --bg-surface: #121212;
+      --bg-surface-elevated: #1a1a1a;
+      --border-thin: #27272a;
+      --border-subtle: #1f1f23;
+      --text-main: #ffffff;
+      --text-muted: #a1a1aa;
+      --text-dim: #71717a;
+      
+      /* 7 Sub-Kategori Color Scheme */
+      --color-sembako: #059669; /* Emerald Green */
+      --color-sembako-glow: #10b981;
+      --color-fashion: #dc2626; /* Crimson Red */
+      --color-fashion-glow: #e11d48;
+      --color-apotek: #0891b2; /* Cyan Blue */
+      --color-apotek-glow: #06b6d4;
+      --color-elektronik: #d97706; /* Amber Yellow */
+      --color-elektronik-glow: #f59e0b;
+      --color-furniture: #854d0e; /* Warm Brown */
+      --color-furniture-glow: #92400e;
+      --color-plastik: #ea580c; /* Warm Orange */
+      --color-plastik-glow: #f97316;
+      --color-atk: #4f46e5; /* Indigo Purple */
+      --color-atk-glow: #6366f1;
+
+      /* Active theme variables (mutated dynamically by JS) */
+      --theme-active: var(--color-sembako);
+      --theme-glow: var(--color-sembako-glow);
+      --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    input, textarea, select {
+      user-select: text;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: var(--font-family);
+      line-height: 1.35;
+      padding-bottom: 84px;
+      padding-top: env(safe-area-inset-top, 0px);
+      min-height: 100vh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Minimalist underline list style (NO boxes/cards, only thin divider borders) */
+    .list-minimal {
+      border-top: 1px solid var(--border-thin);
+    }
+    .list-minimal-item {
+      border-bottom: 1px solid var(--border-thin);
+      padding: 13px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      transition: background-color 0.15s ease;
+    }
+    .list-minimal-item:active {
+      background-color: var(--bg-surface-elevated);
+    }
+
+    /* Typography Hierarchy */
+    .text-huge-bold {
+      font-size: 24px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+    }
+    .text-xl-bold {
+      font-size: 20px;
+      font-weight: 800;
+    }
+    .text-lg-bold {
+      font-size: 16px;
+      font-weight: 800;
+    }
+    .text-md-bold {
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .text-sm-bold {
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .text-xs-bold {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    /* Header Bar: Dynamic Color-Coded Header */
+    .header-bar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: var(--theme-active);
+      color: #ffffff;
+      padding: 10px 16px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+      transition: background 0.3s ease;
+    }
+    .header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .header-subcat-badge {
+      display: inline-block;
+      background: rgba(0, 0, 0, 0.3);
+      color: #ffffff;
+      font-size: 10px;
+      font-weight: 900;
+      padding: 3px 8px;
+      border-radius: 4px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .header-subcat-scroll {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow-x: auto;
+      padding: 8px 0 2px 0;
+      scrollbar-width: none;
+    }
+    .header-subcat-scroll::-webkit-scrollbar {
+      display: none;
+    }
+    .subcat-tab-btn {
+      flex-shrink: 0;
+      padding: 6px 12px;
+      border-radius: 4px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      background: rgba(0, 0, 0, 0.25);
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+      white-space: nowrap;
+      text-transform: uppercase;
+      transition: all 0.15s ease;
+    }
+    .subcat-tab-btn.active {
+      background: #ffffff;
+      color: #000000;
+      border-color: #ffffff;
+      font-weight: 900;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    /* BOLD Text Action Buttons (NO ICONIC BUTTONS) */
+    .btn-action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 16px;
+      font-weight: 900;
+      font-size: 14px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      border-radius: 6px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.12s ease;
+      text-align: center;
+    }
+    .btn-action:active {
+      transform: scale(0.97);
+    }
+    .btn-primary {
+      background: var(--theme-active);
+      color: #ffffff;
+      border-color: var(--theme-glow);
+    }
+    .btn-theme {
+      background: var(--theme-active);
+      color: #ffffff;
+    }
+    .btn-tunai {
+      background: #15803d;
+      color: #ffffff;
+      border-color: #22c55e;
+    }
+    .btn-qris {
+      background: #0284c7;
+      color: #ffffff;
+      border-color: #38bdf8;
+    }
+    .btn-bon {
+      background: #b45309;
+      color: #ffffff;
+      border-color: #f59e0b;
+    }
+    .btn-neutral {
+      background: #27272a;
+      color: #ffffff;
+      border-color: #3f3f46;
+    }
+    .btn-danger {
+      background: #b91c1c;
+      color: #ffffff;
+      border-color: #ef4444;
+    }
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--border-thin);
+      color: var(--text-main);
+    }
+    .btn-outline-theme {
+      background: transparent;
+      border: 1px solid var(--theme-glow);
+      color: var(--theme-glow);
+    }
+    .btn-sm-bold {
+      padding: 6px 12px;
+      font-size: 11px;
+      font-weight: 800;
+      border-radius: 4px;
+      letter-spacing: 0.5px;
+    }
+
+    /* Sub-Category Specialized Toolstrip */
+    .special-toolstrip {
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-thin);
+      padding: 10px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .pill-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding-bottom: 2px;
+    }
+    .pill-group::-webkit-scrollbar {
+      display: none;
+    }
+    .pill-btn {
+      flex-shrink: 0;
+      padding: 5px 10px;
+      font-size: 11px;
+      font-weight: 800;
+      border-radius: 4px;
+      border: 1px solid var(--border-thin);
+      background: #18181b;
+      color: var(--text-muted);
+      cursor: pointer;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .pill-btn.active {
+      background: var(--theme-active);
+      color: #ffffff;
+      border-color: var(--theme-glow);
+    }
+
+    /* Calculator & Quick Numeric Keys */
+    .calc-screen {
+      padding: 14px 16px;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-thin);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .nominal-quick-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border-thin);
+      background: var(--bg-surface-elevated);
+    }
+    .btn-quick-nom {
+      padding: 10px 6px;
+      background: #18181b;
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 13px;
+      border: 1px solid var(--border-thin);
+      border-radius: 4px;
+      cursor: pointer;
+      text-align: center;
+    }
+    .btn-quick-nom:active {
+      background: var(--theme-active);
+    }
+
+    /* Cart Floating / Sticky Bar at Bottom */
+    .cart-summary-bar {
+      padding: 12px 16px;
+      background: var(--bg-surface);
+      border-top: 1px solid var(--border-thin);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    /* Bottom Navigation Bar: 5 Tabs */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 60;
+      background: #0d0d0d;
+      border-top: 1px solid var(--border-thin);
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      padding-bottom: env(safe-area-inset-bottom, 8px);
+    }
+    .bottom-nav-item {
+      padding: 12px 4px 10px 4px;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      transition: color 0.15s ease;
+    }
+    .bottom-nav-item.active {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.05);
+      border-top: 2px solid var(--theme-active);
+    }
+
+    /* Modals & Sheets */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .modal-overlay.open {
+      display: flex;
+    }
+    .modal-content {
+      background: var(--bg-surface);
+      width: 100%;
+      max-width: 520px;
+      max-height: 90vh;
+      overflow-y: auto;
+      border-top: 2px solid var(--theme-active);
+      padding: 18px 16px calc(18px + env(safe-area-inset-bottom, 0px)) 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    /* Form Fields Minimalist Underline */
+    .input-row {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      border-bottom: 1px solid var(--border-thin);
+      padding-bottom: 10px;
+    }
+    .input-label {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .input-field {
+      background: transparent;
+      border: none;
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 700;
+      outline: none;
+      width: 100%;
+      font-family: inherit;
+    }
+    .input-field::placeholder {
+      color: var(--text-dim);
+    }
+
+    /* Thermal Receipt Styling (Pratinjau Struk Cetak) */
+    .receipt-container {
+      background: #ffffff;
+      color: #000000;
+      font-family: "Courier New", Courier, monospace;
+      padding: 20px 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+      width: 100%;
+      max-width: 380px;
+      margin: 0 auto;
+      font-size: 12px;
+      line-height: 1.4;
+      border-radius: 2px;
+    }
+    .receipt-header {
+      text-align: center;
+      border-bottom: 1px dashed #444;
+      padding-bottom: 10px;
+      margin-bottom: 10px;
+    }
+    .receipt-title {
+      font-size: 16px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+    }
+    .receipt-row {
+      display: flex;
+      justify-content: space-between;
+      margin: 3px 0;
+    }
+    .receipt-divider {
+      border-top: 1px dashed #555;
+      margin: 8px 0;
+    }
+    .receipt-footer {
+      text-align: center;
+      border-top: 1px dashed #444;
+      padding-top: 10px;
+      margin-top: 10px;
+      font-size: 11px;
+    }
+    .receipt-badge-spec {
+      display: inline-block;
+      background: #eee;
+      border: 1px solid #bbb;
+      font-weight: bold;
+      font-size: 10px;
+      padding: 1px 4px;
+      margin-top: 2px;
+    }
+
+    /* Toast Notification */
+    .toast-msg {
+      position: fixed;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #18181b;
+      color: #ffffff;
+      border: 1px solid var(--theme-active);
+      border-radius: 6px;
+      padding: 10px 18px;
+      font-size: 13px;
+      font-weight: 800;
+      z-index: 200;
+      display: none;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.8);
+      max-width: 90%;
+      text-align: center;
+    }
+    .toast-msg.show {
+      display: block;
+      animation: fadeInOut 2.8s ease forwards;
+    }
+
+    @keyframes fadeInOut {
+      0% { opacity: 0; transform: translate(-50%, -10px); }
+      15% { opacity: 1; transform: translate(-50%, 0); }
+      80% { opacity: 1; transform: translate(-50%, 0); }
+      100% { opacity: 0; transform: translate(-50%, -10px); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========================================================= -->
+  <!-- DYNAMIC COLOR-CODED HEADER (7 SUB-KATEGORI ECERAN)        -->
+  <!-- ========================================================= -->
+  <header class="header-bar" id="appHeader">
+    <div class="header-top">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span class="text-xl-bold" style="letter-spacing: -0.5px;">RITELQU</span>
+        <span class="header-subcat-badge" id="headerSubcatBadge">SEMBAKO & KELONTONG</span>
+      </div>
+      <button class="btn-action btn-sm-bold" style="background: rgba(0,0,0,0.3); color: #fff; border: 1px solid rgba(255,255,255,0.4);" onclick="openSwitchSubcatModal()">
+        [GANTI KATEGORI]
+      </button>
+    </div>
+
+    <!-- Quick 7 Sub-Kategori Scroll Bar -->
+    <div class="header-subcat-scroll" id="subcatTabBar">
+      <button class="subcat-tab-btn active" data-subcat="sembako" onclick="switchSubCategory('sembako')">1. Sembako</button>
+      <button class="subcat-tab-btn" data-subcat="fashion" onclick="switchSubCategory('fashion')">2. Fashion</button>
+      <button class="subcat-tab-btn" data-subcat="apotek" onclick="switchSubCategory('apotek')">3. Apotek</button>
+      <button class="subcat-tab-btn" data-subcat="elektronik" onclick="switchSubCategory('elektronik')">4. Elektronik</button>
+      <button class="subcat-tab-btn" data-subcat="furniture" onclick="switchSubCategory('furniture')">5. Mebel</button>
+      <button class="subcat-tab-btn" data-subcat="plastik" onclick="switchSubCategory('plastik')">6. Plastik</button>
+      <button class="subcat-tab-btn" data-subcat="atk" onclick="switchSubCategory('atk')">7. ATK/FC</button>
+    </div>
+  </header>
+
+  <!-- Notification Toast -->
+  <div class="toast-msg" id="toastBox">Notifikasi</div>
+
+  <!-- MAIN TAB CONTAINERS -->
+  <main id="tabContent">
+
+    <!-- ========================================================= -->
+    <!-- 1. TAB KASIR: SMART KALKULATOR DINAMIS 7 SUB-KATEGORI     -->
+    <!-- ========================================================= -->
+    <section id="viewKasir" style="display: block;">
+      
+      <!-- Sub-Category Specialized Toolstrip -->
+      <div class="special-toolstrip" id="categoryToolstrip">
+        <!-- Rendered dynamically depending on activeSubcat -->
+      </div>
+
+      <!-- Quick Fast-Moving Preset Items List (Underline Style) -->
+      <div style="padding: 10px 16px 4px 16px; display: flex; justify-content: space-between; align-items: center;">
+        <span class="text-xs-bold" style="color: var(--text-muted);" id="presetHeadingLabel">PRESET CEPAT FAST-MOVING</span>
+        <button class="btn-action btn-sm-bold btn-outline-theme" onclick="openAddCustomItemModal()">+ [INPUT MANUAL / BARANG BARU]</button>
+      </div>
+
+      <!-- Underline List of Preset / Catalog Items -->
+      <div class="list-minimal" id="presetItemsList">
+        <!-- Injected via JavaScript -->
+      </div>
+
+      <!-- Current Order Cart (Underline List) -->
+      <div style="padding: 14px 16px 4px 16px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-thin); margin-top: 12px; background: #0e0e0e;">
+        <span class="text-xs-bold" style="color: var(--theme-glow);">KERANJANG TRANSAKSI (<span id="cartCount">0</span> ITEM)</span>
+        <button class="btn-action btn-sm-bold btn-danger" onclick="clearCart()">[KOSONGKAN]</button>
+      </div>
+      <div class="list-minimal" id="cartItemsList">
+        <div style="padding: 24px 16px; text-align: center; color: var(--text-dim); font-size: 13px; font-weight: 700;">
+          Keranjang kosong. Tekan tombol preset barang di atas untuk menambahkan.
+        </div>
+      </div>
+
+      <!-- Checkout & Payment Calculation Panel -->
+      <div class="cart-summary-bar">
+        <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+          <div>
+            <div class="text-xs-bold" style="color: var(--text-muted);">TOTAL TAGIHAN</div>
+            <div class="text-huge-bold" style="color: var(--theme-glow);" id="totalCartDisplay">Rp 0</div>
+          </div>
+          <div style="text-align: right;">
+            <div class="text-xs-bold" style="color: var(--text-muted);" id="subcatExtraLabel">STATUS</div>
+            <div class="text-md-bold" id="subcatExtraValue" style="color: #fff;">-</div>
+          </div>
+        </div>
+
+        <!-- Quick Cash Preset Nominal (Uang Pas, 10k, 20k, 50k, 100k) -->
+        <div class="nominal-quick-grid">
+          <button class="btn-quick-nom" onclick="setCashNominal('pas')">[UANG PAS]</button>
+          <button class="btn-quick-nom" onclick="setCashNominal(20000)">[20.000]</button>
+          <button class="btn-quick-nom" onclick="setCashNominal(50000)">[50.000]</button>
+          <button class="btn-quick-nom" onclick="setCashNominal(100000)">[100.000]</button>
+        </div>
+
+        <div class="input-row" style="border: none; padding-bottom: 0;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span class="input-label">UANG TUNAI DITERIMA (RP)</span>
+            <span class="text-md-bold" style="color: #22c55e;" id="calcKembalianText">Kembalian: Rp 0</span>
+          </div>
+          <input type="number" id="cashGivenInput" class="input-field" placeholder="0 (Uang diterima)" style="background: #18181b; padding: 10px; border-radius: 4px; font-size: 18px;" oninput="updateChangeCalculation()">
+        </div>
+
+        <!-- 3 Primary Direct Execution Buttons -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 4px;">
+          <button class="btn-action btn-tunai" onclick="executePayment('tunai')">[TUNAI]</button>
+          <button class="btn-action btn-qris" onclick="executePayment('qris')">[QRIS]</button>
+          <button class="btn-action btn-bon" onclick="openCatatBonModal()">[CATAT BON]</button>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- 2. TAB BON: CATATAN PIUTANG WARGA & JATUH TEMPO           -->
+    <!-- ========================================================= -->
+    <section id="viewBon" style="display: none;">
+      <div style="padding: 14px 16px; background: var(--bg-surface); border-bottom: 1px solid var(--border-thin); display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <div class="text-xs-bold" style="color: var(--text-muted);">TOTAL PIUTANG WARGA BELUM LUNAS</div>
+          <div class="text-huge-bold" style="color: #f59e0b;" id="totalUnpaidBon">Rp 0</div>
+        </div>
+        <button class="btn-action btn-sm-bold btn-outline-theme" onclick="openDirectAddBonModal()">+ [CATAT BON BARU]</button>
+      </div>
+
+      <div class="list-minimal" id="bonListContainer">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- 3. TAB REKAP: LAPORAN PENJUALAN HARIAN & ARUS KAS         -->
+    <!-- ========================================================= -->
+    <section id="viewRekap" style="display: none;">
+      <div style="padding: 16px; background: var(--bg-surface); border-bottom: 1px solid var(--border-thin);">
+        <div class="text-xs-bold" style="color: var(--text-muted);">REKAP OMSET PENJUALAN KESELURUHAN</div>
+        <div class="text-huge-bold" style="color: var(--theme-glow);" id="rekapTotalOmset">Rp 0</div>
+        <div class="text-sm-bold" style="color: #a1a1aa; margin-top: 4px;" id="rekapTotalProfit">Estimasi Laba Bersih: Rp 0</div>
+      </div>
+
+      <!-- Separation of 3 Cashflows: Tunai Laci, QRIS, & Bon -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; border-bottom: 1px solid var(--border-thin); text-align: center; background: #141414;">
+        <div style="padding: 12px 6px; border-right: 1px solid var(--border-thin);">
+          <div class="text-xs-bold" style="color: #22c55e;">TUNAI LACI</div>
+          <div class="text-lg-bold" style="margin-top: 4px; color: #fff;" id="rekapTunai">Rp 0</div>
+        </div>
+        <div style="padding: 12px 6px; border-right: 1px solid var(--border-thin);">
+          <div class="text-xs-bold" style="color: #38bdf8;">DIGITAL QRIS</div>
+          <div class="text-lg-bold" style="margin-top: 4px; color: #fff;" id="rekapQris">Rp 0</div>
+        </div>
+        <div style="padding: 12px 6px;">
+          <div class="text-xs-bold" style="color: #f59e0b;">BON/PIUTANG</div>
+          <div class="text-lg-bold" style="margin-top: 4px; color: #fff;" id="rekapBon">Rp 0</div>
+        </div>
+      </div>
+
+      <div style="padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;">
+        <span class="text-xs-bold" style="color: var(--text-muted);">RIWAYAT TRANSAKSI TERAKHIR</span>
+        <button class="btn-action btn-sm-bold btn-outline" onclick="clearTransactionHistory()">[RESET REKAP]</button>
+      </div>
+
+      <div class="list-minimal" id="rekapHistoryList">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- 4. TAB KATALOG: DAFTAR BARANG, HARGA MODAL & STOK         -->
+    <!-- ========================================================= -->
+    <section id="viewKatalog" style="display: none;">
+      <div style="padding: 12px 16px; background: var(--bg-surface); border-bottom: 1px solid var(--border-thin); display: flex; justify-content: space-between; align-items: center; gap: 8px;">
+        <div class="text-xs-bold" style="color: var(--text-muted);">
+          KATALOG: <span id="katalogCategoryName" style="color: var(--theme-glow);">SEMBAKO & KELONTONG</span>
+        </div>
+        <button class="btn-action btn-sm-bold btn-primary" onclick="openAddCatalogItemModal()">+ [TAMBAH BARANG]</button>
+      </div>
+
+      <div class="list-minimal" id="catalogItemList">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- 5. TAB PENGATURAN: SWITCH SUB-KAT & PRATINJAU STRUK DUMMY -->
+    <!-- ========================================================= -->
+    <section id="viewPengaturan" style="display: none;">
+      <div style="padding: 16px; background: var(--bg-surface); border-bottom: 1px solid var(--border-thin);">
+        <div class="text-xl-bold" style="color: #fff;">PENGATURAN TOKO & PRATINJAU STRUK</div>
+        <p class="text-sm-bold" style="color: var(--text-muted); margin-top: 4px;">
+          Sesuaikan profil toko dan cek cetak nota struk thermal sesuai sub-kategori aktif.
+        </p>
+      </div>
+
+      <!-- Quick Switcher 7 Sub-Kategori -->
+      <div style="padding: 14px 16px; border-bottom: 1px solid var(--border-thin);">
+        <div class="text-xs-bold" style="color: var(--text-muted); margin-bottom: 8px;">PILIH SUB-KATEGORI AKTIF:</div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;" id="subcatButtonGrid">
+          <!-- Injected via JS -->
+        </div>
+      </div>
+
+      <!-- Store Profile Config (Underline List Inputs) -->
+      <div style="padding: 14px 16px; border-bottom: 1px solid var(--border-thin); display: flex; flex-direction: column; gap: 12px;">
+        <div class="text-xs-bold" style="color: var(--theme-glow);">PROFIL TOKO & HEADER STRUK</div>
+        
+        <div class="input-row">
+          <span class="input-label">NAMA TOKO / USAHA</span>
+          <input type="text" id="settingStoreName" class="input-field" value="Toko Berkah Warga RT 04" onchange="saveStoreProfile()">
+        </div>
+
+        <div class="input-row">
+          <span class="input-label">ALAMAT LENGKAP TOKO</span>
+          <input type="text" id="settingStoreAddress" class="input-field" value="Jl. Swadaya No. 12 RT 04 / RW 02" onchange="saveStoreProfile()">
+        </div>
+
+        <div class="input-row">
+          <span class="input-label">NO. WHATSAPP / TELEPON</span>
+          <input type="text" id="settingStorePhone" class="input-field" value="0812-3456-7890" onchange="saveStoreProfile()">
+        </div>
+
+        <div class="input-row">
+          <span class="input-label">FOOTER STRUK / PESAN GARANSI</span>
+          <input type="text" id="settingStoreFooter" class="input-field" value="Barang yang dibeli dapat ditukar jika rusak. Terima Kasih!" onchange="saveStoreProfile()">
+        </div>
+      </div>
+
+      <!-- INTERACTIVE THERMAL RECEIPT PREVIEW (PRATINJAU STRUK CETAK) -->
+      <div style="padding: 16px; border-bottom: 1px solid var(--border-thin); background: #000;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <span class="text-xs-bold" style="color: var(--theme-glow);">PRATINJAU STRUK NOTA (THERMAL 58MM)</span>
+          <button class="btn-action btn-sm-bold btn-primary" onclick="window.print()">[CETAK CONTOH NOTA]</button>
+        </div>
+
+        <!-- Thermal Paper Simulation -->
+        <div class="receipt-container" id="receiptPreviewBox">
+          <div class="receipt-header">
+            <div class="receipt-title" id="rcptStoreName">TOKO BERKAH WARGA RT 04</div>
+            <div id="rcptStoreAddress" style="font-size: 11px;">Jl. Swadaya No. 12 RT 04 / RW 02</div>
+            <div id="rcptStorePhone" style="font-size: 11px;">WA: 0812-3456-7890</div>
+            <div style="margin-top: 6px; font-size: 10px;" id="rcptCategoryHeader">*** SEMBAKO & KELONTONG ***</div>
+          </div>
+
+          <div class="receipt-row" style="font-size: 11px;">
+            <span>No: #INV-DEMO-001</span>
+            <span id="rcptTime">23/10 14:30</span>
+          </div>
+          <div class="receipt-row" style="font-size: 11px;">
+            <span>Kasir: Admin Toko</span>
+            <span id="rcptCustName">Pelanggan: Umum</span>
+          </div>
+
+          <div class="receipt-divider"></div>
+
+          <!-- Items list adapted per active category -->
+          <div id="rcptItemsContainer">
+            <!-- Dynamic sample items according to active category -->
+          </div>
+
+          <div class="receipt-divider"></div>
+
+          <div class="receipt-row" style="font-weight: bold; font-size: 14px;">
+            <span>TOTAL:</span>
+            <span id="rcptTotal">Rp 65.000</span>
+          </div>
+          <div class="receipt-row" style="font-size: 11px;" id="rcptCashRow">
+            <span>BAYAR (TUNAI):</span>
+            <span id="rcptCash">Rp 100.000</span>
+          </div>
+          <div class="receipt-row" style="font-size: 11px;" id="rcptChangeRow">
+            <span>KEMBALI:</span>
+            <span id="rcptChange">Rp 35.000</span>
+          </div>
+
+          <!-- Special Sub-category Notes on Receipt -->
+          <div id="rcptSubcatSpecialBox" style="margin-top: 8px; padding-top: 6px; border-top: 1px dotted #888; font-size: 11px;">
+            <!-- e.g. Garansi, Aturan Pakai, DP/COD, dll -->
+          </div>
+
+          <div class="receipt-footer">
+            <div id="rcptFooterMsg">Barang yang dibeli dapat ditukar jika rusak. Terima Kasih!</div>
+            <div style="font-size: 10px; margin-top: 4px;">Powered by RitelQu Offline-First</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Backup & Restore Data LocalStorage -->
+      <div style="padding: 16px; display: flex; flex-direction: column; gap: 8px;">
+        <div class="text-xs-bold" style="color: var(--text-muted);">MANAJEMEN DATA (OFFLINE-FIRST)</div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+          <button class="btn-action btn-neutral" onclick="exportDataJSON()">[EXPORT JSON]</button>
+          <button class="btn-action btn-danger" onclick="resetToDefaultData()">[RESET DEFAULT]</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========================================================= -->
+  <!-- 5 FLOATING BOTTOM NAVIGATION TABS                         -->
+  <!-- ========================================================= -->
+  <nav class="bottom-nav">
+    <button class="bottom-nav-item active" id="navKasir" onclick="switchNavTab('kasir')">
+      <span>[KASIR]</span>
+    </button>
+    <button class="bottom-nav-item" id="navBon" onclick="switchNavTab('bon')">
+      <span>[BON]</span>
+    </button>
+    <button class="bottom-nav-item" id="navRekap" onclick="switchNavTab('rekap')">
+      <span>[REKAP]</span>
+    </button>
+    <button class="bottom-nav-item" id="navKatalog" onclick="switchNavTab('katalog')">
+      <span>[KATALOG]</span>
+    </button>
+    <button class="bottom-nav-item" id="navPengaturan" onclick="switchNavTab('pengaturan')">
+      <span>[PENGATURAN]</span>
+    </button>
+  </nav>
+
+  <!-- ========================================================= -->
+  <!-- MODALS                                                    -->
+  <!-- ========================================================= -->
+
+  <!-- Modal 1: Catat Bon Warga -->
+  <div class="modal-overlay" id="modalCatatBon">
+    <div class="modal-content">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <span class="text-lg-bold" style="color: #f59e0b;">CATAT BON / PIUTANG WARGA</span>
+        <button class="btn-action btn-sm-bold btn-neutral" onclick="closeModal('modalCatatBon')">[TUTUP]</button>
+      </div>
+      <div class="input-row">
+        <span class="input-label">NAMA WARGA / PEMINJAM</span>
+        <input type="text" id="bonWargaName" class="input-field" placeholder="Contoh: Pak Budi RT 04">
+      </div>
+      <div class="input-row">
+        <span class="input-label">NO. WHATSAPP (UNTUK PENAGIHAN)</span>
+        <input type="tel" id="bonWargaPhone" class="input-field" placeholder="0812-xxxx-xxxx">
+      </div>
+      <div class="input-row">
+        <span class="input-label">TANGGAL JATUH TEMPO</span>
+        <input type="date" id="bonDueDate" class="input-field">
+      </div>
+      <div class="input-row">
+        <span class="input-label">CATATAN KHUSUS</span>
+        <input type="text" id="bonNotes" class="input-field" placeholder="Janji bayar setelah gajian">
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0;">
+        <span class="text-sm-bold">TOTAL BON DIBUKUKAN:</span>
+        <span class="text-xl-bold" style="color: #f59e0b;" id="bonModalTotalDisplay">Rp 0</span>
+      </div>
+      <button class="btn-action btn-bon" onclick="confirmCatatBon()">[SIMPAN BON WARGA]</button>
+    </div>
+  </div>
+
+  <!-- Modal 2: Input Barang Cepat / Custom -->
+  <div class="modal-overlay" id="modalCustomItem">
+    <div class="modal-content">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <span class="text-lg-bold" style="color: var(--theme-glow);">TAMBAH BARANG CEPAT KE TRANSAKSI</span>
+        <button class="btn-action btn-sm-bold btn-neutral" onclick="closeModal('modalCustomItem')">[BATAL]</button>
+      </div>
+      <div class="input-row">
+        <span class="input-label">NAMA BARANG / JASA</span>
+        <input type="text" id="customItemName" class="input-field" placeholder="Nama barang">
+      </div>
+      <div class="input-row">
+        <span class="input-label">HARGA JUAL (RP)</span>
+        <input type="number" id="customItemPrice" class="input-field" placeholder="0">
+      </div>
+      <div class="input-row">
+        <span class="input-label">JUMLAH (QTY)</span>
+        <input type="number" id="customItemQty" class="input-field" value="1">
+      </div>
+      <div class="input-row">
+        <span class="input-label">CATATAN KHUSUS / ATRIBUT</span>
+        <input type="text" id="customItemNote" class="input-field" placeholder="Misal: Warna Navy, Tes OK, dsb">
+      </div>
+      <button class="btn-action btn-primary" onclick="confirmAddCustomItem()">[MASUKKAN KE KERANJANG]</button>
+    </div>
+  </div>
+
+  <!-- Modal 3: Tambah Katalog Baru -->
+  <div class="modal-overlay" id="modalAddCatalog">
+    <div class="modal-content">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <span class="text-lg-bold" style="color: var(--theme-glow);">TAMBAH BARANG KE KATALOG</span>
+        <button class="btn-action btn-sm-bold btn-neutral" onclick="closeModal('modalAddCatalog')">[BATAL]</button>
+      </div>
+      <div class="input-row">
+        <span class="input-label">SUB-KATEGORI</span>
+        <select id="newCatSubcat" class="input-field" style="background: #18181b; padding: 6px;">
+          <option value="sembako">Sembako & Kelontong</option>
+          <option value="fashion">Fashion & Style</option>
+          <option value="apotek">Apotek & Herbal</option>
+          <option value="elektronik">Elektronik & Listrik</option>
+          <option value="furniture">Furniture & Mebel</option>
+          <option value="plastik">Plastik & Bahan Packing</option>
+          <option value="atk">ATK & Fotocopy</option>
+        </select>
+      </div>
+      <div class="input-row">
+        <span class="input-label">NAMA BARANG</span>
+        <input type="text" id="newCatName" class="input-field" placeholder="Nama item">
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+        <div class="input-row">
+          <span class="input-label">HARGA JUAL (RP)</span>
+          <input type="number" id="newCatPrice" class="input-field" placeholder="0">
+        </div>
+        <div class="input-row">
+          <span class="input-label">HARGA MODAL (RP)</span>
+          <input type="number" id="newCatBuyPrice" class="input-field" placeholder="0">
+        </div>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+        <div class="input-row">
+          <span class="input-label">STOK</span>
+          <input type="number" id="newCatStock" class="input-field" value="20">
+        </div>
+        <div class="input-row">
+          <span class="input-label">SATUAN</span>
+          <input type="text" id="newCatUnit" class="input-field" value="Pcs">
+        </div>
+      </div>
+      <button class="btn-action btn-primary" onclick="confirmAddCatalog()">[SIMPAN KE KATALOG]</button>
+    </div>
+  </div>
+
+  <!-- Modal 4: Retur / Tukar Ukuran (Fashion) -->
+  <div class="modal-overlay" id="modalReturSize">
+    <div class="modal-content">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <span class="text-lg-bold" style="color: var(--color-fashion-glow);">TUKAR UKURAN / RETUR SIZE</span>
+        <button class="btn-action btn-sm-bold btn-neutral" onclick="closeModal('modalReturSize')">[TUTUP]</button>
+      </div>
+      <p class="text-sm-bold" style="color: var(--text-muted);">
+        Catat penukaran ukuran baju/sepatu pembeli tanpa membebankan tagihan tambahan.
+      </p>
+      <div class="input-row">
+        <span class="input-label">NAMA BARANG YANG DIKEMBALIKAN</span>
+        <input type="text" id="returOldItem" class="input-field" placeholder="Misal: Kemeja Flanel Size M">
+      </div>
+      <div class="input-row">
+        <span class="input-label">UKURAN PENGGANTI BARU</span>
+        <input type="text" id="returNewSize" class="input-field" placeholder="Misal: Tukar ke Size L">
+      </div>
+      <div class="input-row">
+        <span class="input-label">NAMA PEMBELI & NO. WA</span>
+        <input type="text" id="returBuyer" class="input-field" placeholder="Mbak Rini (0812...)">
+      </div>
+      <button class="btn-action btn-danger" onclick="confirmReturSize()">[BUKUKAN RETUR SIZE]</button>
+    </div>
+  </div>
+
+  <!-- Modal 5: Ganti Kategori Modal Sheet -->
+  <div class="modal-overlay" id="modalSwitchSubcat">
+    <div class="modal-content">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <span class="text-lg-bold" style="color: #fff;">PILIH 7 SUB-KATEGORI ECERAN</span>
+        <button class="btn-action btn-sm-bold btn-neutral" onclick="closeModal('modalSwitchSubcat')">[TUTUP]</button>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 8px;" id="modalSubcatList">
+        <!-- Rendered via JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       JAVASCRIPT LOGIC & LOCALSTORAGE ENGINE (OFFLINE-FIRST)
+       ============================================================ -->
+  <script>
+    // 7 Sub-Kategori Metadata with Exact Specs & Colors
+    const SUBCATEGORIES = {
+      sembako: {
+        id: 'sembako',
+        name: 'Sembako & Kelontong',
+        color: '#059669',
+        glow: '#10b981',
+        label: 'SEMBAKO & KELONTONG',
+        presets: [
+          { id: 'sb-1', name: 'Gas LPG 3kg', price: 22000, buyPrice: 19000, unit: 'Tabung', fast: true },
+          { id: 'sb-2', name: 'Galon Air Minum 19L', price: 19000, buyPrice: 15500, unit: 'Galon', fast: true },
+          { id: 'sb-3', name: 'Minyak Goreng 2L Pouch', price: 34000, buyPrice: 30500, unit: 'Pcs', fast: true },
+          { id: 'sb-4', name: 'Beras Premium 5kg', price: 72000, buyPrice: 66000, unit: 'Sak', fast: true },
+          { id: 'sb-5', name: 'Gula Pasir 1kg', price: 17500, buyPrice: 15500, unit: 'Kg', fast: true },
+          { id: 'sb-6', name: 'Rokok Surya 16', price: 34000, buyPrice: 31000, unit: 'Bks', fast: true },
+        ],
+        toolstripTitle: 'MODE FAST-MOVING & SATUAN',
+        dummyReceiptItems: [
+          { name: 'Beras Premium 5kg', qty: 1, price: 72000, spec: 'Eceran Sak' },
+          { name: 'Minyak Goreng 2L Pouch', qty: 1, price: 34000, spec: 'Pcs' },
+          { name: 'Gas LPG 3kg', qty: 1, price: 22000, spec: 'Tukar Tabung' },
+        ],
+        specialNote: 'Nota Resmi Toko Kelontong Warga. Bon Warga otomatis tercatat di buku piutang RT.'
+      },
+      fashion: {
+        id: 'fashion',
+        name: 'Fashion & Style / Baju & Sepatu',
+        color: '#dc2626',
+        glow: '#e11d48',
+        label: 'FASHION & SEPATU',
+        presets: [
+          { id: 'fs-1', name: 'Kaos Polos Cotton 30s', price: 45000, buyPrice: 28000, unit: 'Pcs', fast: true },
+          { id: 'fs-2', name: 'Kemeja Flanel Casual', price: 85000, buyPrice: 55000, unit: 'Pcs', fast: true },
+          { id: 'fs-3', name: 'Celana Chino Slimfit', price: 110000, buyPrice: 75000, unit: 'Pcs', fast: true },
+          { id: 'fs-4', name: 'Sepatu Sneakers Canvas', price: 135000, buyPrice: 90000, unit: 'Pasang', fast: true },
+          { id: 'fs-5', name: 'Sandal Slop Warga', price: 25000, buyPrice: 14000, unit: 'Pasang', fast: true },
+        ],
+        toolstripTitle: 'VARIAN UKURAN & PROMO OBRAL',
+        dummyReceiptItems: [
+          { name: 'Kemeja Flanel Casual', qty: 1, price: 75000, spec: 'Size: XL | Navy (Diskon Obral Rp 10k)' },
+          { name: 'Sepatu Sneakers Canvas', qty: 1, price: 135000, spec: 'Size Sepatu: 42 | Hitam' },
+        ],
+        specialNote: 'Ketentuan Retur: Tukar ukuran dapat dilakukan maks. 3 hari dengan menyertakan struk ini.'
+      },
+      apotek: {
+        id: 'apotek',
+        name: 'Apotek, Obat & Herbal',
+        color: '#0891b2',
+        glow: '#06b6d4',
+        label: 'APOTEK & HERBAL',
+        presets: [
+          { id: 'ap-1', name: 'Paracetamol 500mg Strip', price: 6500, buyPrice: 4000, unit: 'Strip', fast: true },
+          { id: 'ap-2', name: 'Amoxicillin 500mg Strip', price: 9000, buyPrice: 6000, unit: 'Strip', fast: true },
+          { id: 'ap-3', name: 'Madu Herbal Murni 250ml', price: 45000, buyPrice: 32000, unit: 'Botol', fast: true },
+          { id: 'ap-4', name: 'Minyak Kayu Putih 120ml', price: 28000, buyPrice: 22000, unit: 'Botol', fast: true },
+          { id: 'ap-5', name: 'Vitamin C 500mg Botol', price: 35000, buyPrice: 24000, unit: 'Botol', fast: true },
+        ],
+        toolstripTitle: 'PRESET ATURAN PAKAI OBAT',
+        dummyReceiptItems: [
+          { name: 'Paracetamol 500mg Strip', qty: 2, price: 13000, spec: '[Aturan Pakai: 3x1 Sesudah Makan]' },
+          { name: 'Vitamin C 500mg Botol', qty: 1, price: 35000, spec: '[Aturan Pakai: 1x1 Pagi Hari]' },
+        ],
+        specialNote: 'Aturan Pakai Obat Wajib Diperhatikan. Simpan di tempat sejuk & jauhkan dari anak-anak.'
+      },
+      elektronik: {
+        id: 'elektronik',
+        name: 'Elektronik & Listrik',
+        color: '#d97706',
+        glow: '#f59e0b',
+        label: 'ELEKTRONIK & LISTRIK',
+        presets: [
+          { id: 'el-1', name: 'Lampu LED 12W Putih', price: 25000, buyPrice: 17000, unit: 'Pcs', fast: true },
+          { id: 'el-2', name: 'Kabel Listrik NYM 2x1.5', price: 9000, buyPrice: 6500, unit: 'Meter', fast: true },
+          { id: 'el-3', name: 'Steker Arde Kuningan', price: 8500, buyPrice: 5000, unit: 'Pcs', fast: true },
+          { id: 'el-4', name: 'Stop Kontak 4 Lubang Kabel', price: 38000, buyPrice: 26000, unit: 'Pcs', fast: true },
+          { id: 'el-5', name: 'Saklar Ganda Outbow', price: 14000, buyPrice: 9000, unit: 'Pcs', fast: true },
+        ],
+        toolstripTitle: 'GARANSI STRUK & QC TOKO',
+        dummyReceiptItems: [
+          { name: 'Lampu LED 12W Putih', qty: 2, price: 50000, spec: '[Garansi Toko 1 Bulan] [QC: TES NYALA OK]' },
+          { name: 'Kabel Listrik NYM 2x1.5', qty: 10, price: 90000, spec: 'Panjang 10 Meter' },
+        ],
+        specialNote: 'Struk adalah bukti klaim garansi. Kerusakan fisik/kena air/petir membatalkan garansi.'
+      },
+      furniture: {
+        id: 'furniture',
+        name: 'Furniture & Mebel',
+        color: '#854d0e',
+        glow: '#92400e',
+        label: 'FURNITURE & MEBEL',
+        presets: [
+          { id: 'fn-1', name: 'Kursi Plastik Sandaran', price: 65000, buyPrice: 48000, unit: 'Pcs', fast: true },
+          { id: 'fn-2', name: 'Meja Makan Kayu Jati Set', price: 1450000, buyPrice: 1050000, unit: 'Set', fast: true },
+          { id: 'fn-3', name: 'Lemari Pakaian 3 Pintu', price: 850000, buyPrice: 620000, unit: 'Unit', fast: true },
+          { id: 'fn-4', name: 'Kasur Busa Super 120x200', price: 520000, buyPrice: 380000, unit: 'Unit', fast: true },
+          { id: 'fn-5', name: 'Rak Piring Alumunium 3 Susun', price: 235000, buyPrice: 170000, unit: 'Unit', fast: true },
+        ],
+        toolstripTitle: 'DP / UANG MUKA & STATUS COD',
+        dummyReceiptItems: [
+          { name: 'Meja Makan Kayu Jati Set', qty: 1, price: 1450000, spec: 'Set 1 Meja + 4 Kursi Jati' },
+        ],
+        specialNote: 'Status: DP Rp 500.000 Diterima. Sisa Pelunasan COD Rp 950.000 Saat Pengantaran Armada Toko ke Alamat.'
+      },
+      plastik: {
+        id: 'plastik',
+        name: 'Plastik & Bahan Packing',
+        color: '#ea580c',
+        glow: '#f97316',
+        label: 'PLASTIK & PACKING',
+        presets: [
+          { id: 'pl-1', name: 'Thinwall 650ml Persegi', price: 18000, buyPrice: 14000, unit: 'Pack (25pcs)', fast: true },
+          { id: 'pl-2', name: 'Kantong Kresek 24 Hitam', price: 9500, buyPrice: 7000, unit: 'Pack', fast: true },
+          { id: 'pl-3', name: 'Kantong Kresek 15 Putih', price: 6000, buyPrice: 4200, unit: 'Pack', fast: true },
+          { id: 'pl-4', name: 'Paper Bowl 650ml + Tutup', price: 28000, buyPrice: 22000, unit: 'Pack (25pcs)', fast: true },
+          { id: 'pl-5', name: 'Gelas Cup Kopi 16oz', price: 16500, buyPrice: 12000, unit: 'Pack (50pcs)', fast: true },
+          { id: 'pl-6', name: 'Lakban Bening 2 Inch 100M', price: 12000, buyPrice: 8500, unit: 'Roll', fast: true },
+        ],
+        toolstripTitle: 'MODE PACK / IKAT / BAL GROSIR',
+        dummyReceiptItems: [
+          { name: 'Thinwall 650ml Persegi', qty: 4, price: 72000, spec: '4 Pack (Total 100 Pcs)' },
+          { name: 'Kantong Kresek 24 Hitam', qty: 1, price: 90000, spec: 'Harga Grosir 1 Ikat (10 Pack)' },
+        ],
+        specialNote: 'Spesialis Bahan Packing Kuliner & Online Shop. Melayani Pembelian Partai Bal/Ikat.'
+      },
+      atk: {
+        id: 'atk',
+        name: 'ATK & Fotocopy',
+        color: '#4f46e5',
+        glow: '#6366f1',
+        label: 'ATK & FOTOCOPY',
+        presets: [
+          { id: 'at-1', name: 'Fotocopy Hitam Putih A4', price: 300, buyPrice: 100, unit: 'Lembar', fast: true },
+          { id: 'at-2', name: 'Fotocopy F4 (Folio)', price: 350, buyPrice: 120, unit: 'Lembar', fast: true },
+          { id: 'at-3', name: 'Print Warna Dokumen A4', price: 1500, buyPrice: 500, unit: 'Lembar', fast: true },
+          { id: 'at-4', name: 'Jilid Lakban Mika Bening', price: 3500, buyPrice: 1000, unit: 'Buku', fast: true },
+          { id: 'at-5', name: 'Kertas HVS A4 75gr Rim', price: 48000, buyPrice: 41000, unit: 'Rim', fast: true },
+          { id: 'at-6', name: 'Pulpen Standard Hitam', price: 3000, buyPrice: 1800, unit: 'Pcs', fast: true },
+        ],
+        toolstripTitle: 'KALKULATOR LEMBARAN & JILID',
+        dummyReceiptItems: [
+          { name: 'Fotocopy F4 (Folio)', qty: 50, price: 17500, spec: '50 Lembar x Rp 350' },
+          { name: 'Jilid Lakban Mika Bening', qty: 1, price: 3500, spec: 'Finishing Jilid Depan Belakang' },
+        ],
+        specialNote: 'Nota Pembayaran ATK & Percetakan. Harap periksa hasil print sebelum meninggalkan toko.'
+      }
+    };
+
+    // State
+    const STORAGE_KEY = 'ritelqu_7sub_v1';
+    let appState = {
+      activeSubcat: 'sembako',
+      cart: [],
+      invoices: [],
+      bonList: [],
+      catalog: [],
+      storeProfile: {
+        name: 'Toko Berkah Warga RT 04',
+        address: 'Jl. Swadaya No. 12 RT 04 / RW 02',
+        phone: '0812-3456-7890',
+        footer: 'Barang yang dibeli dapat ditukar jika rusak. Terima Kasih!'
+      },
+      // Transient Sub-category Attributes for Current Order
+      activeFashionSize: 'M',
+      activeFashionColor: 'Hitam',
+      activeApotekDosage: '3x1 Sesudah Makan',
+      activeElektronikWarranty: 'Garansi 7 Hari',
+      activeElektronikQc: true,
+      activeFurnitureMode: 'Lunas', // 'Lunas' | 'DP'
+      activeFurnitureDp: 0,
+      activeFurnitureAddress: '',
+      activePlastikWholesale: false,
+      activeAtkSheets: 10,
+      activeAtkType: 'fc_a4',
+      activeFinishing: 'none'
+    };
+
+    // Load from LocalStorage
+    function initData() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          appState = { ...appState, ...parsed };
+        } catch (e) {
+          console.error('Error loading data', e);
+        }
+      } else {
+        // Seed initial catalog
+        Object.keys(SUBCATEGORIES).forEach(k => {
+          SUBCATEGORIES[k].presets.forEach(p => {
+            appState.catalog.push({
+              id: p.id,
+              name: p.name,
+              category: k,
+              price: p.price,
+              buyPrice: p.buyPrice,
+              stock: 30,
+              unit: p.unit
+            });
+          });
+        });
+
+        // Seed initial sample Bon & Invoices
+        appState.bonList = [
+          {
+            id: 'bon-1',
+            customerName: 'Pak Hadi (RT 04)',
+            phone: '081298765432',
+            amount: 72000,
+            date: '2026-10-22',
+            dueDate: '2026-10-30',
+            notes: 'Beras 5kg & Telur 1/2kg',
+            status: 'belum_lunas'
+          },
+          {
+            id: 'bon-2',
+            customerName: 'Bu RT Endang',
+            phone: '081345678910',
+            amount: 45000,
+            date: '2026-10-21',
+            dueDate: '2026-10-28',
+            notes: 'Gas 3kg & Minyak 1L',
+            status: 'belum_lunas'
+          }
+        ];
+
+        saveData();
+      }
+
+      applyTheme();
+      renderCategoryToolstrip();
+      renderPresetItems();
+      renderCart();
+      renderBonList();
+      renderRekap();
+      renderKatalog();
+      renderSubcatButtons();
+      updateReceiptPreview();
+    }
+
+    function saveData() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toastBox');
+      toast.innerText = msg;
+      toast.classList.remove('show');
+      void toast.offsetWidth; // trigger reflow
+      toast.classList.add('show');
+    }
+
+    // Apply color theme dynamically based on subcategory
+    function applyTheme() {
+      const sub = SUBCATEGORIES[appState.activeSubcat];
+      document.documentElement.style.setProperty('--theme-active', sub.color);
+      document.documentElement.style.setProperty('--theme-glow', sub.glow);
+      document.getElementById('headerSubcatBadge').innerText = sub.label;
+
+      // Update active tab buttons
+      document.querySelectorAll('.subcat-tab-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-subcat') === appState.activeSubcat);
+      });
+      document.getElementById('katalogCategoryName').innerText = sub.label;
+      document.getElementById('presetHeadingLabel').innerText = `PRESET CEPAT (${sub.label})`;
+    }
+
+    function switchSubCategory(catId) {
+      if (!SUBCATEGORIES[catId]) return;
+      appState.activeSubcat = catId;
+      applyTheme();
+      renderCategoryToolstrip();
+      renderPresetItems();
+      renderKatalog();
+      updateReceiptPreview();
+      saveData();
+      showToast(`Beralih ke: ${SUBCATEGORIES[catId].name}`);
+    }
+
+    // Switch Navigation Tab
+    function switchNavTab(tabId) {
+      const views = ['viewKasir', 'viewBon', 'viewRekap', 'viewKatalog', 'viewPengaturan'];
+      const navs = ['navKasir', 'navBon', 'navRekap', 'navKatalog', 'navPengaturan'];
+
+      views.forEach(v => {
+        const el = document.getElementById(v);
+        if (el) el.style.display = (v === 'view' + tabId.charAt(0).toUpperCase() + tabId.slice(1)) ? 'block' : 'none';
+      });
+
+      navs.forEach(n => {
+        const btn = document.getElementById(n);
+        if (btn) btn.classList.toggle('active', n === 'nav' + tabId.charAt(0).toUpperCase() + tabId.slice(1));
+      });
+
+      if (tabId === 'bon') renderBonList();
+      if (tabId === 'rekap') renderRekap();
+      if (tabId === 'katalog') renderKatalog();
+      if (tabId === 'pengaturan') updateReceiptPreview();
+      window.scrollTo(0, 0);
+    }
+
+    // Render Sub-Category Specialized Toolstrip
+    function renderCategoryToolstrip() {
+      const container = document.getElementById('categoryToolstrip');
+      const cat = appState.activeSubcat;
+
+      if (cat === 'sembako') {
+        container.innerHTML = `
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span class="text-xs-bold" style="color: var(--theme-glow);">OPSI SATUAN CEPAT</span>
+            <span class="text-xs-bold" style="color: var(--text-muted);">FAST-MOVING WARGA</span>
+          </div>
+          <div class="pill-group">
+            <button class="pill-btn active">[ECERAN PCS]</button>
+            <button class="pill-btn" onclick="quickAddSembakoBundle('renceng')">[RENCENG / LUSIN]</button>
+            <button class="pill-btn" onclick="quickAddSembakoBundle('dus')">[DUS / KARTON]</button>
+            <button class="pill-btn" onclick="quickAddSembakoBundle('karung')">[SAK 25KG]</button>
+          </div>
+        `;
+      } else if (cat === 'fashion') {
+        container.innerHTML = `
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span class="text-xs-bold" style="color: var(--theme-glow);">PILIH VARIAN UKURAN & OBRAL</span>
+            <button class="btn-action btn-sm-bold btn-danger" onclick="openModal('modalReturSize')">[TUKAR UKURAN / RETUR]</button>
+          </div>
+          <div class="pill-group">
+            <span class="text-xs-bold" style="color: #bbb; align-self: center;">SIZE:</span>
+            ${['S', 'M', 'L', 'XL', 'XXL', '38', '39', '40', '41', '42', '43'].map(s => `
+              <button class="pill-btn ${appState.activeFashionSize === s ? 'active' : ''}" onclick="setFashionSize('${s}')">${s}</button>
+            `).join('')}
+          </div>
+          <div style="display: flex; gap: 8px; margin-top: 2px;">
+            <button class="btn-action btn-sm-bold btn-neutral" style="flex:1;" onclick="applyFashionDiscount(10000)">[OBRAL -10.000]</button>
+            <button class="btn-action btn-sm-bold btn-neutral" style="flex:1;" onclick="applyFashionDiscount(20000)">[OBRAL -20.000]</button>
+            <button class="btn-action btn-sm-bold btn-danger" style="flex:1;" onclick="applyFashionDiscount(0.1, true)">[DISKON 10%]</button>
+          </div>
+        `;
+      } else if (cat === 'apotek') {
+        container.innerHTML = `
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span class="text-xs-bold" style="color: var(--theme-glow);">INJEKSI ATURAN PAKAI OBAT</span>
+            <span class="text-xs-bold" style="color: #22c55e;">TERCETAK DI STRUK</span>
+          </div>
+          <div class="pill-group">
+            ${['3x1 Sesudah Makan', '2x1 Sebelum Makan', '1x1 Malam Hari', 'Bila Perlu / Nyeri', 'Oles Luar 2x'].map(a => `
+              <button class="pill-btn ${appState.activeApotekDosage === a ? 'active' : ''}" onclick="setApotekDosage('${a}')">[${a}]</button>
+            `).join('')}
+          </div>
+        `;
+      } else if (cat === 'elektronik') {
+        container.innerHTML = `
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span class="text-xs-bold" style="color: var(--theme-glow);">JAMINAN GARANSI & KUALITAS</span>
+            <label style="display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 800; color: #22c55e; cursor: pointer;">
+              <input type="checkbox" id="qcCheck" ${appState.activeElektronikQc ? 'checked' : ''} onchange="toggleQc(this.checked)"> [✓ TES NYALA NORMAL OK]
+            </label>
+          </div>
+          <div class="pill-group">
+            ${['Garansi 7 Hari', 'Garansi 14 Hari', 'Garansi Toko 1 Bulan', 'Garansi Resmi 1 Tahun'].map(w => `
+              <button class="pill-btn ${appState.activeElektronikWarranty === w ? 'active' : ''}" onclick="setElektronikWarranty('${w}')">[${w}]</button>
+            `).join('')}
+          </div>
+        `;
+      } else if (cat === 'furniture') {
+        container.innerHTML = `
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span class="text-xs-bold" style="color: var(--theme-glow);">SKEMA PEMBAYARAN & ARMADA</span>
+            <div style="display: flex; gap: 4px;">
+              <button class="pill-btn ${appState.activeFurnitureMode === 'Lunas' ? 'active' : ''}" onclick="setFurnitureMode('Lunas')">[LUNAS LANGSUNG]</button>
+              <button class="pill-btn ${appState.activeFurnitureMode === 'DP' ? 'active' : ''}" onclick="setFurnitureMode('DP')">[DP / COD KIRIM]</button>
+            </div>
+          </div>
+          <div style="display: flex; gap: 8px; align-items: center; margin-top: 4px;">
+            <input type="text" id="furnAddress" class="input-field" placeholder="Alamat Pengiriman Armada Toko & No HP Penerima" style="background: #18181b; padding: 6px 10px; border-radius: 4px; font-size: 12px;" onchange="appState.activeFurnitureAddress = this.value">
+          </div>
+        `;
+      } else if (cat === 'plastik') {
+        container.innerHTML = `
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span class="text-xs-bold" style="color: var(--theme-glow);">SWITCH HARGA PACK VS IKAT/BAL</span>
+            <button class="pill-btn ${appState.activePlastikWholesale ? 'active' : ''}" onclick="togglePlastikWholesale()">
+              ${appState.activePlastikWholesale ? '[HARGA GROSIR BAL / IKAT AKTIF]' : '[HARGA ECERAN PACK AKTIF]'}
+            </button>
+          </div>
+          <div class="pill-group">
+            <span class="text-xs-bold" style="color: #bbb; align-self: center;">PRESET UKURAN:</span>
+            ${['Thinwall 500ml', 'Thinwall 650ml', 'Thinwall 750ml', 'Kresek 15', 'Kresek 24', 'Kresek 28', 'Mika 3X'].map(p => `
+              <button class="pill-btn" onclick="addCustomPlasticItem('${p}')">${p}</button>
+            `).join('')}
+          </div>
+        `;
+      } else if (cat === 'atk') {
+        container.innerHTML = `
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span class="text-xs-bold" style="color: var(--theme-glow);">KALKULATOR LEMBARAN OTOMATIS</span>
+            <span class="text-xs-bold" style="color: #a1a1aa;">TARIF HITUNG CEPAT</span>
+          </div>
+          <div style="display: flex; gap: 8px; align-items: center;">
+            <input type="number" id="atkSheetQty" value="${appState.activeAtkSheets}" min="1" style="width: 70px; background: #18181b; color: #fff; border: 1px solid var(--border-thin); padding: 6px; font-weight: 800; text-align: center; border-radius: 4px;" onchange="appState.activeAtkSheets = parseInt(this.value)||1">
+            <span class="text-sm-bold">Lembar x</span>
+            <select id="atkPriceSelect" class="input-field" style="background: #18181b; padding: 6px; border-radius: 4px; font-size: 12px;" onchange="appState.activeAtkType = this.value">
+              <option value="fc_a4">FC Hitam Putih A4 (Rp 300)</option>
+              <option value="fc_f4">FC F4 Folio (Rp 350)</option>
+              <option value="print_warna">Print Warna Dokumen (Rp 1.500)</option>
+              <option value="print_full">Print Foto / Brosur Full (Rp 3.000)</option>
+            </select>
+            <button class="btn-action btn-sm-bold btn-primary" onclick="addAtkSheetsToCart()">[+ HITUNG]</button>
+          </div>
+          <div class="pill-group" style="margin-top: 4px;">
+            <span class="text-xs-bold" style="color: #bbb; align-self: center;">JASA JILID:</span>
+            <button class="pill-btn" onclick="addFinishingService('Jilid Lakban Mika', 3500)">[Jilid Lakban 3.5k]</button>
+            <button class="pill-btn" onclick="addFinishingService('Jilid Spiral Kawat', 10000)">[Spiral 10k]</button>
+            <button class="pill-btn" onclick="addFinishingService('Laminating Panas', 5000)">[Laminating 5k]</button>
+          </div>
+        `;
+      }
+    }
+
+    // Helper functions for specialized toolstrip
+    function setFashionSize(size) {
+      appState.activeFashionSize = size;
+      renderCategoryToolstrip();
+      showToast(`Ukuran dipilih: Size ${size}`);
+    }
+
+    function applyFashionDiscount(val, isPercent = false) {
+      if (appState.cart.length === 0) {
+        showToast('Masukkan barang ke keranjang terlebih dahulu!');
+        return;
+      }
+      const last = appState.cart[appState.cart.length - 1];
+      if (isPercent) {
+        const disc = Math.round(last.price * val);
+        last.price = Math.max(0, last.price - disc);
+        last.note = (last.note ? last.note + ' ' : '') + `(Diskon 10% -Rp ${disc.toLocaleString()})`;
+      } else {
+        last.price = Math.max(0, last.price - val);
+        last.note = (last.note ? last.note + ' ' : '') + `(Potongan Obral Rp ${val.toLocaleString()})`;
+      }
+      renderCart();
+      showToast(`Obral berhasil diterapkan pada ${last.name}`);
+    }
+
+    function setApotekDosage(d) {
+      appState.activeApotekDosage = d;
+      renderCategoryToolstrip();
+      showToast(`Aturan Pakai Aktif: ${d}`);
+    }
+
+    function toggleQc(val) {
+      appState.activeElektronikQc = val;
+      showToast(val ? 'Status QC: TES NYALA OK' : 'Status QC: Belum Dites');
+    }
+
+    function setElektronikWarranty(w) {
+      appState.activeElektronikWarranty = w;
+      renderCategoryToolstrip();
+      showToast(`Garansi disetel: ${w}`);
+    }
+
+    function setFurnitureMode(mode) {
+      appState.activeFurnitureMode = mode;
+      renderCategoryToolstrip();
+      updateSubcatStatusDisplay();
+      showToast(`Mode Bayar Furniture: ${mode}`);
+    }
+
+    function togglePlastikWholesale() {
+      appState.activePlastikWholesale = !appState.activePlastikWholesale;
+      renderCategoryToolstrip();
+      showToast(appState.activePlastikWholesale ? 'Mode Grosir Bal/Ikat Aktif' : 'Mode Eceran Pack Aktif');
+    }
+
+    function addCustomPlasticItem(name) {
+      const price = appState.activePlastikWholesale ? 85000 : 18000;
+      const unit = appState.activePlastikWholesale ? 'Ikat (10 Pack)' : 'Pack';
+      addToCart({
+        id: 'pl-custom-' + Date.now(),
+        name: name,
+        price: price,
+        buyPrice: price * 0.75,
+        unit: unit,
+        note: appState.activePlastikWholesale ? 'Grosir Bal/Ikat' : 'Eceran Pack'
+      });
+    }
+
+    function addAtkSheetsToCart() {
+      const sheets = appState.activeAtkSheets || 1;
+      let pricePerSheet = 300;
+      let title = 'Fotocopy Hitam Putih A4';
+
+      if (appState.activeAtkType === 'fc_f4') {
+        pricePerSheet = 350;
+        title = 'Fotocopy F4 Folio';
+      } else if (appState.activeAtkType === 'print_warna') {
+        pricePerSheet = 1500;
+        title = 'Print Warna Dokumen';
+      } else if (appState.activeAtkType === 'print_full') {
+        pricePerSheet = 3000;
+        title = 'Print Foto / Brosur Full';
+      }
+
+      addToCart({
+        id: 'atk-sheet-' + Date.now(),
+        name: `${title} (${sheets} Lbr)`,
+        price: pricePerSheet * sheets,
+        buyPrice: Math.round(pricePerSheet * sheets * 0.3),
+        unit: 'Lembar',
+        qty: 1,
+        note: `${sheets} lembar @ Rp ${pricePerSheet}`
+      });
+    }
+
+    function addFinishingService(name, price) {
+      addToCart({
+        id: 'fin-' + Date.now(),
+        name: name,
+        price: price,
+        buyPrice: Math.round(price * 0.3),
+        unit: 'Jasa',
+        qty: 1,
+        note: 'Finishing Percetakan'
+      });
+    }
+
+    function quickAddSembakoBundle(type) {
+      if (type === 'renceng') {
+        addToCart({
+          id: 'sb-bun-' + Date.now(),
+          name: 'Kopi / Minuman 1 Renceng (10 Sachet)',
+          price: 15000,
+          buyPrice: 12500,
+          unit: 'Renceng',
+          note: 'Harga Lusin/Renceng'
+        });
+      } else if (type === 'dus') {
+        addToCart({
+          id: 'sb-bun-' + Date.now(),
+          name: 'Mie Instan 1 Karton / Dus (40 Pcs)',
+          price: 118000,
+          buyPrice: 106000,
+          unit: 'Karton',
+          note: 'Harga Grosir Karton'
+        });
+      } else if (type === 'karung') {
+        addToCart({
+          id: 'sb-bun-' + Date.now(),
+          name: 'Beras Medium Karung 25kg',
+          price: 345000,
+          buyPrice: 320000,
+          unit: 'Karung',
+          note: 'Karung 25kg'
+        });
+      }
+    }
+
+    // Render Preset Items List (Underline List Style - Flat, no box)
+    function renderPresetItems() {
+      const container = document.getElementById('presetItemsList');
+      const cat = appState.activeSubcat;
+      const sub = SUBCATEGORIES[cat];
+
+      if (!sub || !sub.presets) {
+        container.innerHTML = '<div style="padding: 16px; color: var(--text-dim);">Tidak ada preset</div>';
+        return;
+      }
+
+      container.innerHTML = sub.presets.map(item => `
+        <div class="list-minimal-item">
+          <div style="flex: 1; min-width: 0;">
+            <div class="text-md-bold" style="color: #ffffff;">${item.name}</div>
+            <div class="text-xs-bold" style="color: var(--text-muted); margin-top: 2px;">
+              Rp ${item.price.toLocaleString('id-ID')} / ${item.unit}
+            </div>
+          </div>
+          <button class="btn-action btn-sm-bold btn-primary" onclick='addToCartFromPreset(${JSON.stringify(item)})'>
+            [+ TAMBAH]
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function addToCartFromPreset(preset) {
+      let extraNote = '';
+      if (appState.activeSubcat === 'fashion') {
+        extraNote = `Size: ${appState.activeFashionSize}`;
+      } else if (appState.activeSubcat === 'apotek') {
+        extraNote = `[${appState.activeApotekDosage}]`;
+      } else if (appState.activeSubcat === 'elektronik') {
+        extraNote = `[${appState.activeElektronikWarranty}] ${appState.activeElektronikQc ? '[QC: OK]' : ''}`;
+      }
+
+      addToCart({
+        id: preset.id + '-' + Date.now(),
+        productId: preset.id,
+        name: preset.name,
+        price: preset.price,
+        buyPrice: preset.buyPrice || Math.round(preset.price * 0.75),
+        qty: 1,
+        unit: preset.unit,
+        note: extraNote
+      });
+    }
+
+    function addToCart(item) {
+      // Check if duplicate item exists
+      const existing = appState.cart.find(c => c.name === item.name && c.note === item.note);
+      if (existing) {
+        existing.qty += (item.qty || 1);
+      } else {
+        appState.cart.push({
+          id: item.id || 'item-' + Date.now(),
+          productId: item.productId || 'custom',
+          name: item.name,
+          price: item.price,
+          buyPrice: item.buyPrice || 0,
+          qty: item.qty || 1,
+          unit: item.unit || 'Pcs',
+          note: item.note || ''
+        });
+      }
+
+      renderCart();
+      showToast(`+ ${item.name} dimasukkan.`);
+    }
+
+    function updateCartQty(index, delta) {
+      if (!appState.cart[index]) return;
+      appState.cart[index].qty += delta;
+      if (appState.cart[index].qty <= 0) {
+        appState.cart.splice(index, 1);
+      }
+      renderCart();
+    }
+
+    function removeCartItem(index) {
+      appState.cart.splice(index, 1);
+      renderCart();
+    }
+
+    function clearCart() {
+      if (appState.cart.length === 0) return;
+      if (confirm('Kosongkan semua barang di keranjang?')) {
+        appState.cart = [];
+        renderCart();
+        showToast('Keranjang dikosongkan.');
+      }
+    }
+
+    function renderCart() {
+      const container = document.getElementById('cartItemsList');
+      const countEl = document.getElementById('cartCount');
+      const totalEl = document.getElementById('totalCartDisplay');
+
+      countEl.innerText = appState.cart.reduce((s, c) => s + c.qty, 0);
+
+      if (appState.cart.length === 0) {
+        container.innerHTML = `
+          <div style="padding: 24px 16px; text-align: center; color: var(--text-dim); font-size: 13px; font-weight: 700;">
+            Keranjang kosong. Tekan tombol preset barang di atas untuk menambahkan transaksi.
+          </div>
+        `;
+        totalEl.innerText = 'Rp 0';
+        updateSubcatStatusDisplay();
+        updateChangeCalculation();
+        return;
+      }
+
+      const total = appState.cart.reduce((s, c) => s + (c.price * c.qty), 0);
+      totalEl.innerText = `Rp ${total.toLocaleString('id-ID')}`;
+
+      container.innerHTML = appState.cart.map((item, index) => `
+        <div class="list-minimal-item">
+          <div style="flex: 1; min-width: 0;">
+            <div class="text-md-bold" style="color: #fff;">${item.name}</div>
+            <div style="display: flex; gap: 8px; align-items: center; margin-top: 3px; font-size: 12px; color: var(--text-muted);">
+              <span>${item.qty} ${item.unit} x Rp ${item.price.toLocaleString('id-ID')}</span>
+              <span class="text-sm-bold" style="color: var(--theme-glow);">= Rp ${(item.price * item.qty).toLocaleString('id-ID')}</span>
+            </div>
+            ${item.note ? `<div class="text-xs-bold" style="color: #f59e0b; margin-top: 2px;">${item.note}</div>` : ''}
+          </div>
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <button class="btn-action btn-sm-bold btn-neutral" onclick="updateCartQty(${index}, -1)">-</button>
+            <span class="text-md-bold" style="min-width: 20px; text-align: center;">${item.qty}</span>
+            <button class="btn-action btn-sm-bold btn-neutral" onclick="updateCartQty(${index}, 1)">+</button>
+            <button class="btn-action btn-sm-bold btn-danger" onclick="removeCartItem(${index})">[HAPUS]</button>
+          </div>
+        </div>
+      `).join('');
+
+      updateSubcatStatusDisplay();
+      updateChangeCalculation();
+    }
+
+    function updateSubcatStatusDisplay() {
+      const lbl = document.getElementById('subcatExtraLabel');
+      const val = document.getElementById('subcatExtraValue');
+
+      if (appState.activeSubcat === 'furniture') {
+        lbl.innerText = 'MODE MEBEL';
+        val.innerText = appState.activeFurnitureMode === 'DP' ? 'DP / COD PENGANTARAN' : 'LUNAS DI TOKO';
+      } else if (appState.activeSubcat === 'elektronik') {
+        lbl.innerText = 'QC TOKO';
+        val.innerText = appState.activeElektronikQc ? 'TES NYALA OK' : 'STANDAR';
+      } else {
+        lbl.innerText = 'KATEGORI';
+        val.innerText = SUBCATEGORIES[appState.activeSubcat].label;
+      }
+    }
+
+    function setCashNominal(nom) {
+      const total = appState.cart.reduce((s, c) => s + (c.price * c.qty), 0);
+      const input = document.getElementById('cashGivenInput');
+      if (nom === 'pas') {
+        input.value = total;
+      } else {
+        input.value = nom;
+      }
+      updateChangeCalculation();
+    }
+
+    function updateChangeCalculation() {
+      const total = appState.cart.reduce((s, c) => s + (c.price * c.qty), 0);
+      const given = parseInt(document.getElementById('cashGivenInput').value) || 0;
+      const changeEl = document.getElementById('calcKembalianText');
+
+      if (given >= total) {
+        const change = given - total;
+        changeEl.innerText = `Kembalian: Rp ${change.toLocaleString('id-ID')}`;
+        changeEl.style.color = '#22c55e';
+      } else {
+        const under = total - given;
+        changeEl.innerText = `Kurang: Rp ${under.toLocaleString('id-ID')}`;
+        changeEl.style.color = '#ef4444';
+      }
+    }
+
+    // Direct Payment Execution: [TUNAI] and [QRIS]
+    function executePayment(method) {
+      if (appState.cart.length === 0) {
+        showToast('Keranjang masih kosong!');
+        return;
+      }
+
+      const total = appState.cart.reduce((s, c) => s + (c.price * c.qty), 0);
+      const buyTotal = appState.cart.reduce((s, c) => s + ((c.buyPrice || 0) * c.qty), 0);
+      const cashGiven = parseInt(document.getElementById('cashGivenInput').value) || total;
+      const change = Math.max(0, cashGiven - total);
+
+      const invoice = {
+        id: 'inv-' + Date.now(),
+        invoiceNumber: 'INV-' + Date.now().toString().slice(-6),
+        subCategory: appState.activeSubcat,
+        items: [...appState.cart],
+        total: total,
+        buyTotal: buyTotal,
+        paymentMethod: method,
+        cashGiven: method === 'tunai' ? cashGiven : total,
+        change: method === 'tunai' ? change : 0,
+        status: 'lunas',
+        date: new Date().toISOString(),
+        customerName: 'Pelanggan Umum',
+        notes: appState.activeSubcat === 'furniture' && appState.activeFurnitureAddress ? `Kirim ke: ${appState.activeFurnitureAddress}` : ''
+      };
+
+      appState.invoices.unshift(invoice);
+      appState.cart = [];
+      document.getElementById('cashGivenInput').value = '';
+
+      saveData();
+      renderCart();
+      renderRekap();
+      showToast(`Transaksi ${method.toUpperCase()} Berhasil! Kembalian: Rp ${change.toLocaleString('id-ID')}`);
+    }
+
+    // Open Modal Catat Bon
+    function openCatatBonModal() {
+      if (appState.cart.length === 0) {
+        showToast('Keranjang masih kosong!');
+        return;
+      }
+      const total = appState.cart.reduce((s, c) => s + (c.price * c.qty), 0);
+      document.getElementById('bonModalTotalDisplay').innerText = `Rp ${total.toLocaleString('id-ID')}`;
+      // default due date 7 days later
+      const d = new Date();
+      d.setDate(d.getDate() + 7);
+      document.getElementById('bonDueDate').value = d.toISOString().split('T')[0];
+      openModal('modalCatatBon');
+    }
+
+    function confirmCatatBon() {
+      const name = document.getElementById('bonWargaName').value.trim();
+      if (!name) {
+        alert('Harap masukkan nama warga peminjam!');
+        return;
+      }
+      const phone = document.getElementById('bonWargaPhone').value.trim() || '0812-xxxx-xxxx';
+      const dueDate = document.getElementById('bonDueDate').value || '';
+      const notes = document.getElementById('bonNotes').value.trim();
+      const total = appState.cart.reduce((s, c) => s + (c.price * c.qty), 0);
+      const buyTotal = appState.cart.reduce((s, c) => s + ((c.buyPrice || 0) * c.qty), 0);
+
+      const bonItem = {
+        id: 'bon-' + Date.now(),
+        customerName: name,
+        phone: phone,
+        amount: total,
+        buyTotal: buyTotal,
+        date: new Date().toISOString().split('T')[0],
+        dueDate: dueDate,
+        items: [...appState.cart],
+        notes: notes || `Bon belanja ${appState.cart.map(c => c.name).join(', ')}`,
+        status: 'belum_lunas'
+      };
+
+      appState.bonList.unshift(bonItem);
+
+      // Record invoice as Bon
+      appState.invoices.unshift({
+        id: 'inv-' + Date.now(),
+        invoiceNumber: 'INV-BON-' + Date.now().toString().slice(-5),
+        subCategory: appState.activeSubcat,
+        items: [...appState.cart],
+        total: total,
+        buyTotal: buyTotal,
+        paymentMethod: 'bon_warga',
+        status: 'bon',
+        date: new Date().toISOString(),
+        customerName: name,
+        customerPhone: phone,
+        notes: notes
+      });
+
+      appState.cart = [];
+      closeModal('modalCatatBon');
+      saveData();
+      renderCart();
+      renderBonList();
+      renderRekap();
+      showToast(`Bon atas nama ${name} (Rp ${total.toLocaleString('id-ID')}) tercatat!`);
+    }
+
+    // Direct Add Bon without Cart
+    function openDirectAddBonModal() {
+      const name = prompt('Nama Warga Pemilik Bon:');
+      if (!name) return;
+      const amtStr = prompt('Nominal Bon (Rp):', '50000');
+      const amt = parseInt(amtStr) || 0;
+      if (amt <= 0) return;
+      const phone = prompt('Nomor WhatsApp Penagihan:', '0812') || '';
+      const notes = prompt('Catatan barang:', 'Belanja kelontong') || '';
+
+      const bon = {
+        id: 'bon-' + Date.now(),
+        customerName: name,
+        phone: phone,
+        amount: amt,
+        date: new Date().toISOString().split('T')[0],
+        dueDate: new Date(Date.now() + 7*86400000).toISOString().split('T')[0],
+        notes: notes,
+        status: 'belum_lunas'
+      };
+
+      appState.bonList.unshift(bon);
+      saveData();
+      renderBonList();
+      showToast(`Bon warga berhasil ditambahkan.`);
+    }
+
+    // Render TAB 2: BON WARGA
+    function renderBonList() {
+      const container = document.getElementById('bonListContainer');
+      const unpaidEl = document.getElementById('totalUnpaidBon');
+
+      const unpaidTotal = appState.bonList
+        .filter(b => b.status === 'belum_lunas')
+        .reduce((s, b) => s + b.amount, 0);
+
+      unpaidEl.innerText = `Rp ${unpaidTotal.toLocaleString('id-ID')}`;
+
+      if (appState.bonList.length === 0) {
+        container.innerHTML = `
+          <div style="padding: 30px 16px; text-align: center; color: var(--text-dim); font-size: 14px; font-weight: 700;">
+            Tidak ada catatan bon atau piutang warga saat ini.
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = appState.bonList.map((bon, index) => {
+        const isLunas = bon.status === 'lunas';
+        return `
+          <div class="list-minimal-item" style="${isLunas ? 'opacity: 0.6;' : ''}">
+            <div style="flex: 1; min-width: 0;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span class="text-lg-bold" style="color: #fff;">${bon.customerName}</span>
+                <span class="text-xs-bold" style="padding: 2px 6px; border-radius: 3px; ${isLunas ? 'background: #14532d; color: #4ade80;' : 'background: #78350f; color: #fde047;'}">
+                  ${isLunas ? 'LUNAS' : 'BELUM LUNAS'}
+                </span>
+              </div>
+              <div class="text-sm-bold" style="color: ${isLunas ? '#a1a1aa' : '#f59e0b'}; margin-top: 3px;">
+                Rp ${bon.amount.toLocaleString('id-ID')}
+              </div>
+              <div style="font-size: 11px; color: var(--text-muted); margin-top: 3px;">
+                Tgl: ${bon.date} | Jatuh Tempo: <b style="color: #fff;">${bon.dueDate || '-'}</b>
+              </div>
+              ${bon.notes ? `<div style="font-size: 11px; color: #bbb; margin-top: 2px;">Ket: ${bon.notes}</div>` : ''}
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px; align-items: flex-end;">
+              ${!isLunas ? `
+                <button class="btn-action btn-sm-bold btn-tunai" onclick="markBonLunas(${index})">[LUNAS INSTAN]</button>
+                <button class="btn-action btn-sm-bold btn-outline-theme" onclick="sendWhatsAppBilling(${index})">[TAGIH WA]</button>
+              ` : `
+                <span class="text-xs-bold" style="color: #22c55e;">TERSELESAIKAN</span>
+              `}
+              <button class="btn-action btn-sm-bold btn-danger" style="padding: 3px 8px; font-size: 10px;" onclick="deleteBonItem(${index})">[HAPUS]</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function markBonLunas(index) {
+      if (!appState.bonList[index]) return;
+      appState.bonList[index].status = 'lunas';
+      saveData();
+      renderBonList();
+      renderRekap();
+      showToast('Bon warga ditandai LUNAS!');
+    }
+
+    function deleteBonItem(index) {
+      if (confirm('Hapus catatan bon ini?')) {
+        appState.bonList.splice(index, 1);
+        saveData();
+        renderBonList();
+        showToast('Catatan bon dihapus.');
+      }
+    }
+
+    function sendWhatsAppBilling(index) {
+      const b = appState.bonList[index];
+      if (!b) return;
+      const phoneClean = (b.phone || '').replace(/[^0-9]/g, '');
+      const storeName = appState.storeProfile.name;
+      const text = `Halo Yth. ${b.customerName}, kami dari ${storeName} menginfokan catatan bon belanja sebesar Rp ${b.amount.toLocaleString('id-ID')} dengan jatuh tempo tgl ${b.dueDate || '-'}. Rincian: ${b.notes || '-'}. Terima kasih banyak atas kerjasamanya!`;
+      const url = `https://wa.me/${phoneClean ? (phoneClean.startsWith('0') ? '62' + phoneClean.slice(1) : phoneClean) : ''}?text=${encodeURIComponent(text)}`;
+      window.open(url, '_blank');
+    }
+
+    // Render TAB 3: REKAP PENJUALAN
+    function renderRekap() {
+      const totalOmsetEl = document.getElementById('rekapTotalOmset');
+      const totalProfitEl = document.getElementById('rekapTotalProfit');
+      const tunaiEl = document.getElementById('rekapTunai');
+      const qrisEl = document.getElementById('rekapQris');
+      const bonEl = document.getElementById('rekapBon');
+      const historyEl = document.getElementById('rekapHistoryList');
+
+      let tunai = 0;
+      let qris = 0;
+      let bon = 0;
+      let totalOmset = 0;
+      let totalModal = 0;
+
+      appState.invoices.forEach(inv => {
+        totalOmset += inv.total;
+        totalModal += (inv.buyTotal || Math.round(inv.total * 0.75));
+        if (inv.paymentMethod === 'tunai') tunai += inv.total;
+        else if (inv.paymentMethod === 'qris') qris += inv.total;
+        else if (inv.paymentMethod === 'bon_warga') bon += inv.total;
+      });
+
+      const profit = Math.max(0, totalOmset - totalModal);
+
+      totalOmsetEl.innerText = `Rp ${totalOmset.toLocaleString('id-ID')}`;
+      totalProfitEl.innerText = `Estimasi Laba Bersih: Rp ${profit.toLocaleString('id-ID')} (${appState.invoices.length} Transaksi)`;
+      tunaiEl.innerText = `Rp ${tunai.toLocaleString('id-ID')}`;
+      qrisEl.innerText = `Rp ${qris.toLocaleString('id-ID')}`;
+      bonEl.innerText = `Rp ${bon.toLocaleString('id-ID')}`;
+
+      if (appState.invoices.length === 0) {
+        historyEl.innerHTML = `
+          <div style="padding: 30px 16px; text-align: center; color: var(--text-dim); font-size: 13px; font-weight: 700;">
+            Belum ada riwayat transaksi yang tercatat hari ini.
+          </div>
+        `;
+        return;
+      }
+
+      historyEl.innerHTML = appState.invoices.slice(0, 30).map(inv => {
+        const d = new Date(inv.date);
+        const timeStr = `${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
+        return `
+          <div class="list-minimal-item">
+            <div style="flex: 1; min-width: 0;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span class="text-md-bold" style="color: #fff;">${inv.invoiceNumber}</span>
+                <span class="text-xs-bold" style="padding: 2px 6px; border-radius: 3px; background: #27272a; color: #fff;">
+                  ${inv.paymentMethod.toUpperCase()}
+                </span>
+                <span class="text-xs-bold" style="color: var(--text-muted);">${timeStr}</span>
+              </div>
+              <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
+                ${inv.items.map(i => `${i.name} (x${i.qty})`).join(', ')}
+              </div>
+              ${inv.notes ? `<div style="font-size: 11px; color: #f59e0b;">${inv.notes}</div>` : ''}
+            </div>
+            <div class="text-lg-bold" style="color: var(--theme-glow);">
+              Rp ${inv.total.toLocaleString('id-ID')}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function clearTransactionHistory() {
+      if (confirm('Reset semua riwayat rekap penjualan? Data transaksi akan dihapus.')) {
+        appState.invoices = [];
+        saveData();
+        renderRekap();
+        showToast('Rekap penjualan telah di-reset.');
+      }
+    }
+
+    // Render TAB 4: KATALOG
+    function renderKatalog() {
+      const container = document.getElementById('catalogItemList');
+      const cat = appState.activeSubcat;
+      const items = appState.catalog.filter(c => c.category === cat);
+
+      if (items.length === 0) {
+        container.innerHTML = `
+          <div style="padding: 30px 16px; text-align: center; color: var(--text-dim); font-size: 13px; font-weight: 700;">
+            Belum ada barang di katalog untuk kategori ini. Tekan [+ TAMBAH BARANG].
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = items.map((item, index) => `
+        <div class="list-minimal-item">
+          <div style="flex: 1; min-width: 0;">
+            <div class="text-md-bold" style="color: #fff;">${item.name}</div>
+            <div style="display: flex; gap: 10px; font-size: 12px; margin-top: 3px;">
+              <span style="color: var(--theme-glow); font-weight: 800;">Jual: Rp ${item.price.toLocaleString('id-ID')}</span>
+              <span style="color: var(--text-muted);">Modal: Rp ${(item.buyPrice||0).toLocaleString('id-ID')}</span>
+              <span style="color: #bbb;">Stok: <b>${item.stock} ${item.unit}</b></span>
+            </div>
+          </div>
+          <div style="display: flex; gap: 6px;">
+            <button class="btn-action btn-sm-bold btn-primary" onclick='addToCartFromPreset(${JSON.stringify(item)})'>[+ KERANJANG]</button>
+            <button class="btn-action btn-sm-bold btn-danger" onclick="deleteCatalogItem('${item.id}')">[HAPUS]</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function deleteCatalogItem(id) {
+      if (confirm('Hapus barang ini dari katalog?')) {
+        appState.catalog = appState.catalog.filter(c => c.id !== id);
+        saveData();
+        renderKatalog();
+        showToast('Barang dihapus dari katalog.');
+      }
+    }
+
+    // Modal Add Catalog
+    function openAddCatalogItemModal() {
+      document.getElementById('newCatSubcat').value = appState.activeSubcat;
+      document.getElementById('newCatName').value = '';
+      document.getElementById('newCatPrice').value = '';
+      document.getElementById('newCatBuyPrice').value = '';
+      document.getElementById('newCatStock').value = '20';
+      document.getElementById('newCatUnit').value = 'Pcs';
+      openModal('modalAddCatalog');
+    }
+
+    function confirmAddCatalog() {
+      const name = document.getElementById('newCatName').value.trim();
+      const price = parseInt(document.getElementById('newCatPrice').value) || 0;
+      if (!name || price <= 0) {
+        alert('Harap masukkan nama dan harga jual!');
+        return;
+      }
+      const subcat = document.getElementById('newCatSubcat').value;
+      const buyPrice = parseInt(document.getElementById('newCatBuyPrice').value) || Math.round(price * 0.75);
+      const stock = parseInt(document.getElementById('newCatStock').value) || 10;
+      const unit = document.getElementById('newCatUnit').value.trim() || 'Pcs';
+
+      appState.catalog.push({
+        id: 'cat-' + Date.now(),
+        name: name,
+        category: subcat,
+        price: price,
+        buyPrice: buyPrice,
+        stock: stock,
+        unit: unit
+      });
+
+      closeModal('modalAddCatalog');
+      saveData();
+      renderKatalog();
+      showToast(`${name} berhasil ditambahkan ke katalog!`);
+    }
+
+    // Modal Custom Item
+    function openAddCustomItemModal() {
+      document.getElementById('customItemName').value = '';
+      document.getElementById('customItemPrice').value = '';
+      document.getElementById('customItemQty').value = '1';
+      document.getElementById('customItemNote').value = '';
+      openModal('modalCustomItem');
+    }
+
+    function confirmAddCustomItem() {
+      const name = document.getElementById('customItemName').value.trim();
+      const price = parseInt(document.getElementById('customItemPrice').value) || 0;
+      const qty = parseInt(document.getElementById('customItemQty').value) || 1;
+      const note = document.getElementById('customItemNote').value.trim();
+
+      if (!name || price <= 0) {
+        alert('Nama barang dan harga harus diisi!');
+        return;
+      }
+
+      addToCart({
+        id: 'cst-' + Date.now(),
+        name: name,
+        price: price,
+        buyPrice: Math.round(price * 0.75),
+        qty: qty,
+        unit: 'Pcs',
+        note: note
+      });
+
+      closeModal('modalCustomItem');
+    }
+
+    // Modal Retur Size
+    function confirmReturSize() {
+      const oldItem = document.getElementById('returOldItem').value.trim();
+      const newSize = document.getElementById('returNewSize').value.trim();
+      const buyer = document.getElementById('returBuyer').value.trim();
+
+      if (!oldItem || !newSize) {
+        alert('Harap masukkan nama barang lama dan ukuran baru!');
+        return;
+      }
+
+      addToCart({
+        id: 'retur-' + Date.now(),
+        name: `[RETUR SIZE] ${oldItem}`,
+        price: 0,
+        buyPrice: 0,
+        qty: 1,
+        unit: 'Pcs',
+        note: `Ditukar ke: ${newSize} (Pembeli: ${buyer || 'Warga'})`
+      });
+
+      closeModal('modalReturSize');
+      showToast('Retur ukuran berhasil dibukukan.');
+    }
+
+    // TAB 5: PENGATURAN & THERMAL RECEIPT PREVIEW
+    function renderSubcatButtons() {
+      const grid = document.getElementById('subcatButtonGrid');
+      const modalList = document.getElementById('modalSubcatList');
+
+      const buttonsHtml = Object.keys(SUBCATEGORIES).map(key => {
+        const cat = SUBCATEGORIES[key];
+        const isActive = appState.activeSubcat === key;
+        return `
+          <button class="btn-action btn-sm-bold" style="background: ${isActive ? cat.color : '#18181b'}; color: #fff; border: 1px solid ${cat.glow};" onclick="switchSubCategory('${key}')">
+            ${cat.name}
+          </button>
+        `;
+      }).join('');
+
+      grid.innerHTML = buttonsHtml;
+      modalList.innerHTML = buttonsHtml;
+    }
+
+    function openSwitchSubcatModal() {
+      renderSubcatButtons();
+      openModal('modalSwitchSubcat');
+    }
+
+    function saveStoreProfile() {
+      appState.storeProfile.name = document.getElementById('settingStoreName').value.trim() || 'Toko Berkah Warga RT 04';
+      appState.storeProfile.address = document.getElementById('settingStoreAddress').value.trim() || 'Jl. Swadaya No. 12 RT 04';
+      appState.storeProfile.phone = document.getElementById('settingStorePhone').value.trim() || '0812-3456-7890';
+      appState.storeProfile.footer = document.getElementById('settingStoreFooter').value.trim() || 'Terima kasih atas kunjungan Anda!';
+      saveData();
+      updateReceiptPreview();
+      showToast('Profil toko berhasil disimpan.');
+    }
+
+    function updateReceiptPreview() {
+      const profile = appState.storeProfile;
+      const sub = SUBCATEGORIES[appState.activeSubcat];
+
+      document.getElementById('rcptStoreName').innerText = profile.name.toUpperCase();
+      document.getElementById('rcptStoreAddress').innerText = profile.address;
+      document.getElementById('rcptStorePhone').innerText = `WA: ${profile.phone}`;
+      document.getElementById('rcptCategoryHeader').innerText = `*** ${sub.name.toUpperCase()} ***`;
+      document.getElementById('rcptFooterMsg').innerText = profile.footer;
+
+      const itemsBox = document.getElementById('rcptItemsContainer');
+      const dummyItems = sub.dummyReceiptItems || [];
+
+      let total = 0;
+      itemsBox.innerHTML = dummyItems.map(item => {
+        total += item.price;
+        return `
+          <div style="margin-bottom: 6px;">
+            <div class="receipt-row">
+              <span style="font-weight: bold;">${item.name}</span>
+              <span>Rp ${item.price.toLocaleString('id-ID')}</span>
+            </div>
+            <div style="font-size: 11px; color: #444;">x${item.qty} ${item.spec ? `| ${item.spec}` : ''}</div>
+          </div>
+        `;
+      }).join('');
+
+      document.getElementById('rcptTotal').innerText = `Rp ${total.toLocaleString('id-ID')}`;
+      document.getElementById('rcptCash').innerText = `Rp ${(total + 10000).toLocaleString('id-ID')}`;
+      document.getElementById('rcptChange').innerText = `Rp 10.000`;
+
+      // Sub-category specialized footer note in receipt
+      document.getElementById('rcptSubcatSpecialBox').innerHTML = `
+        <div style="font-weight: bold; margin-bottom: 2px;">CATATAN KHUSUS ${sub.label}:</div>
+        <div>${sub.specialNote}</div>
+      `;
+    }
+
+    function exportDataJSON() {
+      const blob = new Blob([JSON.stringify(appState, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `ritelqu_backup_${Date.now()}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('Data berhasil diekspor ke file JSON.');
+    }
+
+    function resetToDefaultData() {
+      if (confirm('PERINGATAN: Reset semua data RitelQu ke setelan awal?')) {
+        localStorage.removeItem(STORAGE_KEY);
+        location.reload();
+      }
+    }
+
+    function openModal(id) {
+      const m = document.getElementById(id);
+      if (m) m.classList.add('open');
+    }
+    function closeModal(id) {
+      const m = document.getElementById(id);
+      if (m) m.classList.remove('open');
+    }
+
+    // Bootstrap app on DOM Ready
+    document.addEventListener('DOMContentLoaded', () => {
+      initData();
+    });
+  </script>
+</body>
+</html>

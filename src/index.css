@@ -1,0 +1,143 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --sat: env(safe-area-inset-top, 0px);
+    --sab: env(safe-area-inset-bottom, 0px);
+    --sal: env(safe-area-inset-left, 0px);
+    --sar: env(safe-area-inset-right, 0px);
+    --safe-top-default: max(env(safe-area-inset-top, 0px), 1.75rem);
+    --safe-bottom-default: max(env(safe-area-inset-bottom, 0px), 1.25rem);
+  }
+  html {
+    font-size: 16px;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-size: 16px;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.5;
+  }
+}
+
+.font-mono-receipt {
+  font-family: 'Space Mono', monospace, 'Courier New', Courier;
+}
+
+/* Custom scrollbars for mobile feel */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(168, 162, 158, 0.4);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(168, 162, 158, 0.6);
+}
+
+/* Print specific styles for 58mm & 80mm ESC/POS thermal simulation */
+@media print {
+  body * {
+    visibility: hidden !important;
+  }
+  #printable-receipt, #printable-receipt * {
+    visibility: visible !important;
+  }
+  #printable-receipt {
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    max-width: 80mm !important;
+    margin: 0 !important;
+    padding: 2mm !important;
+    background: white !important;
+    color: black !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+  @page {
+    margin: 0;
+    size: auto;
+  }
+}
+
+/* ==========================================================================
+   Typography 14px - 18px Standard for RitelQu and KlinikQu Modules
+   Semua ukuran huruf dipastikan terbaca jelas & nyaman (rentang 14px s/d 18px)
+   ========================================================================== */
+.ritelqu-scope,
+.klinikqu-scope {
+  font-size: 15px;
+}
+
+/* Batas bawah teks terkecil (badges, captions, notes, sub-labels) minimum 14px */
+.ritelqu-scope .text-xs,
+.klinikqu-scope .text-xs,
+.ritelqu-scope .text-\[9px\],
+.klinikqu-scope .text-\[9px\],
+.ritelqu-scope .text-\[10px\],
+.klinikqu-scope .text-\[10px\],
+.ritelqu-scope .text-\[11px\],
+.klinikqu-scope .text-\[11px\],
+.ritelqu-scope .text-\[12px\],
+.klinikqu-scope .text-\[12px\],
+.ritelqu-scope .text-\[13px\],
+.klinikqu-scope .text-\[13px\] {
+  font-size: 14px !important;
+  line-height: 1.35 !important;
+}
+
+.ritelqu-scope .text-sm,
+.klinikqu-scope .text-sm {
+  font-size: 14px !important;
+  line-height: 1.4 !important;
+}
+
+/* Teks standar body & input: 15px - 16px */
+.ritelqu-scope .text-base,
+.klinikqu-scope .text-base {
+  font-size: 16px !important;
+  line-height: 1.45 !important;
+}
+
+/* Batas atas teks judul / harga / modal / total: maksimum 18px */
+.ritelqu-scope .text-lg,
+.klinikqu-scope .text-lg,
+.ritelqu-scope .text-xl,
+.klinikqu-scope .text-xl,
+.ritelqu-scope .text-2xl,
+.klinikqu-scope .text-2xl,
+.ritelqu-scope .text-3xl,
+.klinikqu-scope .text-3xl,
+.ritelqu-scope .text-\[19px\],
+.klinikqu-scope .text-\[19px\],
+.ritelqu-scope .text-\[20px\],
+.klinikqu-scope .text-\[20px\],
+.ritelqu-scope .text-\[22px\],
+.klinikqu-scope .text-\[22px\],
+.ritelqu-scope .text-\[24px\],
+.klinikqu-scope .text-\[24px\] {
+  font-size: 18px !important;
+  line-height: 1.35 !important;
+}
+
+.ritelqu-scope input,
+.ritelqu-scope select,
+.ritelqu-scope textarea,
+.klinikqu-scope input,
+.klinikqu-scope select,
+.klinikqu-scope textarea {
+  font-size: 15px !important;
+}

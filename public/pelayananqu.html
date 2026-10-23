@@ -1,0 +1,2068 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>PelayananQu - POS Jasa & Layanan 6 Sub-Kategori</title>
+  <style>
+    /* ============================================================
+       HIGH CONTRAST OUTDOOR DARK THEME (6 SUB-KATEGORI PELAYANANQU)
+       ============================================================ */
+    :root {
+      --bg-dark: #0a0a0a;
+      --bg-surface: #121212;
+      --bg-surface-elevated: #1a1a1a;
+      --border-thin: #27272a;
+      --border-subtle: #1f1f23;
+      --text-main: #ffffff;
+      --text-muted: #a1a1aa;
+      --text-dim: #71717a;
+
+      /* 6 Sub-Kategori Color Scheme */
+      --color-servis: #ea580c;    /* Merah Oranye */
+      --color-servis-glow: #f97316;
+      --color-barber: #a21caf;    /* Ungu Magenta */
+      --color-barber-glow: #e879f9;
+      --color-laundry: #0284c7;   /* Biru Laut */
+      --color-laundry-glow: #38bdf8;
+      --color-penjahit: #0f766e;  /* Teal / Hijau Toska */
+      --color-penjahit-glow: #14b8a6;
+      --color-rental: #d97706;    /* Kuning Emas / Amber */
+      --color-rental-glow: #f59e0b;
+      --color-tukang: #854d0e;    /* Cokelat Warm */
+      --color-tukang-glow: #b45309;
+
+      /* Active theme variables */
+      --theme-active: var(--color-servis);
+      --theme-glow: var(--color-servis-glow);
+      --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    input, textarea, select {
+      user-select: text;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: var(--font-family);
+      line-height: 1.35;
+      padding-bottom: 84px;
+      padding-top: env(safe-area-inset-top, 0px);
+      min-height: 100vh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Minimalist underline list style (NO boxes/cards, only thin divider borders) */
+    .list-minimal {
+      border-top: 1px solid var(--border-thin);
+    }
+    .list-minimal-item {
+      border-bottom: 1px solid var(--border-thin);
+      padding: 13px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      transition: background-color 0.15s ease;
+    }
+    .list-minimal-item:active {
+      background-color: var(--bg-surface-elevated);
+    }
+
+    /* Typography Hierarchy */
+    .text-huge-bold {
+      font-size: 24px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+    }
+    .text-xl-bold {
+      font-size: 20px;
+      font-weight: 800;
+    }
+    .text-lg-bold {
+      font-size: 16px;
+      font-weight: 800;
+    }
+    .text-md-bold {
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .text-sm-bold {
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .text-xs-bold {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    /* Dynamic Color-Coded Header */
+    .header-bar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: var(--theme-active);
+      color: #ffffff;
+      padding: 10px 16px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+      transition: background 0.3s ease;
+    }
+    .header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .header-subcat-badge {
+      display: inline-block;
+      background: rgba(0, 0, 0, 0.35);
+      color: #ffffff;
+      font-size: 10px;
+      font-weight: 900;
+      padding: 3px 8px;
+      border-radius: 4px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .header-subcat-scroll {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow-x: auto;
+      padding: 8px 0 2px 0;
+      scrollbar-width: none;
+    }
+    .header-subcat-scroll::-webkit-scrollbar {
+      display: none;
+    }
+    .subcat-tab-btn {
+      flex-shrink: 0;
+      padding: 6px 12px;
+      border-radius: 4px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      background: rgba(0, 0, 0, 0.25);
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+      white-space: nowrap;
+      text-transform: uppercase;
+      transition: all 0.15s ease;
+    }
+    .subcat-tab-btn.active {
+      background: #ffffff;
+      color: #000000;
+      border-color: #ffffff;
+      font-weight: 900;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    /* BOLD Text Action Buttons (NO ICONIC BUTTONS) */
+    .btn-action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 16px;
+      font-weight: 900;
+      font-size: 14px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      border-radius: 6px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.12s ease;
+      text-align: center;
+    }
+    .btn-action:active {
+      transform: scale(0.97);
+    }
+    .btn-primary {
+      background: var(--theme-active);
+      color: #ffffff;
+      border-color: var(--theme-glow);
+    }
+    .btn-tunai {
+      background: #15803d;
+      color: #ffffff;
+      border-color: #22c55e;
+    }
+    .btn-qris {
+      background: #0284c7;
+      color: #ffffff;
+      border-color: #38bdf8;
+    }
+    .btn-bon {
+      background: #b45309;
+      color: #ffffff;
+      border-color: #f59e0b;
+    }
+    .btn-neutral {
+      background: #27272a;
+      color: #ffffff;
+      border-color: #3f3f46;
+    }
+    .btn-danger {
+      background: #b91c1c;
+      color: #ffffff;
+      border-color: #ef4444;
+    }
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--border-thin);
+      color: var(--text-main);
+    }
+    .btn-outline-theme {
+      background: transparent;
+      border: 1px solid var(--theme-glow);
+      color: var(--theme-glow);
+    }
+    .btn-sm-bold {
+      padding: 6px 12px;
+      font-size: 11px;
+      font-weight: 800;
+      border-radius: 4px;
+      letter-spacing: 0.5px;
+    }
+
+    /* Specialized Toolstrip */
+    .special-toolstrip {
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-thin);
+      padding: 10px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .pill-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding-bottom: 2px;
+    }
+    .pill-group::-webkit-scrollbar {
+      display: none;
+    }
+    .pill-btn {
+      flex-shrink: 0;
+      padding: 5px 10px;
+      font-size: 11px;
+      font-weight: 800;
+      border-radius: 4px;
+      border: 1px solid var(--border-thin);
+      background: #18181b;
+      color: var(--text-muted);
+      cursor: pointer;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .pill-btn.active {
+      background: var(--theme-active);
+      color: #ffffff;
+      border-color: var(--theme-glow);
+    }
+
+    /* Summary Bar at Bottom */
+    .order-summary-bar {
+      padding: 12px 16px;
+      background: var(--bg-surface);
+      border-top: 1px solid var(--border-thin);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    /* Bottom Navigation Bar: 5 Tabs */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 60;
+      background: #0d0d0d;
+      border-top: 1px solid var(--border-thin);
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      padding-bottom: env(safe-area-inset-bottom, 8px);
+    }
+    .bottom-nav-item {
+      padding: 12px 4px 10px 4px;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      transition: color 0.15s ease;
+    }
+    .bottom-nav-item.active {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.05);
+      border-top: 2px solid var(--theme-active);
+    }
+
+    /* Modals & Form Fields */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .modal-overlay.open {
+      display: flex;
+    }
+    .modal-content {
+      background: var(--bg-surface);
+      width: 100%;
+      max-width: 520px;
+      max-height: 90vh;
+      overflow-y: auto;
+      border-top: 2px solid var(--theme-active);
+      padding: 18px 16px calc(18px + env(safe-area-inset-bottom, 0px)) 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .input-row {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      border-bottom: 1px solid var(--border-thin);
+      padding-bottom: 10px;
+    }
+    .input-label {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .input-field {
+      background: transparent;
+      border: none;
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 700;
+      outline: none;
+      width: 100%;
+      font-family: inherit;
+    }
+    .input-field::placeholder {
+      color: var(--text-dim);
+    }
+
+    /* Thermal Receipt Simulation (Pratinjau Struk Cetak) */
+    .receipt-container {
+      background: #ffffff;
+      color: #000000;
+      font-family: "Courier New", Courier, monospace;
+      padding: 20px 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+      width: 100%;
+      max-width: 380px;
+      margin: 0 auto;
+      font-size: 12px;
+      line-height: 1.4;
+      border-radius: 2px;
+    }
+    .receipt-header {
+      text-align: center;
+      border-bottom: 1px dashed #444;
+      padding-bottom: 10px;
+      margin-bottom: 10px;
+    }
+    .receipt-title {
+      font-size: 16px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+    }
+    .receipt-row {
+      display: flex;
+      justify-content: space-between;
+      margin: 3px 0;
+    }
+    .receipt-divider {
+      border-top: 1px dashed #555;
+      margin: 8px 0;
+    }
+    .receipt-footer {
+      text-align: center;
+      border-top: 1px dashed #444;
+      padding-top: 10px;
+      margin-top: 10px;
+      font-size: 11px;
+    }
+
+    /* Toast Notification */
+    .toast-msg {
+      position: fixed;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #18181b;
+      color: #ffffff;
+      border: 1px solid var(--theme-active);
+      border-radius: 6px;
+      padding: 10px 18px;
+      font-size: 13px;
+      font-weight: 800;
+      z-index: 200;
+      display: none;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.8);
+      max-width: 90%;
+      text-align: center;
+    }
+    .toast-msg.show {
+      display: block;
+      animation: fadeInOut 2.8s ease forwards;
+    }
+
+    @keyframes fadeInOut {
+      0% { opacity: 0; transform: translate(-50%, -10px); }
+      15% { opacity: 1; transform: translate(-50%, 0); }
+      80% { opacity: 1; transform: translate(-50%, 0); }
+      100% { opacity: 0; transform: translate(-50%, -10px); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========================================================= -->
+  <!-- DYNAMIC COLOR-CODED HEADER (6 SUB-KATEGORI PELAYANANQU)   -->
+  <!-- ========================================================= -->
+  <header class="header-bar" id="appHeader">
+    <div class="header-top">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span class="text-xl-bold" style="letter-spacing: -0.5px;">PELAYANANQU</span>
+        <span class="header-subcat-badge" id="headerSubcatBadge">SERVIS & BENGKEL</span>
+      </div>
+      <button class="btn-action btn-sm-bold" style="background: rgba(0,0,0,0.35); color: #fff; border: 1px solid rgba(255,255,255,0.4);" onclick="openSwitchSubcatModal()">
+        [GANTI KATEGORI]
+      </button>
+    </div>
+
+    <!-- Quick 6 Sub-Kategori Scroll Bar -->
+    <div class="header-subcat-scroll" id="subcatTabBar">
+      <button class="subcat-tab-btn active" data-subcat="servis" onclick="switchSubCategory('servis')">1. Servis/Bengkel</button>
+      <button class="subcat-tab-btn" data-subcat="barber" onclick="switchSubCategory('barber')">2. Barbershop</button>
+      <button class="subcat-tab-btn" data-subcat="laundry" onclick="switchSubCategory('laundry')">3. Laundry</button>
+      <button class="subcat-tab-btn" data-subcat="penjahit" onclick="switchSubCategory('penjahit')">4. Penjahit</button>
+      <button class="subcat-tab-btn" data-subcat="rental" onclick="switchSubCategory('rental')">5. Rental</button>
+      <button class="subcat-tab-btn" data-subcat="tukang" onclick="switchSubCategory('tukang')">6. Tukang/AC</button>
+    </div>
+  </header>
+
+  <!-- Notification Toast -->
+  <div class="toast-msg" id="toastBox">Notifikasi</div>
+
+  <!-- MAIN TAB CONTAINERS -->
+  <main id="tabContent">
+
+    <!-- ========================================================= -->
+    <!-- 1. TAB KASIR: SMART KALKULATOR DINAMIS 6 SUB-KATEGORI     -->
+    <!-- ========================================================= -->
+    <section id="viewKasir" style="display: block;">
+      
+      <!-- Sub-Category Specialized Toolstrip -->
+      <div class="special-toolstrip" id="categoryToolstrip">
+        <!-- Injected dynamically by JavaScript based on activeSubcat -->
+      </div>
+
+      <!-- Quick Fast-Moving Preset Tarif/Layanan List (Underline Style) -->
+      <div style="padding: 10px 16px 4px 16px; display: flex; justify-content: space-between; align-items: center;">
+        <span class="text-xs-bold" style="color: var(--text-muted);" id="presetHeadingLabel">PRESET LAYANAN & JASA CEPAT</span>
+        <button class="btn-action btn-sm-bold btn-outline-theme" onclick="openAddCustomOrderModal()">+ [INPUT ORDER MANUAL]</button>
+      </div>
+
+      <!-- Underline List of Preset / Catalog Items -->
+      <div class="list-minimal" id="presetItemsList">
+        <!-- Injected via JavaScript -->
+      </div>
+
+      <!-- Current Order Items / Service Active List (Underline List) -->
+      <div style="padding: 14px 16px 4px 16px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-thin); margin-top: 12px; background: #0e0e0e;">
+        <span class="text-xs-bold" style="color: var(--theme-glow);">ORDER / TIKET JASA AKTIF (<span id="cartCount">0</span> ITEM)</span>
+        <button class="btn-action btn-sm-bold btn-danger" onclick="clearCart()">[KOSONGKAN]</button>
+      </div>
+      <div class="list-minimal" id="cartItemsList">
+        <div style="padding: 24px 16px; text-align: center; color: var(--text-dim); font-size: 13px; font-weight: 700;">
+          Belum ada rincian jasa. Tekan preset layanan di atas atau tombol hitung.
+        </div>
+      </div>
+
+      <!-- Summary & Execution Panel -->
+      <div class="order-summary-bar">
+        <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+          <div>
+            <div class="text-xs-bold" style="color: var(--text-muted);" id="summaryTotalLabel">TOTAL BIAYA LAYANAN</div>
+            <div class="text-huge-bold" style="color: var(--theme-glow);" id="totalCartDisplay">Rp 0</div>
+          </div>
+          <div style="text-align: right;">
+            <div class="text-xs-bold" style="color: var(--text-muted);" id="subcatExtraLabel">STATUS LAYANAN</div>
+            <div class="text-md-bold" id="subcatExtraValue" style="color: #fff;">-</div>
+          </div>
+        </div>
+
+        <div class="input-row" style="border: none; padding-bottom: 0;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span class="input-label">UANG DITERIMA (RP)</span>
+            <span class="text-md-bold" style="color: #22c55e;" id="calcKembalianText">Kembalian: Rp 0</span>
+          </div>
+          <input type="number" id="cashGivenInput" class="input-field" placeholder="0 (Uang diterima)" style="background: #18181b; padding: 10px; border-radius: 4px; font-size: 18px;" oninput="updateChangeCalculation()">
+        </div>
+
+        <!-- 3 Primary Direct Execution Buttons -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 4px;">
+          <button class="btn-action btn-tunai" onclick="executePayment('tunai')">[TUNAI]</button>
+          <button class="btn-action btn-qris" onclick="executePayment('qris')">[QRIS]</button>
+          <button class="btn-action btn-bon" onclick="openCatatBonModal()">[CATAT BON / DP]</button>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- 2. TAB BON: PIUTANG WARGA, DP PERMAK/SEWA & WA TAGIH      -->
+    <!-- ========================================================= -->
+    <section id="viewBon" style="display: none;">
+      <div style="padding: 14px 16px; background: var(--bg-surface); border-bottom: 1px solid var(--border-thin); display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <div class="text-xs-bold" style="color: var(--text-muted);">TOTAL PIUTANG & SISA DP BELUM LUNAS</div>
+          <div class="text-huge-bold" style="color: #f59e0b;" id="totalUnpaidBon">Rp 0</div>
+        </div>
+        <button class="btn-action btn-sm-bold btn-outline-theme" onclick="openDirectAddBonModal()">+ [CATAT BON BARU]</button>
+      </div>
+
+      <div class="list-minimal" id="bonListContainer">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- 3. TAB REKAP: LAPORAN PENJUALAN & REKAP ARUS KAS          -->
+    <!-- ========================================================= -->
+    <section id="viewRekap" style="display: none;">
+      <div style="padding: 16px; background: var(--bg-surface); border-bottom: 1px solid var(--border-thin);">
+        <div class="text-xs-bold" style="color: var(--text-muted);">TOTAL OMSET JASA & LAYANAN</div>
+        <div class="text-huge-bold" style="color: var(--theme-glow);" id="rekapTotalOmset">Rp 0</div>
+        <div class="text-sm-bold" style="color: #a1a1aa; margin-top: 4px;" id="rekapTotalNet">Estimasi Pendapatan Bersih: Rp 0</div>
+      </div>
+
+      <!-- Separation of 3 Cashflows: Tunai Laci, QRIS, & Bon Piutang -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; border-bottom: 1px solid var(--border-thin); text-align: center; background: #141414;">
+        <div style="padding: 12px 6px; border-right: 1px solid var(--border-thin);">
+          <div class="text-xs-bold" style="color: #22c55e;">TUNAI LACI</div>
+          <div class="text-lg-bold" style="margin-top: 4px; color: #fff;" id="rekapTunai">Rp 0</div>
+        </div>
+        <div style="padding: 12px 6px; border-right: 1px solid var(--border-thin);">
+          <div class="text-xs-bold" style="color: #38bdf8;">DIGITAL QRIS</div>
+          <div class="text-lg-bold" style="margin-top: 4px; color: #fff;" id="rekapQris">Rp 0</div>
+        </div>
+        <div style="padding: 12px 6px;">
+          <div class="text-xs-bold" style="color: #f59e0b;">BON / PIUTANG</div>
+          <div class="text-lg-bold" style="margin-top: 4px; color: #fff;" id="rekapBon">Rp 0</div>
+        </div>
+      </div>
+
+      <div style="padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;">
+        <span class="text-xs-bold" style="color: var(--text-muted);">RIWAYAT TIKET / ORDER LAYANAN</span>
+        <button class="btn-action btn-sm-bold btn-outline" onclick="clearTransactionHistory()">[RESET REKAP]</button>
+      </div>
+
+      <div class="list-minimal" id="rekapHistoryList">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- 4. TAB KATALOG: TARIF JASA, SPAREPART & KOMISI PEKERJA    -->
+    <!-- ========================================================= -->
+    <section id="viewKatalog" style="display: none;">
+      <div style="padding: 12px 16px; background: var(--bg-surface); border-bottom: 1px solid var(--border-thin); display: flex; justify-content: space-between; align-items: center; gap: 8px;">
+        <div class="text-xs-bold" style="color: var(--text-muted);">
+          KATALOG: <span id="katalogCategoryName" style="color: var(--theme-glow);">SERVIS & BENGKEL</span>
+        </div>
+        <button class="btn-action btn-sm-bold btn-primary" onclick="openAddCatalogItemModal()">+ [TAMBAH LAYANAN]</button>
+      </div>
+
+      <div class="list-minimal" id="catalogItemList">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- 5. TAB PENGATURAN: SWITCH SUB-KAT & PRATINJAU STRUK DUMMY -->
+    <!-- ========================================================= -->
+    <section id="viewPengaturan" style="display: none;">
+      <div style="padding: 16px; background: var(--bg-surface); border-bottom: 1px solid var(--border-thin);">
+        <div class="text-xl-bold" style="color: #fff;">PENGATURAN USAHA & STRUK NOTA</div>
+        <p class="text-sm-bold" style="color: var(--text-muted); margin-top: 4px;">
+          Sesuaikan profil jasa dan cek format nota tanda terima/servis thermal 6 sub-kategori.
+        </p>
+      </div>
+
+      <!-- Quick Switcher 6 Sub-Kategori -->
+      <div style="padding: 14px 16px; border-bottom: 1px solid var(--border-thin);">
+        <div class="text-xs-bold" style="color: var(--text-muted); margin-bottom: 8px;">PILIH SUB-KATEGORI AKTIF:</div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;" id="subcatButtonGrid">
+          <!-- Injected via JS -->
+        </div>
+      </div>
+
+      <!-- Business Profile Form -->
+      <div style="padding: 14px 16px; border-bottom: 1px solid var(--border-thin); display: flex; flex-direction: column; gap: 12px;">
+        <div class="text-xs-bold" style="color: var(--theme-glow);">PROFIL USAHA & HEADER STRUK</div>
+
+        <div class="input-row">
+          <span class="input-label">NAMA USAHA JASA / BENGKEL</span>
+          <input type="text" id="settingBusinessName" class="input-field" value="Servis & Jasa Warga Berkah RT 04" onchange="saveStoreProfile()">
+        </div>
+
+        <div class="input-row">
+          <span class="input-label">ALAMAT WORKSHOP / GERAI</span>
+          <input type="text" id="settingBusinessAddress" class="input-field" value="Jl. Swadaya No. 88 Pos RT 04 / RW 02" onchange="saveStoreProfile()">
+        </div>
+
+        <div class="input-row">
+          <span class="input-label">NO. WHATSAPP / TELEPON CUSTOMER SERVICE</span>
+          <input type="text" id="settingBusinessPhone" class="input-field" value="0813-8899-7711" onchange="saveStoreProfile()">
+        </div>
+
+        <div class="input-row">
+          <span class="input-label">FOOTER STRUK / SYARAT KETENTUAN LAYANAN</span>
+          <input type="text" id="settingBusinessFooter" class="input-field" value="Garansi berlaku dengan membawa struk ini. Terima kasih!" onchange="saveStoreProfile()">
+        </div>
+      </div>
+
+      <!-- INTERACTIVE THERMAL RECEIPT PREVIEW (PRATINJAU STRUK CETAK) -->
+      <div style="padding: 16px; border-bottom: 1px solid var(--border-thin); background: #000;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <span class="text-xs-bold" style="color: var(--theme-glow);">PRATINJAU NOTA JASA / TANDA TERIMA (58MM)</span>
+          <button class="btn-action btn-sm-bold btn-primary" onclick="window.print()">[CETAK CONTOH NOTA]</button>
+        </div>
+
+        <!-- Thermal Paper Simulation -->
+        <div class="receipt-container" id="receiptPreviewBox">
+          <div class="receipt-header">
+            <div class="receipt-title" id="rcptBusinessName">SERVIS & JASA WARGA BERKAH RT 04</div>
+            <div id="rcptBusinessAddress" style="font-size: 11px;">Jl. Swadaya No. 88 Pos RT 04 / RW 02</div>
+            <div id="rcptBusinessPhone" style="font-size: 11px;">WA: 0813-8899-7711</div>
+            <div style="margin-top: 6px; font-size: 10px;" id="rcptCategoryHeader">*** SERVIS & BENGKEL ***</div>
+          </div>
+
+          <div class="receipt-row" style="font-size: 11px;">
+            <span>No: #SRV-DEMO-001</span>
+            <span id="rcptTime">23/10 14:30</span>
+          </div>
+          <div class="receipt-row" style="font-size: 11px;">
+            <span>Teknisi: Mas Joko</span>
+            <span id="rcptCustName">Pelanggan: Pak Budi (RT 04)</span>
+          </div>
+
+          <div class="receipt-divider"></div>
+
+          <!-- Items list adapted per active category -->
+          <div id="rcptItemsContainer">
+            <!-- Dynamic sample items according to active category -->
+          </div>
+
+          <div class="receipt-divider"></div>
+
+          <div class="receipt-row" style="font-weight: bold; font-size: 14px;">
+            <span>TOTAL:</span>
+            <span id="rcptTotal">Rp 85.000</span>
+          </div>
+          <div class="receipt-row" style="font-size: 11px;" id="rcptCashRow">
+            <span>BAYAR (TUNAI):</span>
+            <span id="rcptCash">Rp 100.000</span>
+          </div>
+          <div class="receipt-row" style="font-size: 11px;" id="rcptChangeRow">
+            <span>KEMBALI:</span>
+            <span id="rcptChange">Rp 15.000</span>
+          </div>
+
+          <!-- Special Sub-category Notes on Receipt -->
+          <div id="rcptSubcatSpecialBox" style="margin-top: 8px; padding-top: 6px; border-top: 1px dotted #888; font-size: 11px;">
+            <!-- e.g. Garansi Servis, Rak Laundry, Estimasi Selesai, Jaminan Rental, dll -->
+          </div>
+
+          <div class="receipt-footer">
+            <div id="rcptFooterMsg">Garansi berlaku dengan membawa struk ini. Terima kasih!</div>
+            <div style="font-size: 10px; margin-top: 4px;">Powered by PelayananQu Offline-First</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Backup & Restore Data LocalStorage -->
+      <div style="padding: 16px; display: flex; flex-direction: column; gap: 8px;">
+        <div class="text-xs-bold" style="color: var(--text-muted);">MANAJEMEN DATA OFFLINE</div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+          <button class="btn-action btn-neutral" onclick="exportDataJSON()">[EXPORT JSON]</button>
+          <button class="btn-action btn-danger" onclick="resetToDefaultData()">[RESET DEFAULT]</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========================================================= -->
+  <!-- 5 FLOATING BOTTOM NAVIGATION TABS                         -->
+  <!-- ========================================================= -->
+  <nav class="bottom-nav">
+    <button class="bottom-nav-item active" id="navKasir" onclick="switchNavTab('kasir')">
+      <span>[KASIR]</span>
+    </button>
+    <button class="bottom-nav-item" id="navBon" onclick="switchNavTab('bon')">
+      <span>[BON]</span>
+    </button>
+    <button class="bottom-nav-item" id="navRekap" onclick="switchNavTab('rekap')">
+      <span>[REKAP]</span>
+    </button>
+    <button class="bottom-nav-item" id="navKatalog" onclick="switchNavTab('katalog')">
+      <span>[KATALOG]</span>
+    </button>
+    <button class="bottom-nav-item" id="navPengaturan" onclick="switchNavTab('pengaturan')">
+      <span>[PENGATURAN]</span>
+    </button>
+  </nav>
+
+  <!-- ========================================================= -->
+  <!-- MODALS                                                    -->
+  <!-- ========================================================= -->
+
+  <!-- Modal 1: Catat Bon / DP / Piutang -->
+  <div class="modal-overlay" id="modalCatatBon">
+    <div class="modal-content">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <span class="text-lg-bold" style="color: #f59e0b;">CATAT PIUTANG / DP LAYANAN</span>
+        <button class="btn-action btn-sm-bold btn-neutral" onclick="closeModal('modalCatatBon')">[TUTUP]</button>
+      </div>
+      <div class="input-row">
+        <span class="input-label">NAMA PELANGGAN / WARGA</span>
+        <input type="text" id="bonCustName" class="input-field" placeholder="Contoh: Pak RT / Bu Dewi">
+      </div>
+      <div class="input-row">
+        <span class="input-label">NO. WHATSAPP (PENAGIHAN)</span>
+        <input type="tel" id="bonCustPhone" class="input-field" placeholder="0812-xxxx-xxxx">
+      </div>
+      <div class="input-row">
+        <span class="input-label">TANGGAL JATUH TEMPO / ESTIMASI SELESAI</span>
+        <input type="date" id="bonDueDate" class="input-field">
+      </div>
+      <div class="input-row">
+        <span class="input-label">STATUS CATATAN</span>
+        <select id="bonTypeSelect" class="input-field" style="background: #18181b; padding: 6px;">
+          <option value="piutang">Piutang Penuh (Bayar Saat Ambil)</option>
+          <option value="dp_booking">Uang Muka (DP Sudah Masuk Sebagian)</option>
+          <option value="permak">DP Jahit / Fitting Selesai</option>
+          <option value="rental">Jaminan Sewa Unit</option>
+        </select>
+      </div>
+      <div class="input-row">
+        <span class="input-label">CATATAN KHUSUS / UNIT / JAMINAN</span>
+        <input type="text" id="bonNotes" class="input-field" placeholder="Keterangan unit, no KTP jaminan, sisa pelunasan">
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0;">
+        <span class="text-sm-bold">TOTAL NOMINAL:</span>
+        <span class="text-xl-bold" style="color: #f59e0b;" id="bonModalTotalDisplay">Rp 0</span>
+      </div>
+      <button class="btn-action btn-bon" onclick="confirmCatatBon()">[SIMPAN BON / DP]</button>
+    </div>
+  </div>
+
+  <!-- Modal 2: Input Manual Order -->
+  <div class="modal-overlay" id="modalCustomOrder">
+    <div class="modal-content">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <span class="text-lg-bold" style="color: var(--theme-glow);">INPUT LAYANAN MANUAL</span>
+        <button class="btn-action btn-sm-bold btn-neutral" onclick="closeModal('modalCustomOrder')">[BATAL]</button>
+      </div>
+      <div class="input-row">
+        <span class="input-label">NAMA LAYANAN / PEKERJAAN</span>
+        <input type="text" id="customOrderName" class="input-field" placeholder="Misal: Servis Dinamo Kipas">
+      </div>
+      <div class="input-row">
+        <span class="input-label">BIAYA LAYANAN (RP)</span>
+        <input type="number" id="customOrderPrice" class="input-field" placeholder="0">
+      </div>
+      <div class="input-row">
+        <span class="input-label">JUMLAH (UNIT / TITIK / HARI)</span>
+        <input type="number" id="customOrderQty" class="input-field" value="1">
+      </div>
+      <div class="input-row">
+        <span class="input-label">CATATAN KHUSUS</span>
+        <input type="text" id="customOrderNote" class="input-field" placeholder="Kondisi barang, garansi, dsb">
+      </div>
+      <button class="btn-action btn-primary" onclick="confirmAddCustomOrder()">[MASUKKAN KE ORDER]</button>
+    </div>
+  </div>
+
+  <!-- Modal 3: Tambah Katalog Tarif Baru -->
+  <div class="modal-overlay" id="modalAddCatalog">
+    <div class="modal-content">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <span class="text-lg-bold" style="color: var(--theme-glow);">TAMBAH LAYANAN BARU</span>
+        <button class="btn-action btn-sm-bold btn-neutral" onclick="closeModal('modalAddCatalog')">[BATAL]</button>
+      </div>
+      <div class="input-row">
+        <span class="input-label">SUB-KATEGORI</span>
+        <select id="newCatSubcat" class="input-field" style="background: #18181b; padding: 6px;">
+          <option value="servis">Servis & Bengkel</option>
+          <option value="barber">Barbershop & Salon</option>
+          <option value="laundry">Laundry & Cuci</option>
+          <option value="penjahit">Penjahit & Permak</option>
+          <option value="rental">Rental & Sewa</option>
+          <option value="tukang">Jasa Panggilan & Tukang</option>
+        </select>
+      </div>
+      <div class="input-row">
+        <span class="input-label">NAMA LAYANAN / JASA / BARANG</span>
+        <input type="text" id="newCatName" class="input-field" placeholder="Nama layanan">
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+        <div class="input-row">
+          <span class="input-label">TARIF (RP)</span>
+          <input type="number" id="newCatPrice" class="input-field" placeholder="0">
+        </div>
+        <div class="input-row">
+          <span class="input-label">MODAL / SPAREPART (RP)</span>
+          <input type="number" id="newCatModal" class="input-field" placeholder="0">
+        </div>
+      </div>
+      <div class="input-row">
+        <span class="input-label">SATUAN LAYANAN</span>
+        <input type="text" id="newCatUnit" class="input-field" value="Jasa">
+      </div>
+      <button class="btn-action btn-primary" onclick="confirmAddCatalog()">[SIMPAN KE DAFTAR TARIF]</button>
+    </div>
+  </div>
+
+  <!-- Modal 4: Ganti Sub-Kategori Modal Sheet -->
+  <div class="modal-overlay" id="modalSwitchSubcat">
+    <div class="modal-content">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <span class="text-lg-bold" style="color: #fff;">PILIH 6 SUB-KATEGORI PELAYANANQU</span>
+        <button class="btn-action btn-sm-bold btn-neutral" onclick="closeModal('modalSwitchSubcat')">[TUTUP]</button>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 8px;" id="modalSubcatList">
+        <!-- Rendered via JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       JAVASCRIPT LOGIC & LOCALSTORAGE ENGINE (OFFLINE-FIRST)
+       ============================================================ -->
+  <script>
+    // 6 Sub-Kategori Metadata with Exact Specs & Colors
+    const SUBCATEGORIES = {
+      servis: {
+        id: 'servis',
+        name: 'Servis & Bengkel',
+        color: '#ea580c', // Merah Oranye
+        glow: '#f97316',
+        label: 'SERVIS & BENGKEL',
+        presets: [
+          { id: 'sv-1', name: 'Ganti Oli Mesin + Filter (Jasa + Oli)', price: 65000, modal: 42000, unit: 'Paket' },
+          { id: 'sv-2', name: 'Tune Up Ringan / Servis Karburator-Injeksi', price: 45000, modal: 10000, unit: 'Unit' },
+          { id: 'sv-3', name: 'Ganti Kampas Rem Depan + Belakang', price: 75000, modal: 45000, unit: 'Set' },
+          { id: 'sv-4', name: 'Tambal Ban Tubeless Press Warga', price: 15000, modal: 3000, unit: 'Titik' },
+          { id: 'sv-5', name: 'Bongkar Pasang Mesin / Turun Mesin', price: 250000, modal: 50000, unit: 'Motor' }
+        ],
+        dummyReceiptItems: [
+          { name: 'Ganti Oli MPX2 Matic + Filter', qty: 1, price: 65000, spec: 'Oli Asli AHM | Beat B 3456 TKG' },
+          { name: 'Jasa Tune Up & Bersih Injeksi', qty: 1, price: 45000, spec: 'Garansi Servis 14 Hari' }
+        ],
+        specialNote: 'Status Unit: [SELESAI - BISA DIAMBIL]. Garansi Servis 14 Hari (Klaim wajib sertakan struk ini).'
+      },
+      barber: {
+        id: 'barber',
+        name: 'Barbershop & Salon',
+        color: '#a21caf', // Ungu Magenta
+        glow: '#e879f9',
+        label: 'BARBERSHOP & SALON',
+        presets: [
+          { id: 'bb-1', name: 'Potong Rambut Dewasa + Pijat Ringan', price: 25000, modal: 2000, unit: 'Kepala' },
+          { id: 'bb-2', name: 'Cukur Anak / Balita', price: 20000, modal: 1000, unit: 'Anak' },
+          { id: 'bb-3', name: 'Paket Komplit: Cukur + Wash + Pomade', price: 35000, modal: 5000, unit: 'Paket' },
+          { id: 'bb-4', name: 'Semir Hitam / Pewarnaan Rambut', price: 50000, modal: 22000, unit: 'Orang' },
+          { id: 'bb-5', name: 'Cukur Jenggot & Kumis (Hot Towel)', price: 15000, modal: 2000, unit: 'Orang' }
+        ],
+        dummyReceiptItems: [
+          { name: 'Paket Komplit: Cukur + Wash + Styling', qty: 1, price: 35000, spec: 'Kapster: Bro Dani | Kursi 2' },
+          { name: 'Semir Hitam Uban Natural', qty: 1, price: 50000, spec: 'Cat Rambut Herbal' }
+        ],
+        specialNote: 'Kapster: Bro Dani (Komisi Tercatat). Terima kasih telah mempercayakan penampilan Anda pada kami!'
+      },
+      laundry: {
+        id: 'laundry',
+        name: 'Laundry & Cuci',
+        color: '#0284c7', // Biru Laut
+        glow: '#38bdf8',
+        label: 'LAUNDRY & CUCI',
+        presets: [
+          { id: 'ld-1', name: 'Cuci Komplit Reguler 2 Hari (Per Kg)', price: 7000, modal: 1500, unit: 'Kg' },
+          { id: 'ld-2', name: 'Cuci Komplit Express 1 Hari (Per Kg)', price: 10000, modal: 2000, unit: 'Kg' },
+          { id: 'ld-3', name: 'Cuci Kering Lipat Saja (Per Kg)', price: 5000, modal: 1000, unit: 'Kg' },
+          { id: 'ld-4', name: 'Cuci Bedcover Besar / Sprei Tebal', price: 25000, modal: 6000, unit: 'Pcs' },
+          { id: 'ld-5', name: 'Cuci Sepatu Sneaker Deep Clean', price: 30000, modal: 5000, unit: 'Pasang' }
+        ],
+        dummyReceiptItems: [
+          { name: 'Cuci Komplit Reguler (4.5 Kg)', qty: 1, price: 31500, spec: 'Nomor Rak Cuci: [RAK B-07] | 4.5 Kg x Rp 7.000' },
+          { name: 'Cuci Bedcover King Size', qty: 1, price: 25000, spec: 'Parfum Sakura Premium' }
+        ],
+        specialNote: 'Nomor Rak Cuci: [RAK B-07]. Estimasi Selesai: 2 Hari. Komplain kehilangan maks. 1x24 jam setelah ambil.'
+      },
+      penjahit: {
+        id: 'penjahit',
+        name: 'Penjahit & Permak',
+        color: '#0f766e', // Teal / Hijau Toska
+        glow: '#14b8a6',
+        label: 'PENJAHIT & PERMAK',
+        presets: [
+          { id: 'pj-1', name: 'Potong Celana Jeans / Chino (Kelim)', price: 15000, modal: 1500, unit: 'Pcs' },
+          { id: 'pj-2', name: 'Kecilkan Pinggang / Pasang Karet', price: 20000, modal: 2000, unit: 'Pcs' },
+          { id: 'pj-3', name: 'Ganti Resleting Jeans Besi YKK', price: 25000, modal: 8000, unit: 'Pcs' },
+          { id: 'pj-4', name: 'Jahit Baju Gamis / Kemeja Baru', price: 120000, modal: 25000, unit: 'Potong' },
+          { id: 'pj-5', name: 'Permak Jas Formal / Kebaya Pesta', price: 65000, modal: 10000, unit: 'Pcs' }
+        ],
+        dummyReceiptItems: [
+          { name: 'Permak 2 Celana Jeans (Potong + Kecilkan)', qty: 2, price: 70000, spec: 'Ukuran Lingkar 32 -> 30' }
+        ],
+        specialNote: 'Status: DP Rp 30.000 Masuk. Sisa Pelunasan: Rp 40.000. Estimasi Jadi: 26 Oktober 2026.'
+      },
+      rental: {
+        id: 'rental',
+        name: 'Rental & Sewa',
+        color: '#d97706', // Kuning Emas / Amber
+        glow: '#f59e0b',
+        label: 'RENTAL & SEWA',
+        presets: [
+          { id: 'rt-1', name: 'Sewa Tenda Terop & Kursi (Per Hari)', price: 150000, modal: 20000, unit: 'Set' },
+          { id: 'rt-2', name: 'Sewa Sound System Portable + Mic', price: 100000, modal: 15000, unit: 'Hari' },
+          { id: 'rt-3', name: 'Sewa Mesin Cuci Steam / Steam Motor', price: 50000, modal: 8000, unit: 'Hari' },
+          { id: 'rt-4', name: 'Sewa Proyektor + Layar Screen', price: 120000, modal: 20000, unit: 'Hari' },
+          { id: 'rt-5', name: 'Sewa Genset 2000 Watt', price: 175000, modal: 35000, unit: 'Hari' }
+        ],
+        dummyReceiptItems: [
+          { name: 'Sewa Sound System Portable (2 Hari)', qty: 2, price: 200000, spec: 'Jaminan: KTP Asli Pak Supri (RT 04)' }
+        ],
+        specialNote: 'Jaminan Identitas: KTP Asli Diserahkan. Kerusakan/kehilangan komponen unit ditanggung penyewa.'
+      },
+      tukang: {
+        id: 'tukang',
+        name: 'Jasa Panggilan & Tukang',
+        color: '#854d0e', // Cokelat Warm
+        glow: '#b45309',
+        label: 'JASA PANGGILAN & TUKANG',
+        presets: [
+          { id: 'tk-1', name: 'Cuci AC Split 1/2 PK - 1 PK (Per Unit)', price: 65000, modal: 12000, unit: 'Unit' },
+          { id: 'tk-2', name: 'Tambah Freon R32 / R410', price: 120000, modal: 45000, unit: 'Unit' },
+          { id: 'tk-3', name: 'Jasa Perbaikan Saluran Kran Bocor / Pipa', price: 75000, modal: 15000, unit: 'Titik' },
+          { id: 'tk-4', name: 'Jasa Tukang Bangunan Harian (Borongan)', price: 150000, modal: 0, unit: 'Hari' },
+          { id: 'tk-5', name: 'Instalasi Jalur Kelistrikan Baru', price: 85000, modal: 20000, unit: 'Titik' }
+        ],
+        dummyReceiptItems: [
+          { name: 'Cuci AC Split 1 PK (2 Unit)', qty: 2, price: 130000, spec: 'Kamar Utama + Ruang Tamu' },
+          { name: 'Isi Ulang Freon R32', qty: 1, price: 120000, spec: 'Outdoor Dingin Optimal' }
+        ],
+        specialNote: 'Rincian Invoice Kerja Panggilan AC. Garansi dingin 30 hari. Silakan simpan invoice digital ini.'
+      }
+    };
+
+    // State Variables
+    const STORAGE_KEY = 'pelayananqu_6sub_v1';
+    let appState = {
+      activeSubcat: 'servis',
+      cart: [],
+      invoices: [],
+      bonList: [],
+      catalog: [],
+      businessProfile: {
+        name: 'Servis & Jasa Warga Berkah RT 04',
+        address: 'Jl. Swadaya No. 88 Pos RT 04 / RW 02',
+        phone: '0813-8899-7711',
+        footer: 'Garansi berlaku dengan membawa struk ini. Terima kasih!'
+      },
+      // Specialized Calculator Variables
+      // 1. Servis
+      servisJasa: 45000,
+      servisPart: 40000,
+      servisStatus: 'Bisa Diambil', // 'Dalam Proses' | 'Bisa Diambil' | 'Selesai'
+      servisWarranty: 'Garansi 14 Hari',
+      servisUnitDesc: '',
+
+      // 2. Barber
+      barberKapster: 'Dani',
+      barberServiceType: 'Dewasa',
+
+      // 3. Laundry
+      laundryWeight: 4.5,
+      laundrySpeed: 'Reguler', // 'Reguler' | 'Express'
+      laundryRack: 'B-07',
+
+      // 4. Penjahit
+      penjahitTotalCost: 70000,
+      penjahitDp: 30000,
+      penjahitDueDate: '',
+      penjahitNote: '',
+
+      // 5. Rental
+      rentalDuration: 1,
+      rentalDurationType: 'Hari', // 'Jam' | 'Hari'
+      rentalIdCard: 'KTP Asli',
+      rentalItemName: 'Sound System Portable',
+
+      // 6. Tukang
+      tukangJobDesc: '',
+      tukangUnitCount: 2,
+      tukangUnitRate: 65000,
+      tukangClientPhone: ''
+    };
+
+    // Load from LocalStorage
+    function initData() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          appState = { ...appState, ...parsed };
+        } catch (e) {
+          console.error('Error loading data', e);
+        }
+      } else {
+        // Seed catalog across all 6 subcategories
+        Object.keys(SUBCATEGORIES).forEach(k => {
+          SUBCATEGORIES[k].presets.forEach(p => {
+            appState.catalog.push({
+              id: p.id,
+              name: p.name,
+              category: k,
+              price: p.price,
+              modal: p.modal,
+              unit: p.unit
+            });
+          });
+        });
+
+        // Seed initial Bon / DP records
+        appState.bonList = [
+          {
+            id: 'bon-1',
+            customerName: 'Pak Hadi (RT 04)',
+            phone: '081298765432',
+            amount: 40000,
+            date: '2026-10-22',
+            dueDate: '2026-10-29',
+            notes: 'Sisa Pelunasan Servis Pompa Air & Ganti Seal',
+            status: 'belum_lunas',
+            type: 'piutang'
+          },
+          {
+            id: 'bon-2',
+            customerName: 'Bu RT Endang',
+            phone: '081345678910',
+            amount: 40000,
+            date: '2026-10-21',
+            dueDate: '2026-10-26',
+            notes: 'Sisa Pelunasan Permak Gamis Pesta (DP 30k Lunas)',
+            status: 'belum_lunas',
+            type: 'permak'
+          }
+        ];
+
+        saveData();
+      }
+
+      applyTheme();
+      renderCategoryToolstrip();
+      renderPresetItems();
+      renderCart();
+      renderBonList();
+      renderRekap();
+      renderKatalog();
+      renderSubcatButtons();
+      updateReceiptPreview();
+    }
+
+    function saveData() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toastBox');
+      toast.innerText = msg;
+      toast.classList.remove('show');
+      void toast.offsetWidth;
+      toast.classList.add('show');
+    }
+
+    // Apply color theme dynamically
+    function applyTheme() {
+      const sub = SUBCATEGORIES[appState.activeSubcat];
+      document.documentElement.style.setProperty('--theme-active', sub.color);
+      document.documentElement.style.setProperty('--theme-glow', sub.glow);
+      document.getElementById('headerSubcatBadge').innerText = sub.label;
+
+      document.querySelectorAll('.subcat-tab-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-subcat') === appState.activeSubcat);
+      });
+      document.getElementById('katalogCategoryName').innerText = sub.label;
+      document.getElementById('presetHeadingLabel').innerText = `PRESET LAYANAN (${sub.label})`;
+    }
+
+    function switchSubCategory(catId) {
+      if (!SUBCATEGORIES[catId]) return;
+      appState.activeSubcat = catId;
+      applyTheme();
+      renderCategoryToolstrip();
+      renderPresetItems();
+      renderKatalog();
+      updateReceiptPreview();
+      saveData();
+      showToast(`Beralih ke: ${SUBCATEGORIES[catId].name}`);
+    }
+
+    function switchNavTab(tabId) {
+      const views = ['viewKasir', 'viewBon', 'viewRekap', 'viewKatalog', 'viewPengaturan'];
+      const navs = ['navKasir', 'navBon', 'navRekap', 'navKatalog', 'navPengaturan'];
+
+      views.forEach(v => {
+        const el = document.getElementById(v);
+        if (el) el.style.display = (v === 'view' + tabId.charAt(0).toUpperCase() + tabId.slice(1)) ? 'block' : 'none';
+      });
+
+      navs.forEach(n => {
+        const btn = document.getElementById(n);
+        if (btn) btn.classList.toggle('active', n === 'nav' + tabId.charAt(0).toUpperCase() + tabId.slice(1));
+      });
+
+      if (tabId === 'bon') renderBonList();
+      if (tabId === 'rekap') renderRekap();
+      if (tabId === 'katalog') renderKatalog();
+      if (tabId === 'pengaturan') updateReceiptPreview();
+      window.scrollTo(0, 0);
+    }
+
+    // Render Sub-Category Specialized Toolstrip
+    function renderCategoryToolstrip() {
+      const container = document.getElementById('categoryToolstrip');
+      const cat = appState.activeSubcat;
+
+      if (cat === 'servis') {
+        container.innerHTML = `
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span class="text-xs-bold" style="color: var(--theme-glow);">BIAYA JASA VS SPAREPART & GARANSI</span>
+            <div style="display: flex; gap: 4px;">
+              ${['Dalam Proses', 'Bisa Diambil', 'Selesai'].map(st => `
+                <button class="pill-btn ${appState.servisStatus === st ? 'active' : ''}" onclick="setServisStatus('${st}')">[${st.toUpperCase()}]</button>
+              `).join('')}
+            </div>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+            <input type="number" placeholder="Biaya Jasa Servis (Rp)" value="${appState.servisJasa}" class="input-field" style="background: #18181b; padding: 6px; border-radius: 4px; font-size: 12px;" onchange="appState.servisJasa = parseInt(this.value)||0">
+            <input type="number" placeholder="Biaya Sparepart (Rp)" value="${appState.servisPart}" class="input-field" style="background: #18181b; padding: 6px; border-radius: 4px; font-size: 12px;" onchange="appState.servisPart = parseInt(this.value)||0">
+          </div>
+          <div style="display: flex; gap: 6px; align-items: center;">
+            <input type="text" placeholder="Deskripsi Unit & No Plat (Misal: Beat B 3456 TKG)" value="${appState.servisUnitDesc}" class="input-field" style="flex: 1; background: #18181b; padding: 6px; border-radius: 4px; font-size: 12px;" onchange="appState.servisUnitDesc = this.value">
+            <select id="servisWarrantySelect" class="input-field" style="width: 140px; background: #18181b; padding: 6px; border-radius: 4px; font-size: 11px;" onchange="appState.servisWarranty = this.value">
+              <option value="Garansi 7 Hari" ${appState.servisWarranty === 'Garansi 7 Hari' ? 'selected' : ''}>Garansi 7 Hari</option>
+              <option value="Garansi 14 Hari" ${appState.servisWarranty === 'Garansi 14 Hari' ? 'selected' : ''}>Garansi 14 Hari</option>
+              <option value="Garansi 1 Bulan" ${appState.servisWarranty === 'Garansi 1 Bulan' ? 'selected' : ''}>Garansi 1 Bulan</option>
+            </select>
+            <button class="btn-action btn-sm-bold btn-primary" onclick="addServisTicketToCart()">[+ CATAT TIKET]</button>
+          </div>
+        `;
+      } else if (cat === 'barber') {
+        container.innerHTML = `
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span class="text-xs-bold" style="color: var(--theme-glow);">PILIH KAPSTER / TERAPIS (REKAP KOMISI)</span>
+            <div style="display: flex; gap: 4px;">
+              ${['Dani', 'Agus', 'Bayu'].map(kp => `
+                <button class="pill-btn ${appState.barberKapster === kp ? 'active' : ''}" onclick="setBarberKapster('${kp}')">[KAPSTER: ${kp}]</button>
+              `).join('')}
+            </div>
+          </div>
+          <div class="pill-group">
+            <button class="btn-action btn-sm-bold btn-primary" onclick="addBarberQuick('Cukur Dewasa', 25000, 2000)">[+ CUKUR DEWASA (25k)]</button>
+            <button class="btn-action btn-sm-bold btn-neutral" onclick="addBarberQuick('Cukur + Wash + Styling', 35000, 5000)">[+ KOMPLIT WASH (35k)]</button>
+            <button class="btn-action btn-sm-bold btn-neutral" onclick="addBarberQuick('Semir Hitam Uban', 50000, 22000)">[+ SEMIR (50k)]</button>
+          </div>
+        `;
+      } else if (cat === 'laundry') {
+        const rate = appState.laundrySpeed === 'Express' ? 10000 : 7000;
+        const total = Math.round((appState.laundryWeight || 1) * rate);
+        container.innerHTML = `
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span class="text-xs-bold" style="color: var(--theme-glow);">KALKULATOR KILOAN OTOMATIS & NOMOR RAK</span>
+            <button class="pill-btn ${appState.laundrySpeed === 'Express' ? 'active' : ''}" onclick="toggleLaundrySpeed()">
+              MODE: ${appState.laundrySpeed === 'Express' ? '[EXPRESS 1 HARI (10k/kg)]' : '[REGULER 2 HARI (7k/kg)]'}
+            </button>
+          </div>
+          <div style="display: flex; gap: 8px; align-items: center;">
+            <input type="number" step="0.1" value="${appState.laundryWeight}" min="0.5" style="width: 70px; background: #18181b; color: #fff; border: 1px solid var(--border-thin); padding: 7px; font-weight: 800; text-align: center; border-radius: 4px;" onchange="appState.laundryWeight = parseFloat(this.value)||1; renderCategoryToolstrip();">
+            <span class="text-sm-bold">Kg x Rp ${rate.toLocaleString()} = <b style="color: var(--theme-glow);">Rp ${total.toLocaleString()}</b></span>
+            <input type="text" placeholder="No. Rak (Misal: B-07)" value="${appState.laundryRack}" style="width: 100px; background: #18181b; color: #fff; border: 1px solid var(--border-thin); padding: 7px; font-weight: 800; text-align: center; border-radius: 4px;" onchange="appState.laundryRack = this.value">
+            <button class="btn-action btn-sm-bold btn-primary" onclick="addLaundryCucianToCart()">[+ CETAK TIKET]</button>
+          </div>
+        `;
+      } else if (cat === 'penjahit') {
+        const sisa = Math.max(0, appState.penjahitTotalCost - appState.penjahitDp);
+        container.innerHTML = `
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span class="text-xs-bold" style="color: var(--theme-glow);">CATAT FITTING / PERMAK & ESTIMASI SELESAI</span>
+            <span class="text-xs-bold" style="color: #22c55e;">SISA PELUNASAN: Rp ${sisa.toLocaleString()}</span>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+            <input type="number" placeholder="Total Biaya Permak (Rp)" value="${appState.penjahitTotalCost}" class="input-field" style="background: #18181b; padding: 6px; border-radius: 4px; font-size: 12px;" onchange="appState.penjahitTotalCost = parseInt(this.value)||0; renderCategoryToolstrip();">
+            <input type="number" placeholder="DP Uang Muka (Rp)" value="${appState.penjahitDp}" class="input-field" style="background: #18181b; padding: 6px; border-radius: 4px; font-size: 12px;" onchange="appState.penjahitDp = parseInt(this.value)||0; renderCategoryToolstrip();">
+          </div>
+          <div style="display: flex; gap: 6px; align-items: center;">
+            <input type="text" placeholder="Rincian Permak (Potong Jeans, Kecilkan Pinggang)" value="${appState.penjahitNote}" class="input-field" style="flex: 1; background: #18181b; padding: 6px; border-radius: 4px; font-size: 12px;" onchange="appState.penjahitNote = this.value">
+            <input type="date" value="${appState.penjahitDueDate}" class="input-field" style="width: 130px; background: #18181b; padding: 6px; border-radius: 4px; font-size: 11px;" onchange="appState.penjahitDueDate = this.value">
+            <button class="btn-action btn-sm-bold btn-primary" onclick="addPenjahitOrderToCart()">[+ CATAT JAHIT]</button>
+          </div>
+        `;
+      } else if (cat === 'rental') {
+        container.innerHTML = `
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span class="text-xs-bold" style="color: var(--theme-glow);">DURASI SEWA & JAMINAN IDENTITAS</span>
+            <div style="display: flex; gap: 4px;">
+              ${['Hari', 'Jam'].map(tp => `
+                <button class="pill-btn ${appState.rentalDurationType === tp ? 'active' : ''}" onclick="setRentalDurationType('${tp}')">[PER ${tp.toUpperCase()}]</button>
+              `).join('')}
+            </div>
+          </div>
+          <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 6px;">
+            <input type="text" placeholder="Nama Alat / Unit Sewa (Tenda, Sound, Genset)" value="${appState.rentalItemName}" class="input-field" style="background: #18181b; padding: 6px; border-radius: 4px; font-size: 12px;" onchange="appState.rentalItemName = this.value">
+            <input type="number" placeholder="Durasi (${appState.rentalDurationType})" value="${appState.rentalDuration}" class="input-field" style="background: #18181b; padding: 6px; border-radius: 4px; font-size: 12px;" onchange="appState.rentalDuration = parseInt(this.value)||1">
+          </div>
+          <div style="display: flex; gap: 6px; align-items: center;">
+            <input type="text" placeholder="Jaminan Identitas (Misal: KTP Asli / SIM A)" value="${appState.rentalIdCard}" class="input-field" style="flex: 1; background: #18181b; padding: 6px; border-radius: 4px; font-size: 12px;" onchange="appState.rentalIdCard = this.value">
+            <button class="btn-action btn-sm-bold btn-primary" onclick="addRentalBookingToCart()">[+ SEWA UNIT]</button>
+          </div>
+        `;
+      } else if (cat === 'tukang') {
+        const total = (appState.tukangUnitCount || 1) * (appState.tukangUnitRate || 65000);
+        container.innerHTML = `
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span class="text-xs-bold" style="color: var(--theme-glow);">RINCIAN PEKERJAAN PER TITIK / UNIT</span>
+            <span class="text-xs-bold" style="color: #22c55e;">EST. TOTAL: Rp ${total.toLocaleString()}</span>
+          </div>
+          <div style="display: flex; gap: 6px; align-items: center;">
+            <input type="text" placeholder="Rincian Kerja (Misal: Cuci AC Split + Freon)" value="${appState.tukangJobDesc}" class="input-field" style="flex: 1; background: #18181b; padding: 6px; border-radius: 4px; font-size: 12px;" onchange="appState.tukangJobDesc = this.value">
+            <input type="number" value="${appState.tukangUnitCount}" min="1" style="width: 60px; background: #18181b; color: #fff; border: 1px solid var(--border-thin); padding: 6px; text-align: center; border-radius: 4px;" onchange="appState.tukangUnitCount = parseInt(this.value)||1; renderCategoryToolstrip();">
+            <span class="text-xs-bold">Titik</span>
+          </div>
+          <div style="display: flex; gap: 6px; align-items: center;">
+            <input type="number" placeholder="Tarif per Titik/Unit (Rp)" value="${appState.tukangUnitRate}" class="input-field" style="flex: 1; background: #18181b; padding: 6px; border-radius: 4px; font-size: 12px;" onchange="appState.tukangUnitRate = parseInt(this.value)||0; renderCategoryToolstrip();">
+            <button class="btn-action btn-sm-bold btn-primary" onclick="addTukangJobToCart()">[+ INPUT TIKET TUKANG]</button>
+          </div>
+        `;
+      }
+    }
+
+    // Handlers for toolstrip actions
+    function setServisStatus(st) {
+      appState.servisStatus = st;
+      renderCategoryToolstrip();
+      showToast(`Status Servis: [${st.toUpperCase()}]`);
+    }
+
+    function addServisTicketToCart() {
+      const jasa = appState.servisJasa || 0;
+      const part = appState.servisPart || 0;
+      const total = jasa + part;
+      addToCart({
+        id: 'sv-tkt-' + Date.now(),
+        name: `Servis Unit ${appState.servisUnitDesc ? `(${appState.servisUnitDesc})` : ''}`,
+        price: total,
+        modal: part,
+        unit: 'Tiket',
+        note: `Jasa Rp ${jasa.toLocaleString()} + Sparepart Rp ${part.toLocaleString()} [${appState.servisWarranty}] [STATUS: ${appState.servisStatus.toUpperCase()}]`
+      });
+    }
+
+    function setBarberKapster(kp) {
+      appState.barberKapster = kp;
+      renderCategoryToolstrip();
+      showToast(`Kapster aktif: ${kp}`);
+    }
+
+    function addBarberQuick(name, price, modal) {
+      addToCart({
+        id: 'bb-qk-' + Date.now(),
+        name: name,
+        price: price,
+        modal: modal,
+        unit: 'Orang',
+        note: `Kapster: ${appState.barberKapster} (Komisi Tercatat)`
+      });
+    }
+
+    function toggleLaundrySpeed() {
+      appState.laundrySpeed = appState.laundrySpeed === 'Express' ? 'Reguler' : 'Express';
+      renderCategoryToolstrip();
+      showToast(`Mode Laundry: ${appState.laundrySpeed}`);
+    }
+
+    function addLaundryCucianToCart() {
+      const kg = appState.laundryWeight || 1;
+      const rate = appState.laundrySpeed === 'Express' ? 10000 : 7000;
+      const total = Math.round(kg * rate);
+      const rack = appState.laundryRack || 'A-01';
+
+      addToCart({
+        id: 'ld-cuci-' + Date.now(),
+        name: `Laundry Kiloan (${appState.laundrySpeed}) ${kg} Kg`,
+        price: total,
+        modal: Math.round(total * 0.2),
+        unit: 'Nota',
+        note: `Nomor Rak Cuci: [RAK ${rack}] | ${kg} Kg @ Rp ${rate.toLocaleString()}`
+      });
+    }
+
+    function addPenjahitOrderToCart() {
+      const total = appState.penjahitTotalCost || 0;
+      const dp = appState.penjahitDp || 0;
+      const sisa = Math.max(0, total - dp);
+      const due = appState.penjahitDueDate || new Date(Date.now() + 3*86400000).toISOString().split('T')[0];
+
+      addToCart({
+        id: 'pj-ord-' + Date.now(),
+        name: `Jasa Permak & Jahit Pakaian`,
+        price: total,
+        modal: Math.round(total * 0.15),
+        unit: 'Order',
+        note: `DP: Rp ${dp.toLocaleString()} | Sisa: Rp ${sisa.toLocaleString()} | Est. Jadi: ${due} ${appState.penjahitNote ? `(${appState.penjahitNote})` : ''}`
+      });
+    }
+
+    function setRentalDurationType(tp) {
+      appState.rentalDurationType = tp;
+      renderCategoryToolstrip();
+    }
+
+    function addRentalBookingToCart() {
+      const item = appState.rentalItemName || 'Peralatan Sewa';
+      const dur = appState.rentalDuration || 1;
+      const rate = 100000;
+      const total = dur * rate;
+
+      addToCart({
+        id: 'rt-book-' + Date.now(),
+        name: `Sewa ${item} (${dur} ${appState.rentalDurationType})`,
+        price: total,
+        modal: Math.round(total * 0.15),
+        unit: 'Sewa',
+        note: `Durasi ${dur} ${appState.rentalDurationType} | Jaminan: ${appState.rentalIdCard || 'KTP Asli'}`
+      });
+    }
+
+    function addTukangJobToCart() {
+      const count = appState.tukangUnitCount || 1;
+      const rate = appState.tukangUnitRate || 65000;
+      const total = count * rate;
+
+      addToCart({
+        id: 'tk-job-' + Date.now(),
+        name: `Panggilan Tukang: ${appState.tukangJobDesc || 'Perbaikan'} (${count} Titik)`,
+        price: total,
+        modal: Math.round(total * 0.25),
+        unit: 'Pekerjaan',
+        note: `${count} Titik/Unit @ Rp ${rate.toLocaleString()} (Garansi Servis 30 Hari)`
+      });
+    }
+
+    // Render Preset Items List (Underline List Style - Flat, no box)
+    function renderPresetItems() {
+      const container = document.getElementById('presetItemsList');
+      const cat = appState.activeSubcat;
+      const sub = SUBCATEGORIES[cat];
+
+      if (!sub || !sub.presets) {
+        container.innerHTML = '<div style="padding: 16px; color: var(--text-dim);">Tidak ada preset layanan</div>';
+        return;
+      }
+
+      container.innerHTML = sub.presets.map(item => `
+        <div class="list-minimal-item">
+          <div style="flex: 1; min-width: 0;">
+            <div class="text-md-bold" style="color: #ffffff;">${item.name}</div>
+            <div class="text-xs-bold" style="color: var(--text-muted); margin-top: 2px;">
+              Tarif: Rp ${item.price.toLocaleString('id-ID')} / ${item.unit}
+            </div>
+          </div>
+          <button class="btn-action btn-sm-bold btn-primary" onclick='addToCartFromPreset(${JSON.stringify(item)})'>
+            [+ TAMBAH]
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function addToCartFromPreset(preset) {
+      addToCart({
+        id: preset.id + '-' + Date.now(),
+        name: preset.name,
+        price: preset.price,
+        modal: preset.modal || Math.round(preset.price * 0.3),
+        qty: 1,
+        unit: preset.unit,
+        note: `Layanan Standar ${SUBCATEGORIES[appState.activeSubcat].name}`
+      });
+    }
+
+    function addToCart(item) {
+      const existing = appState.cart.find(c => c.name === item.name && c.note === item.note);
+      if (existing) {
+        existing.qty += (item.qty || 1);
+      } else {
+        appState.cart.push({
+          id: item.id || 'item-' + Date.now(),
+          name: item.name,
+          price: item.price,
+          modal: item.modal || 0,
+          qty: item.qty || 1,
+          unit: item.unit || 'Layanan',
+          note: item.note || ''
+        });
+      }
+
+      renderCart();
+      showToast(`+ ${item.name} dimasukkan.`);
+    }
+
+    function updateCartQty(index, delta) {
+      if (!appState.cart[index]) return;
+      appState.cart[index].qty += delta;
+      if (appState.cart[index].qty <= 0) {
+        appState.cart.splice(index, 1);
+      }
+      renderCart();
+    }
+
+    function removeCartItem(index) {
+      appState.cart.splice(index, 1);
+      renderCart();
+    }
+
+    function clearCart() {
+      if (appState.cart.length === 0) return;
+      if (confirm('Kosongkan semua rincian layanan di keranjang?')) {
+        appState.cart = [];
+        renderCart();
+        showToast('Keranjang layanan dikosongkan.');
+      }
+    }
+
+    function renderCart() {
+      const container = document.getElementById('cartItemsList');
+      const countEl = document.getElementById('cartCount');
+      const totalEl = document.getElementById('totalCartDisplay');
+
+      countEl.innerText = appState.cart.reduce((s, c) => s + c.qty, 0);
+
+      if (appState.cart.length === 0) {
+        container.innerHTML = `
+          <div style="padding: 24px 16px; text-align: center; color: var(--text-dim); font-size: 13px; font-weight: 700;">
+            Belum ada rincian jasa. Tekan preset layanan di atas atau tombol hitung cepat.
+          </div>
+        `;
+        totalEl.innerText = 'Rp 0';
+        updateSubcatStatusDisplay();
+        updateChangeCalculation();
+        return;
+      }
+
+      const total = appState.cart.reduce((s, c) => s + (c.price * c.qty), 0);
+      totalEl.innerText = `Rp ${total.toLocaleString('id-ID')}`;
+
+      container.innerHTML = appState.cart.map((item, index) => `
+        <div class="list-minimal-item">
+          <div style="flex: 1; min-width: 0;">
+            <div class="text-md-bold" style="color: #fff;">${item.name}</div>
+            <div style="display: flex; gap: 8px; align-items: center; margin-top: 3px; font-size: 12px; color: var(--text-muted);">
+              <span>${item.qty} ${item.unit} x Rp ${item.price.toLocaleString('id-ID')}</span>
+              <span class="text-sm-bold" style="color: var(--theme-glow);">= Rp ${(item.price * item.qty).toLocaleString('id-ID')}</span>
+            </div>
+            ${item.note ? `<div class="text-xs-bold" style="color: #f59e0b; margin-top: 2px;">${item.note}</div>` : ''}
+          </div>
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <button class="btn-action btn-sm-bold btn-neutral" onclick="updateCartQty(${index}, -1)">-</button>
+            <span class="text-md-bold" style="min-width: 20px; text-align: center;">${item.qty}</span>
+            <button class="btn-action btn-sm-bold btn-neutral" onclick="updateCartQty(${index}, 1)">+</button>
+            <button class="btn-action btn-sm-bold btn-danger" onclick="removeCartItem(${index})">[HAPUS]</button>
+          </div>
+        </div>
+      `).join('');
+
+      updateSubcatStatusDisplay();
+      updateChangeCalculation();
+    }
+
+    function updateSubcatStatusDisplay() {
+      const lbl = document.getElementById('subcatExtraLabel');
+      const val = document.getElementById('subcatExtraValue');
+
+      if (appState.activeSubcat === 'servis') {
+        lbl.innerText = 'STATUS SERVIS';
+        val.innerText = appState.servisStatus.toUpperCase();
+      } else if (appState.activeSubcat === 'barber') {
+        lbl.innerText = 'KAPSTER';
+        val.innerText = `BRO ${appState.barberKapster.toUpperCase()}`;
+      } else if (appState.activeSubcat === 'laundry') {
+        lbl.innerText = 'NOMOR RAK';
+        val.innerText = `RAK ${appState.laundryRack.toUpperCase()}`;
+      } else if (appState.activeSubcat === 'penjahit') {
+        lbl.innerText = 'STATUS FITTING';
+        val.innerText = appState.penjahitDp > 0 ? 'DP MASUK' : 'LUNAS';
+      } else {
+        lbl.innerText = 'SUB-KATEGORI';
+        val.innerText = SUBCATEGORIES[appState.activeSubcat].label;
+      }
+    }
+
+    function updateChangeCalculation() {
+      const total = appState.cart.reduce((s, c) => s + (c.price * c.qty), 0);
+      const given = parseInt(document.getElementById('cashGivenInput').value) || 0;
+      const changeEl = document.getElementById('calcKembalianText');
+
+      if (given >= total) {
+        const change = given - total;
+        changeEl.innerText = `Kembalian: Rp ${change.toLocaleString('id-ID')}`;
+        changeEl.style.color = '#22c55e';
+      } else {
+        const under = total - given;
+        changeEl.innerText = `Kurang: Rp ${under.toLocaleString('id-ID')}`;
+        changeEl.style.color = '#ef4444';
+      }
+    }
+
+    // Direct Payment Execution: [TUNAI] & [QRIS]
+    function executePayment(method) {
+      if (appState.cart.length === 0) {
+        showToast('Keranjang layanan masih kosong!');
+        return;
+      }
+
+      const total = appState.cart.reduce((s, c) => s + (c.price * c.qty), 0);
+      const modalTotal = appState.cart.reduce((s, c) => s + ((c.modal || 0) * c.qty), 0);
+      const cashGiven = parseInt(document.getElementById('cashGivenInput').value) || total;
+      const change = Math.max(0, cashGiven - total);
+
+      const invoice = {
+        id: 'inv-' + Date.now(),
+        invoiceNumber: 'SRV-' + Date.now().toString().slice(-6),
+        subCategory: appState.activeSubcat,
+        items: [...appState.cart],
+        total: total,
+        modal: modalTotal,
+        paymentMethod: method,
+        cashGiven: method === 'tunai' ? cashGiven : total,
+        change: method === 'tunai' ? change : 0,
+        status: 'lunas',
+        date: new Date().toISOString(),
+        customerName: 'Pelanggan Warga'
+      };
+
+      appState.invoices.unshift(invoice);
+      appState.cart = [];
+      document.getElementById('cashGivenInput').value = '';
+
+      saveData();
+      renderCart();
+      renderRekap();
+      showToast(`Pembayaran ${method.toUpperCase()} Berhasil! Kembalian: Rp ${change.toLocaleString('id-ID')}`);
+    }
+
+    // Modal Catat Bon / DP Booking
+    function openCatatBonModal() {
+      if (appState.cart.length === 0) {
+        showToast('Keranjang layanan masih kosong!');
+        return;
+      }
+      const total = appState.cart.reduce((s, c) => s + (c.price * c.qty), 0);
+      document.getElementById('bonModalTotalDisplay').innerText = `Rp ${total.toLocaleString('id-ID')}`;
+      const d = new Date();
+      d.setDate(d.getDate() + 7);
+      document.getElementById('bonDueDate').value = d.toISOString().split('T')[0];
+      openModal('modalCatatBon');
+    }
+
+    function confirmCatatBon() {
+      const name = document.getElementById('bonCustName').value.trim();
+      if (!name) {
+        alert('Harap masukkan nama pelanggan / warga!');
+        return;
+      }
+      const phone = document.getElementById('bonCustPhone').value.trim() || '0812-xxxx-xxxx';
+      const dueDate = document.getElementById('bonDueDate').value || '';
+      const type = document.getElementById('bonTypeSelect').value;
+      const notes = document.getElementById('bonNotes').value.trim();
+      const total = appState.cart.reduce((s, c) => s + (c.price * c.qty), 0);
+      const modal = appState.cart.reduce((s, c) => s + ((c.modal || 0) * c.qty), 0);
+
+      const bonItem = {
+        id: 'bon-' + Date.now(),
+        customerName: name,
+        phone: phone,
+        amount: total,
+        modal: modal,
+        date: new Date().toISOString().split('T')[0],
+        dueDate: dueDate,
+        type: type,
+        notes: notes || `Order ${appState.cart.map(c => c.name).join(', ')}`,
+        status: 'belum_lunas'
+      };
+
+      appState.bonList.unshift(bonItem);
+
+      appState.invoices.unshift({
+        id: 'inv-' + Date.now(),
+        invoiceNumber: 'INV-BON-' + Date.now().toString().slice(-5),
+        subCategory: appState.activeSubcat,
+        items: [...appState.cart],
+        total: total,
+        modal: modal,
+        paymentMethod: 'bon_warga',
+        status: 'bon',
+        date: new Date().toISOString(),
+        customerName: name,
+        customerPhone: phone,
+        notes: notes
+      });
+
+      appState.cart = [];
+      closeModal('modalCatatBon');
+      saveData();
+      renderCart();
+      renderBonList();
+      renderRekap();
+      showToast(`Catatan Bon / DP atas nama ${name} disimpan.`);
+    }
+
+    function openDirectAddBonModal() {
+      const name = prompt('Nama Pelanggan / Warga:');
+      if (!name) return;
+      const amtStr = prompt('Nominal Piutang / Sisa DP (Rp):', '50000');
+      const amt = parseInt(amtStr) || 0;
+      if (amt <= 0) return;
+      const phone = prompt('Nomor WhatsApp Penagihan:', '0812') || '';
+      const notes = prompt('Rincian Layanan / Unit:', 'Biaya Jasa Servis') || '';
+
+      const bon = {
+        id: 'bon-' + Date.now(),
+        customerName: name,
+        phone: phone,
+        amount: amt,
+        date: new Date().toISOString().split('T')[0],
+        dueDate: new Date(Date.now() + 7*86400000).toISOString().split('T')[0],
+        type: 'piutang',
+        notes: notes,
+        status: 'belum_lunas'
+      };
+
+      appState.bonList.unshift(bon);
+      saveData();
+      renderBonList();
+      showToast('Catatan piutang berhasil ditambahkan.');
+    }
+
+    // Render TAB 2: BON WARGA & DP BOOKING
+    function renderBonList() {
+      const container = document.getElementById('bonListContainer');
+      const unpaidEl = document.getElementById('totalUnpaidBon');
+
+      const unpaidTotal = appState.bonList
+        .filter(b => b.status === 'belum_lunas')
+        .reduce((s, b) => s + b.amount, 0);
+
+      unpaidEl.innerText = `Rp ${unpaidTotal.toLocaleString('id-ID')}`;
+
+      if (appState.bonList.length === 0) {
+        container.innerHTML = `
+          <div style="padding: 30px 16px; text-align: center; color: var(--text-dim); font-size: 14px; font-weight: 700;">
+            Tidak ada catatan piutang atau sisa DP layanan.
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = appState.bonList.map((bon, index) => {
+        const isLunas = bon.status === 'lunas';
+        return `
+          <div class="list-minimal-item" style="${isLunas ? 'opacity: 0.6;' : ''}">
+            <div style="flex: 1; min-width: 0;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span class="text-lg-bold" style="color: #fff;">${bon.customerName}</span>
+                <span class="text-xs-bold" style="padding: 2px 6px; border-radius: 3px; ${isLunas ? 'background: #14532d; color: #4ade80;' : 'background: #78350f; color: #fde047;'}">
+                  ${isLunas ? 'LUNAS' : 'BELUM LUNAS'}
+                </span>
+                <span class="text-xs-bold" style="background: #27272a; padding: 2px 6px; border-radius: 3px; color: #aaa;">
+                  ${bon.type ? bon.type.toUpperCase() : 'PIUTANG'}
+                </span>
+              </div>
+              <div class="text-sm-bold" style="color: ${isLunas ? '#a1a1aa' : '#f59e0b'}; margin-top: 3px;">
+                Tagihan: Rp ${bon.amount.toLocaleString('id-ID')}
+              </div>
+              <div style="font-size: 11px; color: var(--text-muted); margin-top: 3px;">
+                Tgl: ${bon.date} | Jatuh Tempo/Jadi: <b style="color: #fff;">${bon.dueDate || '-'}</b>
+              </div>
+              ${bon.notes ? `<div style="font-size: 11px; color: #bbb; margin-top: 2px;">Rincian: ${bon.notes}</div>` : ''}
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px; align-items: flex-end;">
+              ${!isLunas ? `
+                <button class="btn-action btn-sm-bold btn-tunai" onclick="markBonLunas(${index})">[LUNAS INSTAN]</button>
+                <button class="btn-action btn-sm-bold btn-outline-theme" onclick="sendWhatsAppBilling(${index})">[TAGIH WA]</button>
+              ` : `
+                <span class="text-xs-bold" style="color: #22c55e;">TERSELESAIKAN</span>
+              `}
+              <button class="btn-action btn-sm-bold btn-danger" style="padding: 3px 8px; font-size: 10px;" onclick="deleteBonItem(${index})">[HAPUS]</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function markBonLunas(index) {
+      if (!appState.bonList[index]) return;
+      appState.bonList[index].status = 'lunas';
+      saveData();
+      renderBonList();
+      renderRekap();
+      showToast('Tagihan berhasil ditandai LUNAS!');
+    }
+
+    function deleteBonItem(index) {
+      if (confirm('Hapus catatan piutang / DP ini?')) {
+        appState.bonList.splice(index, 1);
+        saveData();
+        renderBonList();
+        showToast('Catatan dihapus.');
+      }
+    }
+
+    function sendWhatsAppBilling(index) {
+      const b = appState.bonList[index];
+      if (!b) return;
+      const phoneClean = (b.phone || '').replace(/[^0-9]/g, '');
+      const businessName = appState.businessProfile.name;
+      const text = `Halo Yth. ${b.customerName}, kami dari ${businessName} menginfokan rincian tagihan layanan/servis sebesar Rp ${b.amount.toLocaleString('id-ID')} dengan jatuh tempo/ambil tgl ${b.dueDate || '-'}. Rincian: ${b.notes || '-'}. Terima kasih atas kerja samanya!`;
+      const url = `https://wa.me/${phoneClean ? (phoneClean.startsWith('0') ? '62' + phoneClean.slice(1) : phoneClean) : ''}?text=${encodeURIComponent(text)}`;
+      window.open(url, '_blank');
+    }
+
+    // Render TAB 3: REKAP PENJUALAN & ARUS KAS
+    function renderRekap() {
+      const totalOmsetEl = document.getElementById('rekapTotalOmset');
+      const totalNetEl = document.getElementById('rekapTotalNet');
+      const tunaiEl = document.getElementById('rekapTunai');
+      const qrisEl = document.getElementById('rekapQris');
+      const bonEl = document.getElementById('rekapBon');
+      const historyEl = document.getElementById('rekapHistoryList');
+
+      let tunai = 0;
+      let qris = 0;
+      let bon = 0;
+      let totalOmset = 0;
+      let totalModal = 0;
+
+      appState.invoices.forEach(inv => {
+        totalOmset += inv.total;
+        totalModal += (inv.modal || Math.round(inv.total * 0.25));
+        if (inv.paymentMethod === 'tunai') tunai += inv.total;
+        else if (inv.paymentMethod === 'qris') qris += inv.total;
+        else if (inv.paymentMethod === 'bon_warga') bon += inv.total;
+      });
+
+      const netIncome = Math.max(0, totalOmset - totalModal);
+
+      totalOmsetEl.innerText = `Rp ${totalOmset.toLocaleString('id-ID')}`;
+      totalNetEl.innerText = `Estimasi Bersih Usaha: Rp ${netIncome.toLocaleString('id-ID')} (${appState.invoices.length} Tiket Layanan)`;
+      tunaiEl.innerText = `Rp ${tunai.toLocaleString('id-ID')}`;
+      qrisEl.innerText = `Rp ${qris.toLocaleString('id-ID')}`;
+      bonEl.innerText = `Rp ${bon.toLocaleString('id-ID')}`;
+
+      if (appState.invoices.length === 0) {
+        historyEl.innerHTML = `
+          <div style="padding: 30px 16px; text-align: center; color: var(--text-dim); font-size: 13px; font-weight: 700;">
+            Belum ada riwayat transaksi layanan hari ini.
+          </div>
+        `;
+        return;
+      }
+
+      historyEl.innerHTML = appState.invoices.slice(0, 30).map(inv => {
+        const d = new Date(inv.date);
+        const timeStr = `${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
+        return `
+          <div class="list-minimal-item">
+            <div style="flex: 1; min-width: 0;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span class="text-md-bold" style="color: #fff;">${inv.invoiceNumber}</span>
+                <span class="text-xs-bold" style="padding: 2px 6px; border-radius: 3px; background: #27272a; color: #fff;">
+                  ${inv.paymentMethod.toUpperCase()}
+                </span>
+                <span class="text-xs-bold" style="color: var(--text-muted);">${timeStr}</span>
+              </div>
+              <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
+                ${inv.items.map(i => `${i.name} (x${i.qty})`).join(', ')}
+              </div>
+              ${inv.notes ? `<div style="font-size: 11px; color: #f59e0b;">${inv.notes}</div>` : ''}
+            </div>
+            <div class="text-lg-bold" style="color: var(--theme-glow);">
+              Rp ${inv.total.toLocaleString('id-ID')}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function clearTransactionHistory() {
+      if (confirm('Reset semua riwayat rekap transaksi layanan?')) {
+        appState.invoices = [];
+        saveData();
+        renderRekap();
+        showToast('Rekap transaksi di-reset.');
+      }
+    }
+
+    // Render TAB 4: KATALOG TARIF & JASA
+    function renderKatalog() {
+      const container = document.getElementById('catalogItemList');
+      const cat = appState.activeSubcat;
+      const items = appState.catalog.filter(c => c.category === cat);
+
+      if (items.length === 0) {
+        container.innerHTML = `
+          <div style="padding: 30px 16px; text-align: center; color: var(--text-dim); font-size: 13px; font-weight: 700;">
+            Belum ada tarif/layanan di kategori ini. Tekan [+ TAMBAH LAYANAN].
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = items.map(item => `
+        <div class="list-minimal-item">
+          <div style="flex: 1; min-width: 0;">
+            <div class="text-md-bold" style="color: #fff;">${item.name}</div>
+            <div style="display: flex; gap: 10px; font-size: 12px; margin-top: 3px;">
+              <span style="color: var(--theme-glow); font-weight: 800;">Tarif: Rp ${item.price.toLocaleString('id-ID')} / ${item.unit}</span>
+              <span style="color: var(--text-muted);">Est. Modal/Part: Rp ${(item.modal||0).toLocaleString('id-ID')}</span>
+            </div>
+          </div>
+          <div style="display: flex; gap: 6px;">
+            <button class="btn-action btn-sm-bold btn-primary" onclick='addToCartFromPreset(${JSON.stringify(item)})'>[+ AMBIL]</button>
+            <button class="btn-action btn-sm-bold btn-danger" onclick="deleteCatalogItem('${item.id}')">[HAPUS]</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function deleteCatalogItem(id) {
+      if (confirm('Hapus layanan ini dari katalog?')) {
+        appState.catalog = appState.catalog.filter(c => c.id !== id);
+        saveData();
+        renderKatalog();
+        showToast('Layanan dihapus dari katalog.');
+      }
+    }
+
+    // Modal Add Catalog
+    function openAddCatalogItemModal() {
+      document.getElementById('newCatSubcat').value = appState.activeSubcat;
+      document.getElementById('newCatName').value = '';
+      document.getElementById('newCatPrice').value = '';
+      document.getElementById('newCatModal').value = '';
+      document.getElementById('newCatUnit').value = 'Jasa';
+      openModal('modalAddCatalog');
+    }
+
+    function confirmAddCatalog() {
+      const name = document.getElementById('newCatName').value.trim();
+      const price = parseInt(document.getElementById('newCatPrice').value) || 0;
+      if (!name || price <= 0) {
+        alert('Harap masukkan nama layanan dan tarif valid!');
+        return;
+      }
+      const subcat = document.getElementById('newCatSubcat').value;
+      const modal = parseInt(document.getElementById('newCatModal').value) || Math.round(price * 0.25);
+      const unit = document.getElementById('newCatUnit').value.trim() || 'Jasa';
+
+      appState.catalog.push({
+        id: 'cat-' + Date.now(),
+        name: name,
+        category: subcat,
+        price: price,
+        modal: modal,
+        unit: unit
+      });
+
+      closeModal('modalAddCatalog');
+      saveData();
+      renderKatalog();
+      showToast(`${name} ditambahkan ke katalog.`);
+    }
+
+    // Modal Custom Order
+    function openAddCustomOrderModal() {
+      document.getElementById('customOrderName').value = '';
+      document.getElementById('customOrderPrice').value = '';
+      document.getElementById('customOrderQty').value = '1';
+      document.getElementById('customOrderNote').value = '';
+      openModal('modalCustomOrder');
+    }
+
+    function confirmAddCustomOrder() {
+      const name = document.getElementById('customOrderName').value.trim();
+      const price = parseInt(document.getElementById('customOrderPrice').value) || 0;
+      const qty = parseInt(document.getElementById('customOrderQty').value) || 1;
+      const note = document.getElementById('customOrderNote').value.trim();
+
+      if (!name || price <= 0) {
+        alert('Nama layanan dan tarif harus diisi!');
+        return;
+      }
+
+      addToCart({
+        id: 'cst-' + Date.now(),
+        name: name,
+        price: price,
+        modal: Math.round(price * 0.25),
+        qty: qty,
+        unit: 'Layanan',
+        note: note
+      });
+
+      closeModal('modalCustomOrder');
+    }
+
+    // TAB 5: PENGATURAN & THERMAL RECEIPT PREVIEW
+    function renderSubcatButtons() {
+      const grid = document.getElementById('subcatButtonGrid');
+      const modalList = document.getElementById('modalSubcatList');
+
+      const buttonsHtml = Object.keys(SUBCATEGORIES).map(key => {
+        const cat = SUBCATEGORIES[key];
+        const isActive = appState.activeSubcat === key;
+        return `
+          <button class="btn-action btn-sm-bold" style="background: ${isActive ? cat.color : '#18181b'}; color: #fff; border: 1px solid ${cat.glow};" onclick="switchSubCategory('${key}')">
+            ${cat.name}
+          </button>
+        `;
+      }).join('');
+
+      grid.innerHTML = buttonsHtml;
+      modalList.innerHTML = buttonsHtml;
+    }
+
+    function openSwitchSubcatModal() {
+      renderSubcatButtons();
+      openModal('modalSwitchSubcat');
+    }
+
+    function saveStoreProfile() {
+      appState.businessProfile.name = document.getElementById('settingBusinessName').value.trim() || 'Servis & Jasa Warga Berkah RT 04';
+      appState.businessProfile.address = document.getElementById('settingBusinessAddress').value.trim() || 'Pos RT 04 / RW 02';
+      appState.businessProfile.phone = document.getElementById('settingBusinessPhone').value.trim() || '0813-8899-7711';
+      appState.businessProfile.footer = document.getElementById('settingBusinessFooter').value.trim() || 'Garansi berlaku dengan membawa struk.';
+      saveData();
+      updateReceiptPreview();
+      showToast('Profil usaha diperbarui.');
+    }
+
+    function updateReceiptPreview() {
+      const profile = appState.businessProfile;
+      const sub = SUBCATEGORIES[appState.activeSubcat];
+
+      document.getElementById('rcptBusinessName').innerText = profile.name.toUpperCase();
+      document.getElementById('rcptBusinessAddress').innerText = profile.address;
+      document.getElementById('rcptBusinessPhone').innerText = `WA: ${profile.phone}`;
+      document.getElementById('rcptCategoryHeader').innerText = `*** ${sub.name.toUpperCase()} ***`;
+      document.getElementById('rcptFooterMsg').innerText = profile.footer;
+
+      const itemsBox = document.getElementById('rcptItemsContainer');
+      const dummyItems = sub.dummyReceiptItems || [];
+
+      let total = 0;
+      itemsBox.innerHTML = dummyItems.map(item => {
+        total += item.price;
+        return `
+          <div style="margin-bottom: 6px;">
+            <div class="receipt-row">
+              <span style="font-weight: bold;">${item.name}</span>
+              <span>Rp ${item.price.toLocaleString('id-ID')}</span>
+            </div>
+            <div style="font-size: 11px; color: #444;">x${item.qty} ${item.spec ? `| ${item.spec}` : ''}</div>
+          </div>
+        `;
+      }).join('');
+
+      document.getElementById('rcptTotal').innerText = `Rp ${total.toLocaleString('id-ID')}`;
+      document.getElementById('rcptCash').innerText = `Rp ${(total + 15000).toLocaleString('id-ID')}`;
+      document.getElementById('rcptChange').innerText = `Rp 15.000`;
+
+      document.getElementById('rcptSubcatSpecialBox').innerHTML = `
+        <div style="font-weight: bold; margin-bottom: 2px;">KETENTUAN KHUSUS ${sub.label}:</div>
+        <div>${sub.specialNote}</div>
+      `;
+    }
+
+    function exportDataJSON() {
+      const blob = new Blob([JSON.stringify(appState, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `pelayananqu_backup_${Date.now()}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('Data berhasil diekspor ke file JSON.');
+    }
+
+    function resetToDefaultData() {
+      if (confirm('PERINGATAN: Reset semua data PelayananQu ke pengaturan awal?')) {
+        localStorage.removeItem(STORAGE_KEY);
+        location.reload();
+      }
+    }
+
+    function openModal(id) {
+      const m = document.getElementById(id);
+      if (m) m.classList.add('open');
+    }
+    function closeModal(id) {
+      const m = document.getElementById(id);
+      if (m) m.classList.remove('open');
+    }
+
+    // Bootstrap app on DOM Ready
+    document.addEventListener('DOMContentLoaded', () => {
+      initData();
+    });
+  </script>
+</body>
+</html>
