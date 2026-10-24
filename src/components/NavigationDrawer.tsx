@@ -13,6 +13,7 @@ import {
   Sparkles
 } from 'lucide-react';
 import { RestaurantProfile, PrinterConfig } from '../types';
+import { UpdateService } from '../services/updateService';
 
 interface NavigationDrawerProps {
   isOpen: boolean;
@@ -178,7 +179,7 @@ export const NavigationDrawer: React.FC<NavigationDrawerProps> = ({
               <span>Versi Aplikasi</span>
             </div>
             <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800 font-bold">
-              v1.2.1
+              v{UpdateService.getCurrentVersion()}
             </span>
           </div>
           <button

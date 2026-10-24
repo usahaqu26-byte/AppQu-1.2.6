@@ -259,10 +259,14 @@ export const UpdateModal: React.FC<UpdateModalProps> = ({
               {showAndroidGuide ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
             </button>
             {showAndroidGuide && (
-              <div className="px-3.5 pb-3 text-[11px] text-stone-400 space-y-1.5 border-t border-stone-800/60 pt-2 leading-relaxed">
-                <p>1. Jika muncul peringatan keamanan <strong>"Izinkan dari sumber ini"</strong>, ketuk <strong>Setelan</strong> lalu aktifkan tombol izin.</p>
-                <p>2. Ketuk tombol <strong>Pasang / Update</strong> untuk menimpa versi sebelumnya secara aman tanpa menghapus data usaha & kasir Anda.</p>
-                <p>3. Jika jendela instalasi tidak terbuka otomatis, tarik bilah notifikasi HP ke bawah dan ketuk file <span className="font-mono text-emerald-400">{updateInfo.apkFileName}</span>.</p>
+              <div className="px-3.5 pb-3 text-[11px] text-stone-400 space-y-2 border-t border-stone-800/60 pt-2.5 leading-relaxed">
+                <div className="p-2 rounded-xl bg-emerald-950/60 border border-emerald-600/30 text-emerald-200">
+                  <p className="font-bold text-white mb-0.5">✅ Update Timpa Tanpa Hapus Data:</p>
+                  <p>Paket pembaruan ini menggunakan tanda tangan digital (keystore) konsisten. Anda dapat langsung memasang versi baru di atas versi lama tanpa uninstall. Seluruh data kasir, buku warga, dan login PIN tetap utuh 100%.</p>
+                </div>
+                <p>1. Jika muncul peringatan keamanan <strong>"Izinkan dari sumber ini"</strong>, ketuk <strong>Setelan</strong> lalu aktifkan izin instalasi.</p>
+                <p>2. Ketuk tombol <strong>"Update / Pasang"</strong> pada jendela Android untuk langsung menimpa versi sebelumnya.</p>
+                <p>3. Jika muncul pesan <em>"Aplikasi tidak terpasang / Paket bentrok"</em>, itu menandakan APK lama Anda ditandatangani dengan kunci lama yang berbeda. Copot (uninstall) versi lama sekali saja untuk beralih ke kunci permanen ini — pembaruan-pembaruan berikutnya akan selalu bisa ditimpa langsung tanpa uninstall!</p>
               </div>
             )}
           </div>

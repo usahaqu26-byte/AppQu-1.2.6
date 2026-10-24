@@ -694,6 +694,7 @@ export default function App() {
             currentUser={currentUser}
             activeModuleName={getAppQuModuleName()}
             onCheckUpdate={() => setIsUpdateModalOpen(true)}
+            availableUpdate={availableUpdate}
             isAreaQu={activeAppQuModule === 'area'}
             areaRadiusMeters={areaRadiusMeters}
             onSelectAreaRadius={(radius) => {

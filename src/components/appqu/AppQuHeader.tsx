@@ -17,11 +17,13 @@ import {
 import { UserProfile } from '../../types';
 import { sireneAudio } from '../../services/sireneAudio';
 import { ADMIN_MASTER_EMAIL } from '../../services/authSecurityService';
+import { UpdateService, UpdateInfo } from '../../services/updateService';
 
 interface AppQuHeaderProps {
   currentUser: UserProfile;
   activeModuleName: string;
   onCheckUpdate?: () => void;
+  availableUpdate?: UpdateInfo | null;
   // Auth & Admin Controls
   onOpenAuth?: () => void;
   onOpenAdminCenter?: () => void;
@@ -59,6 +61,7 @@ export const AppQuHeader: React.FC<AppQuHeaderProps> = ({
   currentUser,
   activeModuleName,
   onCheckUpdate,
+  availableUpdate,
   onOpenAuth,
   onOpenAdminCenter,
   authSession,
@@ -73,6 +76,10 @@ export const AppQuHeader: React.FC<AppQuHeaderProps> = ({
   const isSirenPlaying = sireneAudio.getIsPlaying();
   const [isRadiusOpen, setIsRadiusOpen] = useState(false);
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
+
+  const currentVer = UpdateService.getCurrentVersion();
+  const hasUpdate = Boolean(availableUpdate?.hasUpdate);
+  const displayVer = hasUpdate ? `v${availableUpdate?.latestVersion}` : `v${currentVer}`;
 
   const handleStopSiren = () => {
     sireneAudio.stopSiren();
@@ -107,11 +114,24 @@ export const AppQuHeader: React.FC<AppQuHeaderProps> = ({
             {onCheckUpdate && !isAreaQu && (
               <button
                 onClick={onCheckUpdate}
-                title="Cek Pembaruan Versi Aplikasi"
-                className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-emerald-900/90 hover:bg-emerald-800 text-emerald-300 border border-emerald-700/50 flex items-center gap-0.5 cursor-pointer transition-colors"
+                title={
+                  hasUpdate
+                    ? `Pembaruan Tersedia: v${availableUpdate?.latestVersion} (Ketuk untuk Pasang Langsung)`
+                    : `Versi Aplikasi v${currentVer} (Ketuk untuk Cek Pembaruan)`
+                }
+                className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded flex items-center gap-1 cursor-pointer transition-all ${
+                  hasUpdate
+                    ? 'bg-amber-400/20 text-amber-300 border border-amber-400/80 shadow-xs shadow-amber-400/30 animate-pulse'
+                    : 'bg-emerald-900/90 hover:bg-emerald-800 text-emerald-300 border border-emerald-700/50'
+                }`}
               >
-                <Sparkles className="w-2.5 h-2.5 text-amber-300" />
-                <span>v1.2.2</span>
+                <Sparkles className={`w-2.5 h-2.5 ${hasUpdate ? 'text-amber-300 animate-spin' : 'text-amber-300'}`} />
+                <span>{displayVer}</span>
+                {hasUpdate && (
+                  <span className="text-[8px] bg-amber-400 text-stone-950 font-black px-1 rounded-xs uppercase tracking-tighter">
+                    Baru
+                  </span>
+                )}
               </button>
             )}
           </div>
