@@ -170,7 +170,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-xs animate-in fade-in duration-200">
+    <div
+      id="modalLoginAppQu"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-xs animate-in fade-in duration-200"
+    >
       <div className="bg-stone-900 border border-stone-800 rounded-3xl w-full max-w-md overflow-hidden shadow-2xl text-stone-100 flex flex-col max-h-[92vh]">
         {/* Header */}
         <div className="bg-gradient-to-r from-emerald-950 via-teal-950 to-stone-900 p-4 sm:p-5 border-b border-emerald-800/40 relative">
@@ -323,7 +326,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   </button>
                 </div>
               ) : (
-                <form onSubmit={handleLoginSubmit} className="space-y-3.5">
+                <form id="formLoginQu" onSubmit={handleLoginSubmit} className="space-y-3.5">
                   {errorMessage && (
                     <div className="p-3 rounded-xl bg-red-950/80 border border-red-700/60 text-xs text-red-200 flex items-start gap-2">
                       <AlertTriangle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
@@ -345,10 +348,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                       <span>Alamat Email Terdaftar</span>
                     </label>
                     <input
+                      id="loginEmail"
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      placeholder="nama@email.com"
+                      placeholder="hendri.bageur20@gmail.com"
                       required
                       className="w-full bg-stone-950 border border-stone-700 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-stone-500 focus:outline-hidden focus:border-emerald-500 transition"
                     />
@@ -361,10 +365,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                       <span>Kata Sandi (Password)</span>
                     </label>
                     <input
+                      id="loginPass"
                       type="password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      placeholder="Masukkan kata sandi akun"
+                      placeholder="••••••••"
                       required
                       className="w-full bg-stone-950 border border-stone-700 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-stone-500 focus:outline-hidden focus:border-emerald-500 transition"
                     />
@@ -375,13 +380,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                     <label className="block text-xs font-bold text-stone-300 mb-1 flex items-center justify-between">
                       <span className="flex items-center gap-1.5">
                         <Hash className="w-3.5 h-3.5 text-amber-400" />
-                        <span>PIN Keamanan 6-Angka</span>
+                        <span>PIN Keamanan (6 Angka)</span>
                       </span>
                       <span className="text-[10px] text-stone-400 font-mono">
                         {pin.length}/6 Digit
                       </span>
                     </label>
                     <input
+                      id="loginPin"
                       type="password"
                       maxLength={6}
                       value={pin}
@@ -389,9 +395,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                         const val = e.target.value.replace(/\D/g, '').slice(0, 6);
                         setPin(val);
                       }}
-                      placeholder="Contoh: 882026 atau 123456"
+                      placeholder="123456"
                       required
-                      className="w-full bg-stone-950 border border-stone-700 rounded-xl px-3.5 py-2.5 text-xs text-amber-300 font-mono tracking-widest text-center placeholder-stone-500 focus:outline-hidden focus:border-amber-500 transition font-bold"
+                      className="w-full bg-stone-950 border border-stone-700 rounded-xl px-3.5 py-2.5 text-xs text-emerald-400 font-mono tracking-widest text-center placeholder-stone-500 focus:outline-hidden focus:border-emerald-500 transition font-bold"
                     />
                   </div>
 

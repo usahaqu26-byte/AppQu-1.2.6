@@ -250,20 +250,32 @@ export const AreaQuView: React.FC<AreaQuViewProps> = ({
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [heartbeatCounter, setHeartbeatCounter] = useState(5);
+  const [canvasDimensions, setCanvasDimensions] = useState<{ width: number; height: number }>({
+    width: 0,
+    height: 0,
+  });
+  // Map Layer Style: Offline 2D Vector Map vs Live OpenStreetMap Tiles
+  const [mapLayerMode, setMapLayerMode] = useState<'vector' | 'osm'>('vector');
 
   // Resize observer to ensure Canvas always fits container with 0 distortion
-  useEffect(() => {
-    const handleResize = () => {
-      if (mapContainerRef.current && canvasRef.current) {
-        const { clientWidth, clientHeight } = mapContainerRef.current;
-        if (clientWidth > 0 && clientHeight > 0) {
-          canvasRef.current.width = clientWidth;
-          canvasRef.current.height = clientHeight;
-        }
+  const handleResize = useCallback(() => {
+    if (mapContainerRef.current) {
+      const { clientWidth, clientHeight } = mapContainerRef.current;
+      const targetW = clientWidth > 0 ? clientWidth : 380;
+      const targetH = clientHeight > 0 ? clientHeight : 500;
+      if (canvasRef.current) {
+        canvasRef.current.width = targetW;
+        canvasRef.current.height = targetH;
       }
-    };
+      setCanvasDimensions({ width: targetW, height: targetH });
+    }
+  }, []);
 
+  useEffect(() => {
     handleResize();
+    const rafId = requestAnimationFrame(handleResize);
+    const timer = setTimeout(handleResize, 150);
+
     window.addEventListener('resize', handleResize);
     const observer = new ResizeObserver(handleResize);
     if (mapContainerRef.current) {
@@ -271,10 +283,12 @@ export const AreaQuView: React.FC<AreaQuViewProps> = ({
     }
 
     return () => {
+      cancelAnimationFrame(rafId);
+      clearTimeout(timer);
       window.removeEventListener('resize', handleResize);
       observer.disconnect();
     };
-  }, []);
+  }, [handleResize, viewMode]);
 
   // Simulate Lightweight Courier Heartbeat (Lat/Lng text packet every 5s)
   useEffect(() => {
@@ -378,27 +392,31 @@ export const AreaQuView: React.FC<AreaQuViewProps> = ({
   // ----------------------------------------------------
   // CANVAS RENDERING (Lightweight 2D Vector Style)
   // ----------------------------------------------------
+  // ----------------------------------------------------
+  // CANVAS RENDERING (Rich 2D Community Map Graphics)
+  // ----------------------------------------------------
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const width = canvas.width;
-    const height = canvas.height;
+    const width = canvas.width || canvasDimensions.width || 380;
+    const height = canvas.height || canvasDimensions.height || 500;
     if (width === 0 || height === 0) return;
 
     const centerX = width / 2 + mapPan.x;
     const centerY = height / 2 + mapPan.y;
 
-    // Background Canvas
+    // 1. Clear & Base Map Background (Soft Map Terrain #f8fafc)
     ctx.clearRect(0, 0, width, height);
-    ctx.fillStyle = '#f5f5f4'; // Stone-100 base
+    ctx.fillStyle = '#f8fafc';
     ctx.fillRect(0, 0, width, height);
 
     const baseLat = activeBaseCoords.lat;
     const baseLng = activeBaseCoords.lng;
-    const scale = 24000 * mapZoom * (1500 / Math.max(500, selectedRadiusMeters * 0.7));
+    const safeRadius = Math.max(300, selectedRadiusMeters || 3000);
+    const scale = 24000 * mapZoom * (1500 / Math.max(500, safeRadius * 0.7));
 
     const toScreen = (lat: number, lng: number) => {
       const x = centerX + (lng - baseLng) * scale;
@@ -406,10 +424,10 @@ export const AreaQuView: React.FC<AreaQuViewProps> = ({
       return { x, y };
     };
 
-    // Draw Minimalist Vector Grid Roads
-    ctx.strokeStyle = '#e7e5e4'; // stone-200
+    // 2. Subtle Geographic Coordinate Grid Pattern
+    ctx.strokeStyle = '#e2e8f0';
     ctx.lineWidth = 1;
-    const gridSize = 32 * mapZoom;
+    const gridSize = 40 * mapZoom;
     for (let x = centerX % gridSize; x < width; x += gridSize) {
       ctx.beginPath();
       ctx.moveTo(x, 0);
@@ -423,38 +441,127 @@ export const AreaQuView: React.FC<AreaQuViewProps> = ({
       ctx.stroke();
     }
 
-    // Draw Main Vector Streets
+    // 3. Residential Blocks & Open Green Parcels (Land Use)
+    // Parcel A: Blok Anggrek
+    ctx.fillStyle = '#f1f5f9';
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 1.5;
+    ctx.fillRect(centerX - 180 * mapZoom, centerY - 180 * mapZoom, 130 * mapZoom, 90 * mapZoom);
+    ctx.strokeRect(centerX - 180 * mapZoom, centerY - 180 * mapZoom, 130 * mapZoom, 90 * mapZoom);
+
+    // Parcel B: Blok Melati
+    ctx.fillRect(centerX + 50 * mapZoom, centerY - 180 * mapZoom, 140 * mapZoom, 90 * mapZoom);
+    ctx.strokeRect(centerX + 50 * mapZoom, centerY - 180 * mapZoom, 140 * mapZoom, 90 * mapZoom);
+
+    // Parcel C: Blok Mawar & Niaga
+    ctx.fillRect(centerX - 180 * mapZoom, centerY + 80 * mapZoom, 130 * mapZoom, 100 * mapZoom);
+    ctx.strokeRect(centerX - 180 * mapZoom, centerY + 80 * mapZoom, 130 * mapZoom, 100 * mapZoom);
+
+    // Green Park: Lapangan & Taman Warga RT 04
+    ctx.fillStyle = '#dcfce7'; // Emerald-100 green
+    ctx.strokeStyle = '#86efac';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.roundRect(centerX + 50 * mapZoom, centerY + 80 * mapZoom, 140 * mapZoom, 100 * mapZoom, [12 * mapZoom]);
+    ctx.fill();
+    ctx.stroke();
+
+    // Park Trees & Label
+    ctx.fillStyle = '#15803d';
+    ctx.font = `bold ${Math.max(9, Math.round(10 * mapZoom))}px system-ui, sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.fillText('🌳 Taman & Lapangan RT 04', centerX + 120 * mapZoom, centerY + 130 * mapZoom);
+
+    // Block Labels
+    ctx.fillStyle = '#64748b';
+    ctx.font = `bold ${Math.max(8, Math.round(9 * mapZoom))}px system-ui, sans-serif`;
+    ctx.fillText('🏡 Blok Anggrek', centerX - 115 * mapZoom, centerY - 135 * mapZoom);
+    ctx.fillText('🏡 Blok Melati', centerX + 120 * mapZoom, centerY - 135 * mapZoom);
+    ctx.fillText('🏡 Blok Mawar', centerX - 115 * mapZoom, centerY + 135 * mapZoom);
+
+    // 4. Water Canal / River Ribbon
+    ctx.strokeStyle = '#7dd3fc';
+    ctx.lineWidth = 10 * mapZoom;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(centerX - 350 * mapZoom, centerY - 240 * mapZoom);
+    ctx.bezierCurveTo(
+      centerX - 120 * mapZoom,
+      centerY - 220 * mapZoom,
+      centerX - 80 * mapZoom,
+      centerY - 170 * mapZoom,
+      centerX - 240 * mapZoom,
+      centerY + 240 * mapZoom
+    );
+    ctx.stroke();
+
+    // River Center Highlight
+    ctx.strokeStyle = '#bae6fd';
     ctx.lineWidth = 6 * mapZoom;
-    ctx.strokeStyle = '#d6d3d1'; // stone-300
+    ctx.stroke();
+
+    // 5. Road Network (Layered Asphalt with Real Road Markings)
+    // Main Arterial Road (Jl. Sukamaju Raya) East-West
+    // Road Casing (Border)
+    ctx.strokeStyle = '#94a3b8';
+    ctx.lineWidth = 22 * mapZoom;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
-
-    // Main Street East-West
     ctx.beginPath();
-    ctx.moveTo(centerX - 350 * mapZoom, centerY + 30 * mapZoom);
-    ctx.lineTo(centerX + 350 * mapZoom, centerY + 30 * mapZoom);
+    ctx.moveTo(centerX - 350 * mapZoom, centerY);
+    ctx.lineTo(centerX + 350 * mapZoom, centerY);
     ctx.stroke();
 
-    // Secondary Street North-South
-    ctx.beginPath();
-    ctx.moveTo(centerX - 20 * mapZoom, centerY - 280 * mapZoom);
-    ctx.lineTo(centerX - 20 * mapZoom, centerY + 280 * mapZoom);
+    // Road Surface
+    ctx.strokeStyle = '#e2e8f0';
+    ctx.lineWidth = 18 * mapZoom;
     ctx.stroke();
 
-    // Alleyway Gang RT (Gang Mawar, Gang Melati)
-    ctx.lineWidth = 3.5 * mapZoom;
-    ctx.strokeStyle = '#e5e7eb';
+    // Road Yellow Centerline (Dashed)
+    ctx.strokeStyle = '#eab308';
+    ctx.lineWidth = 2 * mapZoom;
+    ctx.setLineDash([8 * mapZoom, 6 * mapZoom]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Secondary Road North-South (Jl. Warga Sentosa)
+    ctx.strokeStyle = '#94a3b8';
+    ctx.lineWidth = 16 * mapZoom;
     ctx.beginPath();
-    ctx.moveTo(centerX - 140 * mapZoom, centerY - 140 * mapZoom);
-    ctx.lineTo(centerX + 180 * mapZoom, centerY - 140 * mapZoom);
-    ctx.lineTo(centerX + 180 * mapZoom, centerY + 160 * mapZoom);
+    ctx.moveTo(centerX, centerY - 280 * mapZoom);
+    ctx.lineTo(centerX, centerY + 280 * mapZoom);
     ctx.stroke();
 
-    // Draw Geofencing Boundary
-    ctx.strokeStyle = '#059669'; // emerald-600
-    ctx.lineWidth = 2;
-    ctx.setLineDash([5, 4]);
-    ctx.fillStyle = 'rgba(16, 185, 129, 0.05)';
+    ctx.strokeStyle = '#e2e8f0';
+    ctx.lineWidth = 12 * mapZoom;
+    ctx.stroke();
+
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 1.5 * mapZoom;
+    ctx.setLineDash([5 * mapZoom, 5 * mapZoom]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Gang Mawar & Gang Melati (Alleys)
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 8 * mapZoom;
+    ctx.beginPath();
+    ctx.moveTo(centerX - 180 * mapZoom, centerY - 80 * mapZoom);
+    ctx.lineTo(centerX + 180 * mapZoom, centerY - 80 * mapZoom);
+    ctx.stroke();
+
+    // Street Names Text
+    ctx.fillStyle = '#475569';
+    ctx.font = `bold ${Math.max(9, Math.round(10 * mapZoom))}px system-ui, sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.fillText('━ Jl. Sukamaju Raya (Akses Utama) ━', centerX - 80 * mapZoom, centerY - 14 * mapZoom);
+    ctx.fillText('Jl. Warga Sentosa', centerX + 45 * mapZoom, centerY - 80 * mapZoom);
+
+    // 6. Geofencing Boundary of RT 04 Sukamaju
+    ctx.strokeStyle = '#059669';
+    ctx.lineWidth = 2.5;
+    ctx.setLineDash([6, 5]);
+    ctx.fillStyle = 'rgba(16, 185, 129, 0.08)';
     ctx.beginPath();
     const rtPolygon = [
       { lat: baseLat + 0.002, lng: baseLng - 0.0025 },
@@ -470,43 +577,75 @@ export const AreaQuView: React.FC<AreaQuViewProps> = ({
     ctx.closePath();
     ctx.fill();
     ctx.stroke();
-    ctx.setLineDash([]); // Reset line dash
+    ctx.setLineDash([]);
 
-    // Label Geofence Area
+    // Geofence Banner
     const rtLabelPos = toScreen(baseLat + 0.002, baseLng);
     ctx.font = 'bold 11px system-ui, sans-serif';
     ctx.fillStyle = '#065f46';
     ctx.textAlign = 'center';
     ctx.fillText(
       activeAreaCenter === 'gps'
-        ? 'Area Radius GPS Pengguna (Zona Terdeteksi)'
-        : 'Geofence RT 04 Sukamaju (Pusat Komunitas)',
+        ? '📍 Zona Radius GPS Pengguna'
+        : '🛡️ Geofence Komunitas RT 04 Sukamaju',
       rtLabelPos.x,
-      rtLabelPos.y - 8
+      rtLabelPos.y - 10
     );
 
-    // Draw Selected Radius Circle Ring (e.g., 500m, 1km, 3km)
-    const radiusPixels = (selectedRadiusMeters / 1000) * (scale / 111);
+    // 7. Selected Radius Circle Ring (e.g., 500m, 1km, 3km)
+    const radiusPixels = Math.max(15, (safeRadius / 1000) * (scale / 111));
     ctx.beginPath();
     ctx.arc(centerX, centerY, radiusPixels, 0, Math.PI * 2);
-    ctx.strokeStyle = 'rgba(5, 150, 105, 0.4)';
-    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = 'rgba(16, 185, 129, 0.45)';
+    ctx.lineWidth = 1.8;
     ctx.setLineDash([6, 6]);
     ctx.stroke();
     ctx.setLineDash([]);
 
-    // Radius Label Ring
-    ctx.font = '9px system-ui, sans-serif';
+    // Radius Label Badge
+    ctx.font = 'bold 10px system-ui, sans-serif';
     ctx.fillStyle = '#047857';
     ctx.fillText(
-      `Radius Filter: ${selectedRadiusMeters >= 1000 ? `${selectedRadiusMeters / 1000} km` : `${selectedRadiusMeters} m`}`,
+      `Jangkauan Filter: ${safeRadius >= 1000 ? `${safeRadius / 1000} km` : `${safeRadius} m`}`,
       centerX,
-      centerY - radiusPixels + 12
+      centerY - radiusPixels + 14
     );
 
-    // ----------------------------------------------------
-    // USER GPS / BENCHMARK BEACON (BLUE PULSE RADAR)
-    // ----------------------------------------------------
+    // 8. Compass Rose Indicator (Top-Left / Top-Right)
+    const compX = width - 36;
+    const compY = 40;
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+    ctx.beginPath();
+    ctx.arc(compX, compY, 18, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // North Pointer Arrow (Red)
+    ctx.fillStyle = '#ef4444';
+    ctx.beginPath();
+    ctx.moveTo(compX, compY - 14);
+    ctx.lineTo(compX - 5, compY);
+    ctx.lineTo(compX, compY - 3);
+    ctx.closePath();
+    ctx.fill();
+
+    // South Pointer Arrow (Blue)
+    ctx.fillStyle = '#3b82f6';
+    ctx.beginPath();
+    ctx.moveTo(compX, compY + 14);
+    ctx.lineTo(compX + 5, compY);
+    ctx.lineTo(compX, compY + 3);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.font = 'bold 9px system-ui, sans-serif';
+    ctx.fillStyle = '#b91c1c';
+    ctx.textAlign = 'center';
+    ctx.fillText('U', compX, compY - 15);
+
+    // 9. USER GPS / BENCHMARK BEACON (BLUE PULSE RADAR)
     const userScr = userGps ? toScreen(userGps.lat, userGps.lng) : { x: centerX, y: centerY };
 
     // Accuracy Circle Ring if user GPS is available
@@ -516,46 +655,49 @@ export const AreaQuView: React.FC<AreaQuViewProps> = ({
       ctx.arc(userScr.x, userScr.y, accRadiusPixels, 0, Math.PI * 2);
       ctx.fillStyle = 'rgba(14, 165, 233, 0.12)';
       ctx.fill();
-      ctx.strokeStyle = 'rgba(14, 165, 233, 0.4)';
-      ctx.lineWidth = 1;
+      ctx.strokeStyle = 'rgba(14, 165, 233, 0.5)';
+      ctx.lineWidth = 1.2;
       ctx.stroke();
     }
 
-    // Outer Animated Radar Pulse
+    // Outer Animated Radar Pulse Waves
     ctx.beginPath();
-    ctx.arc(userScr.x, userScr.y, 18, 0, Math.PI * 2);
-    ctx.strokeStyle = 'rgba(16, 185, 129, 0.5)';
-    ctx.lineWidth = 2.5;
+    ctx.arc(userScr.x, userScr.y, 22, 0, Math.PI * 2);
+    ctx.strokeStyle = 'rgba(14, 165, 233, 0.4)';
+    ctx.lineWidth = 2;
     ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(userScr.x, userScr.y, 14, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(14, 165, 233, 0.25)';
+    ctx.fill();
 
     // Center Core Dot
     ctx.beginPath();
-    ctx.arc(userScr.x, userScr.y, 8, 0, Math.PI * 2);
-    ctx.fillStyle = userGps ? '#0284c7' : '#059669'; // Sky-600 for live GPS, Emerald for community RT
+    ctx.arc(userScr.x, userScr.y, 7, 0, Math.PI * 2);
+    ctx.fillStyle = userGps ? '#0284c7' : '#059669';
     ctx.fill();
     ctx.strokeStyle = '#ffffff';
     ctx.lineWidth = 2.5;
     ctx.stroke();
 
-    // Beacon Text
+    // Beacon Text Badge
     ctx.font = 'bold 10px system-ui, sans-serif';
     ctx.fillStyle = '#0369a1';
     ctx.textAlign = 'center';
-    ctx.fillText(userGps ? '📍 Posisi GPS Saya' : '📍 Pusat RT 04', userScr.x, userScr.y - 12);
+    ctx.fillText(userGps ? '📍 Posisi GPS Saya' : '📍 Pusat RT 04 Sukamaju', userScr.x, userScr.y - 12);
 
-    // ----------------------------------------------------
-    // DRAW AREA POINTS (MARKERS)
-    // ----------------------------------------------------
+    // 10. DRAW AREA POINTS (MARKERS)
     filteredPoints.forEach((pt) => {
       const scr = toScreen(pt.lat, pt.lng);
       const isSelected = selectedPoint?.id === pt.id;
 
-      // Draw direct line if selected (Silent Navigation Distance Line)
+      // Draw direct line if selected (Distance Line)
       if (isSelected) {
         ctx.beginPath();
         ctx.moveTo(userScr.x, userScr.y);
         ctx.lineTo(scr.x, scr.y);
-        ctx.strokeStyle = '#0284c7'; // Sky-600
+        ctx.strokeStyle = '#0284c7';
         ctx.lineWidth = 2.5;
         ctx.setLineDash([5, 3]);
         ctx.stroke();
@@ -573,45 +715,55 @@ export const AreaQuView: React.FC<AreaQuViewProps> = ({
         ctx.fillText(`Jarak: ${distStr}`, midX, midY - 6);
       }
 
-      // Priority Digital Stall Glow Aura (Rp 30.000/bln trial)
+      // Priority Digital Stall Glow Aura
       if (pt.isDigitalStallRented) {
         ctx.beginPath();
-        ctx.arc(scr.x, scr.y, 16, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(245, 158, 11, 0.28)'; // Amber glow
+        ctx.arc(scr.x, scr.y, 18, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(245, 158, 11, 0.35)';
         ctx.fill();
       }
 
-      // Marker Circle
+      // Marker Outer Ring Shadow
+      ctx.beginPath();
+      ctx.arc(scr.x, scr.y, isSelected ? 13 : 10, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
+      ctx.fill();
+
+      // Marker Circle Fill
       ctx.beginPath();
       ctx.arc(scr.x, scr.y, isSelected ? 12 : 9, 0, Math.PI * 2);
 
       if (pt.isPoliticalOrNeutralOnly) {
-        ctx.fillStyle = '#64748b'; // Slate gray for Neutral Static Points
+        ctx.fillStyle = '#64748b'; // Slate gray
       } else if (pt.category === 'fasum') {
-        ctx.fillStyle = '#0284c7'; // Sky blue for Fasum
+        ctx.fillStyle = '#0284c7'; // Sky blue
       } else if (pt.isDigitalStallRented) {
-        ctx.fillStyle = '#d97706'; // Golden amber for Priority Stall
+        ctx.fillStyle = '#d97706'; // Golden amber
       } else if (pt.businessMode === 'mode_a_pos') {
-        ctx.fillStyle = '#059669'; // Emerald for Mode A POS Warung
+        ctx.fillStyle = '#059669'; // Emerald
       } else {
-        ctx.fillStyle = '#7c3aed'; // Violet for Mode B Catalog
+        ctx.fillStyle = '#7c3aed'; // Violet
       }
       ctx.fill();
       ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = 2;
+      ctx.lineWidth = 2.5;
       ctx.stroke();
 
-      // Marker Icon / Text
-      ctx.font = 'bold 10px system-ui, sans-serif';
-      ctx.fillStyle = '#1c1917';
-      ctx.textAlign = 'center';
+      // Marker Label with White Backdrop
       const label = pt.name.length > 14 ? `${pt.name.slice(0, 12)}...` : pt.name;
-      ctx.fillText(label, scr.x, scr.y + 18);
+      ctx.font = 'bold 10px system-ui, sans-serif';
+      ctx.textAlign = 'center';
+
+      // Text Stroke / Shadow for Maximum Contrast
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = '#ffffff';
+      ctx.strokeText(label, scr.x, scr.y + 19);
+      ctx.fillStyle = '#1e293b';
+      ctx.fillText(label, scr.x, scr.y + 19);
     });
 
-    // Render TransportasiQu Couriers Layer (🛵 moving on canvas)
+    // 11. TransportasiQu Couriers Layer (🛵 moving on canvas)
     couriers.forEach((courier) => {
-      // Offset courier around active center if in GPS mode
       const courierLat =
         activeAreaCenter === 'gps' && userGps
           ? userGps.lat + (courier.lat - RT04_BASE_COORDS.lat)
@@ -626,28 +778,31 @@ export const AreaQuView: React.FC<AreaQuViewProps> = ({
 
       // Pulse circle for courier heartbeat
       ctx.beginPath();
-      ctx.arc(scr.x, scr.y, 14, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(14, 165, 233, 0.2)';
+      ctx.arc(scr.x, scr.y, 16, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(14, 165, 233, 0.25)';
       ctx.fill();
 
-      // Courier Pin (Scooter representation)
+      // Courier Pin
       ctx.beginPath();
-      ctx.arc(scr.x, scr.y, isSelected ? 11 : 8.5, 0, Math.PI * 2);
-      ctx.fillStyle = '#0284c7'; // Sky-600
+      ctx.arc(scr.x, scr.y, isSelected ? 12 : 9, 0, Math.PI * 2);
+      ctx.fillStyle = '#0284c7';
       ctx.fill();
       ctx.strokeStyle = '#ffffff';
       ctx.lineWidth = 2;
       ctx.stroke();
 
       // Scooter Emoji
-      ctx.font = '11px system-ui, sans-serif';
+      ctx.font = '12px system-ui, sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('🛵', scr.x, scr.y - 10);
+      ctx.fillText('🛵', scr.x, scr.y - 11);
 
-      // Courier Name & Plate
+      // Courier Driver Name
       ctx.font = 'bold 9px system-ui, sans-serif';
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = '#ffffff';
+      ctx.strokeText(courier.driverName, scr.x, scr.y + 18);
       ctx.fillStyle = '#0369a1';
-      ctx.fillText(courier.driverName, scr.x, scr.y + 17);
+      ctx.fillText(courier.driverName, scr.x, scr.y + 18);
     });
   }, [
     filteredPoints,
@@ -660,6 +815,7 @@ export const AreaQuView: React.FC<AreaQuViewProps> = ({
     activeBaseCoords,
     userGps,
     activeAreaCenter,
+    canvasDimensions,
   ]);
 
   // Canvas Mouse / Touch Dragging
@@ -868,21 +1024,72 @@ export const AreaQuView: React.FC<AreaQuViewProps> = ({
       {/* VIEW MODE 1: INTERACTIVE MAP CANVAS                       */}
       {/* ========================================================= */}
       {viewMode === 'map' && (
-        <div ref={mapContainerRef} className="flex-1 relative overflow-hidden bg-stone-200 w-full">
-          <canvas
-            ref={canvasRef}
-            onMouseDown={handleMouseDown}
-            onMouseMove={handleMouseMove}
-            onMouseUp={handleMouseUp}
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={handleTouchEnd}
-            onClick={handleCanvasClick}
-            className="w-full h-full cursor-grab active:cursor-grabbing block touch-none"
-          />
+        <div
+          ref={mapContainerRef}
+          className="flex-1 relative overflow-hidden bg-stone-100 w-full min-h-[420px] h-full"
+        >
+          {/* Optional Live OpenStreetMap Layer */}
+          {mapLayerMode === 'osm' ? (
+            <div className="absolute inset-0 z-0 bg-stone-200">
+              <iframe
+                title="OpenStreetMap Live"
+                className="w-full h-full border-0 pointer-events-auto"
+                src={`https://www.openstreetmap.org/export/embed.html?bbox=${activeBaseCoords.lng - 0.012}%2C${activeBaseCoords.lat - 0.01}%2C${activeBaseCoords.lng + 0.012}%2C${activeBaseCoords.lat + 0.01}&layer=mapnik&marker=${activeBaseCoords.lat}%2C${activeBaseCoords.lng}`}
+              />
+            </div>
+          ) : (
+            <canvas
+              ref={canvasRef}
+              onMouseDown={handleMouseDown}
+              onMouseMove={handleMouseMove}
+              onMouseUp={handleMouseUp}
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
+              onClick={handleCanvasClick}
+              className="w-full h-full cursor-grab active:cursor-grabbing block touch-none z-0"
+            />
+          )}
 
-          {/* Top-Right Map Controls (+, -, Center GPS, Center RT04) */}
+          {/* Top-Right Map Controls (+, -, Center GPS, Center RT04, Layer OSM, Refresh) */}
           <div className="absolute top-3 right-3 flex flex-col gap-1.5 z-10">
+            {/* Ganti Mode Tampilan Peta (Vektor Komunitas vs OSM Live) */}
+            <button
+              type="button"
+              onClick={() => {
+                const nextMode = mapLayerMode === 'vector' ? 'osm' : 'vector';
+                setMapLayerMode(nextMode);
+                showNotification(
+                  nextMode === 'osm'
+                    ? 'Beralih ke Peta Jalan OSM Live (Online)'
+                    : 'Beralih ke Peta Vektor Komunitas RT 04 (Offline Ringan)'
+                );
+              }}
+              className={`w-9 h-9 rounded-xl shadow-md flex items-center justify-center font-bold cursor-pointer transition-all active:scale-95 ${
+                mapLayerMode === 'osm'
+                  ? 'bg-amber-600 text-white ring-2 ring-amber-300'
+                  : 'bg-white/95 text-stone-800 hover:bg-white border border-stone-200'
+              }`}
+              title="Ganti Mode Peta (Vektor vs OpenStreetMap)"
+            >
+              <Layers className="w-4 h-4" />
+            </button>
+
+            {/* Segarkan Peta / Redraw Canvas */}
+            <button
+              type="button"
+              onClick={() => {
+                setMapPan({ x: 0, y: 0 });
+                setMapZoom(1);
+                handleResize();
+                showNotification('Peta disegarkan & diposisikan ulang.');
+              }}
+              className="w-9 h-9 rounded-xl bg-white/95 hover:bg-white text-emerald-800 shadow-md flex items-center justify-center border border-stone-200 font-bold cursor-pointer transition-all active:scale-95"
+              title="Segarkan Tampilan Peta"
+            >
+              <RefreshCw className="w-4 h-4" />
+            </button>
+
             <button
               type="button"
               onClick={() => setMapZoom((z) => Math.min(2.5, z + 0.25))}

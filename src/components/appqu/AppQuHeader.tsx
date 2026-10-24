@@ -313,25 +313,36 @@ export const AppQuHeader: React.FC<AppQuHeaderProps> = ({
 
         {/* Current Active Role / Login Pill Badge */}
         <button
+          id="btnProfilAppQu"
           type="button"
-          onClick={onOpenAuth}
-          className="flex items-center gap-1 py-1 px-2 rounded-xl bg-emerald-900/70 hover:bg-emerald-800 border border-emerald-700/50 text-[10px] text-stone-200 shrink-0 cursor-pointer transition active:scale-95"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            if (onOpenAuth) onOpenAuth();
+            const modal = document.getElementById('modalLoginAppQu');
+            if (modal) modal.classList.remove('hidden');
+          }}
+          className="bg-emerald-900/50 border-emerald-500 T1 flex items-center gap-1.5 py-1 px-2.5 rounded-xl hover:bg-emerald-800 border text-[11px] text-stone-200 shrink-0 cursor-pointer transition active:scale-95 relative z-30 select-none shadow-xs"
           title={authSession ? `Sesi Login: ${authSession.email}` : 'Masuk / Login Akun'}
+          data-role={authSession?.role || 'Guest'}
         >
           {authSession ? (
             <>
-              <ShieldCheck className="w-3 h-3 text-emerald-400 shrink-0" />
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
               <span className="font-bold truncate max-w-[65px] xs:max-w-[85px] hidden xs:inline">
                 {authSession.name ? authSession.name.split(' ')[0] : currentUser.name.split(' ')[0]}
               </span>
-              <span className="font-mono text-[9px] px-1 rounded bg-black/40 text-amber-300 font-bold">
+              <span className="font-mono text-[9px] px-1 rounded bg-black/40 text-amber-300 font-bold T1">
                 {authSession.role === 'Admin' ? 'ADM' : isTier2 ? 'T2' : 'T1'}
               </span>
             </>
           ) : (
             <>
-              <Lock className="w-3 h-3 text-amber-400 shrink-0" />
+              <Lock className="w-3.5 h-3.5 text-amber-400 shrink-0" />
               <span className="font-bold text-amber-300">Login</span>
+              <span className="font-mono text-[9px] px-1 rounded bg-emerald-950/80 text-emerald-300 font-bold T1">
+                T1
+              </span>
             </>
           )}
         </button>
