@@ -10,6 +10,7 @@ import {
   Smartphone,
   CheckCircle2,
   RefreshCw,
+  Zap,
 } from 'lucide-react';
 import { AppUpdateInfo } from '../../types';
 import { APP_CURRENT_VERSION, UpdateService } from '../../services/updateService';
@@ -29,20 +30,34 @@ export const AppUpdateModal: React.FC<AppUpdateModalProps> = ({
 }) => {
   const [isDownloading, setIsDownloading] = useState(false);
   const [downloadSuccess, setDownloadSuccess] = useState(false);
+  const [installProgress, setInstallProgress] = useState(0);
+  const [statusMessage, setStatusMessage] = useState('');
 
   if (!isOpen || !updateInfo) return null;
 
-  const handleStartDownload = () => {
+  const handleStartDownload = async () => {
     setIsDownloading(true);
     setDownloadSuccess(false);
+    setInstallProgress(15);
+    setStatusMessage('Memulai pengunduhan paket APK...');
 
-    // Memicu pengunduhan file APK langsung
-    UpdateService.triggerDownload(updateInfo.apkDownloadUrl, updateInfo.apkName);
-
-    setTimeout(() => {
-      setIsDownloading(false);
+    try {
+      await UpdateService.installApkDirectly(
+        updateInfo.apkDownloadUrl,
+        updateInfo.apkName,
+        (progress, msg) => {
+          setInstallProgress(progress);
+          setStatusMessage(msg);
+        }
+      );
       setDownloadSuccess(true);
-    }, 1500);
+    } catch {
+      // Fallback to trigger download
+      UpdateService.triggerDownload(updateInfo.apkDownloadUrl, updateInfo.apkName);
+      setDownloadSuccess(true);
+    } finally {
+      setIsDownloading(false);
+    }
   };
 
   const handleDismissLater = () => {
@@ -176,12 +191,12 @@ export const AppUpdateModal: React.FC<AppUpdateModalProps> = ({
             {isDownloading ? (
               <>
                 <RefreshCw className="w-4 h-4 animate-spin text-white" />
-                <span>Mengunduh APK...</span>
+                <span>Memasang: {installProgress}% {statusMessage ? `(${statusMessage})` : ''}</span>
               </>
             ) : (
               <>
-                <Download className="w-4 h-4" />
-                <span>Unduh & Perbarui Sekarang</span>
+                <Zap className="w-4 h-4 fill-amber-300 text-amber-300" />
+                <span>⚡ Langsung Install / Pasang</span>
               </>
             )}
           </button>

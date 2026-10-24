@@ -64,7 +64,16 @@ import { AppQuStorageService, PRESET_USERS, PendingVerificationItem } from './se
 import { PrinterService } from './services/printer';
 import { UpdateService, UpdateInfo } from './services/updateService';
 import { UpdateModal } from './components/UpdateModal';
-import { Sparkles } from 'lucide-react';
+import { Sparkles, Zap, Lock, ShieldCheck } from 'lucide-react';
+import {
+  AuthSecurityService,
+  AuthSession,
+  BroadcastAnnouncement,
+  ADMIN_MASTER_EMAIL,
+} from './services/authSecurityService';
+import { AuthModal } from './components/auth/AuthModal';
+import { AdminCommandCenter } from './components/admin/AdminCommandCenter';
+import { BroadcastPopupModal } from './components/auth/BroadcastPopupModal';
 
 export default function App() {
   // ====================================================
@@ -158,6 +167,37 @@ export default function App() {
   // Auto-Update States
   const [availableUpdate, setAvailableUpdate] = useState<UpdateInfo | null>(null);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState<boolean>(false);
+
+  // Auth & Admin Security States
+  const [authSession, setAuthSession] = useState<AuthSession | null>(() =>
+    AuthSecurityService.getStoredSession()
+  );
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
+  const [isAdminCenterOpen, setIsAdminCenterOpen] = useState<boolean>(false);
+  const [activeBroadcast, setActiveBroadcast] = useState<BroadcastAnnouncement | null>(null);
+
+  useEffect(() => {
+    // Validate session integrity and device lock hash
+    AuthSecurityService.validateCurrentSession().then(({ isValid, isDeviceMismatch, session }) => {
+      if (isValid && session) {
+        setAuthSession(session);
+      } else if (isDeviceMismatch) {
+        setAuthSession(null);
+        showNotification('⚠️ ID Perangkat Berbeda! Silakan lakukan pemulihan/transfer sesi.');
+      } else {
+        setAuthSession(null);
+      }
+    });
+
+    // Check for unseen mass broadcasts
+    const bcTimer = setTimeout(() => {
+      const unseen = AuthSecurityService.getUnseenBroadcast();
+      if (unseen) {
+        setActiveBroadcast(unseen);
+      }
+    }, 2500);
+    return () => clearTimeout(bcTimer);
+  }, []);
 
   useEffect(() => {
     // Check for updates in background (auto-check)
@@ -636,9 +676,10 @@ export default function App() {
           </div>
           <button
             onClick={() => setIsUpdateModalOpen(true)}
-            className="px-2.5 py-1 rounded-full bg-white text-emerald-900 text-[11px] font-extrabold shadow-sm hover:bg-emerald-50 active:scale-95 transition-all shrink-0 cursor-pointer"
+            className="px-2.5 py-1 rounded-full bg-white text-emerald-900 text-[11px] font-extrabold shadow-sm hover:bg-emerald-50 active:scale-95 transition-all shrink-0 cursor-pointer flex items-center gap-1"
           >
-            Lihat & Pasang
+            <Zap className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
+            <span>Langsung Pasang</span>
           </button>
         </div>
       )}
@@ -674,6 +715,9 @@ export default function App() {
             }}
             onOpenAreaRental={() => setIsAreaRentalModalOpen(true)}
             onOpenAreaNeutrality={() => setIsAreaNeutralityModalOpen(true)}
+            onOpenAuth={() => setIsAuthModalOpen(true)}
+            onOpenAdminCenter={() => setIsAdminCenterOpen(true)}
+            authSession={authSession}
           />
 
           {/* Module View Renderer */}
@@ -846,6 +890,9 @@ export default function App() {
                 onNavigateToModule={(mod) => setActiveAppQuModule(mod as any)}
                 showNotification={showNotification}
                 initialSubTab="komunitas"
+                onOpenAuth={() => setIsAuthModalOpen(true)}
+                onOpenAdminCenter={() => setIsAdminCenterOpen(true)}
+                authSession={authSession}
               />
             )}
 
@@ -1214,6 +1261,41 @@ export default function App() {
         isOpen={isUpdateModalOpen}
         onClose={() => setIsUpdateModalOpen(false)}
         updateInfo={availableUpdate}
+      />
+
+      {/* Auth & Security Modal (Login, Device Fingerprint, Session Lock & Transfer) */}
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        currentSession={authSession}
+        onLoginSuccess={(session) => {
+          setAuthSession(session);
+          showNotification(`Login berhasil: ${session.name}! Sesi terkunci.`);
+          if (session.email.toLowerCase() === ADMIN_MASTER_EMAIL.toLowerCase()) {
+            setIsAdminCenterOpen(true);
+          }
+        }}
+        onLogout={() => {
+          AuthSecurityService.clearSession();
+          setAuthSession(null);
+          showNotification('Berhasil keluar dari akun.');
+        }}
+      />
+
+      {/* Admin Command Center (Hidden from public, strictly for hendri.bageur20@gmail.com) */}
+      <AdminCommandCenter
+        isOpen={isAdminCenterOpen}
+        onClose={() => setIsAdminCenterOpen(false)}
+        currentSession={authSession}
+        onOpenLoginModal={() => setIsAuthModalOpen(true)}
+        residents={residents}
+        kasTransactions={kas}
+      />
+
+      {/* Mass Broadcast Popup Modal for Warga */}
+      <BroadcastPopupModal
+        broadcast={activeBroadcast}
+        onClose={() => setActiveBroadcast(null)}
       />
     </AndroidFrame>
   );

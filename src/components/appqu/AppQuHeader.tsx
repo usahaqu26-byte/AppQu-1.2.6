@@ -11,14 +11,21 @@ import {
   Info,
   X,
   CheckCircle,
+  Lock,
+  ShieldCheck,
 } from 'lucide-react';
 import { UserProfile } from '../../types';
 import { sireneAudio } from '../../services/sireneAudio';
+import { ADMIN_MASTER_EMAIL } from '../../services/authSecurityService';
 
 interface AppQuHeaderProps {
   currentUser: UserProfile;
   activeModuleName: string;
   onCheckUpdate?: () => void;
+  // Auth & Admin Controls
+  onOpenAuth?: () => void;
+  onOpenAdminCenter?: () => void;
+  authSession?: any;
   // AreaQu Specific Controls
   isAreaQu?: boolean;
   areaRadiusMeters?: number;
@@ -52,6 +59,9 @@ export const AppQuHeader: React.FC<AppQuHeaderProps> = ({
   currentUser,
   activeModuleName,
   onCheckUpdate,
+  onOpenAuth,
+  onOpenAdminCenter,
+  authSession,
   isAreaQu = false,
   areaRadiusMeters = 3000,
   onSelectAreaRadius,
@@ -288,16 +298,43 @@ export const AppQuHeader: React.FC<AppQuHeaderProps> = ({
           </div>
         )}
 
-        {/* Current Active Role Pill Badge */}
-        <div className="flex items-center gap-1 py-1 px-2 rounded-xl bg-emerald-900/70 border border-emerald-700/50 text-[10px] text-stone-200 shrink-0">
-          <User className="w-3 h-3 text-emerald-400 shrink-0" />
-          <span className="font-bold truncate max-w-[65px] xs:max-w-[85px] hidden xs:inline">
-            {currentUser.name.split(' ')[0]}
-          </span>
-          <span className="font-mono text-[9px] px-1 rounded bg-black/40 text-amber-300 font-bold">
-            {isTier2 ? 'T2' : 'T1'}
-          </span>
-        </div>
+        {/* Admin Command Center Hidden Button (Only if hendri.bageur20@gmail.com is authenticated) */}
+        {authSession?.email?.toLowerCase() === ADMIN_MASTER_EMAIL.toLowerCase() && onOpenAdminCenter && (
+          <button
+            type="button"
+            onClick={onOpenAdminCenter}
+            className="h-7.5 px-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-stone-950 font-black text-[10px] flex items-center gap-1 shadow-md cursor-pointer transition active:scale-95 shrink-0"
+            title="Admin Command Center (Monetisasi & Kontrol)"
+          >
+            <Sparkles className="w-3.5 h-3.5 fill-stone-950 text-stone-950" />
+            <span>ADMIN</span>
+          </button>
+        )}
+
+        {/* Current Active Role / Login Pill Badge */}
+        <button
+          type="button"
+          onClick={onOpenAuth}
+          className="flex items-center gap-1 py-1 px-2 rounded-xl bg-emerald-900/70 hover:bg-emerald-800 border border-emerald-700/50 text-[10px] text-stone-200 shrink-0 cursor-pointer transition active:scale-95"
+          title={authSession ? `Sesi Login: ${authSession.email}` : 'Masuk / Login Akun'}
+        >
+          {authSession ? (
+            <>
+              <ShieldCheck className="w-3 h-3 text-emerald-400 shrink-0" />
+              <span className="font-bold truncate max-w-[65px] xs:max-w-[85px] hidden xs:inline">
+                {authSession.name ? authSession.name.split(' ')[0] : currentUser.name.split(' ')[0]}
+              </span>
+              <span className="font-mono text-[9px] px-1 rounded bg-black/40 text-amber-300 font-bold">
+                {authSession.role === 'Admin' ? 'ADM' : isTier2 ? 'T2' : 'T1'}
+              </span>
+            </>
+          ) : (
+            <>
+              <Lock className="w-3 h-3 text-amber-400 shrink-0" />
+              <span className="font-bold text-amber-300">Login</span>
+            </>
+          )}
+        </button>
       </div>
     </header>
   );

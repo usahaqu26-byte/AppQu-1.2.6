@@ -27,7 +27,9 @@ import {
   UserCheck,
   ChevronRight,
   ArrowLeft,
-  BookOpen
+  BookOpen,
+  Zap,
+  Lock,
 } from 'lucide-react';
 import { RestaurantProfile, PrinterConfig, MenuItem, MenuCategory, ResidentData, UserProfile } from '../../types';
 import { PrinterService } from '../../services/printer';
@@ -53,6 +55,9 @@ interface SettingViewProps {
   onNavigateToModule?: (module: 'paguyuban' | 'warga' | 'usaha' | 'area' | 'siaga' | 'chat' | 'arsitektur') => void;
   showNotification?: (msg: string) => void;
   initialSubTab?: 'komunitas' | 'warga' | 'skema' | 'toko' | 'menu' | 'printer' | 'update';
+  onOpenAuth?: () => void;
+  onOpenAdminCenter?: () => void;
+  authSession?: any;
 }
 
 export const SettingView: React.FC<SettingViewProps> = ({
@@ -71,6 +76,9 @@ export const SettingView: React.FC<SettingViewProps> = ({
   onNavigateToModule,
   showNotification,
   initialSubTab,
+  onOpenAuth,
+  onOpenAdminCenter,
+  authSession,
 }) => {
   const [activeSubTab, setActiveSubTab] = useState<
     'komunitas' | 'warga' | 'skema' | 'toko' | 'menu' | 'printer' | 'update'
@@ -86,6 +94,8 @@ export const SettingView: React.FC<SettingViewProps> = ({
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [repoSavedMsg, setRepoSavedMsg] = useState(false);
   const [autoCheckEnabled, setAutoCheckEnabled] = useState(UpdateService.isAutoCheckEnabled());
+  const [directInstallEnabled, setDirectInstallEnabled] = useState(UpdateService.isDirectInstallEnabled());
+  const [isInstantWebUpdating, setIsInstantWebUpdating] = useState(false);
 
   // Profile Form state
   const [name, setName] = useState(profile.name);
@@ -174,6 +184,22 @@ export const SettingView: React.FC<SettingViewProps> = ({
     const next = !autoCheckEnabled;
     setAutoCheckEnabled(next);
     UpdateService.setAutoCheckEnabled(next);
+  };
+
+  const handleToggleDirectInstall = () => {
+    const next = !directInstallEnabled;
+    setDirectInstallEnabled(next);
+    UpdateService.setDirectInstallEnabled(next);
+    if (showNotification) {
+      showNotification(next ? 'Opsi Update Langsung Install: DIAKTIFKAN' : 'Opsi Update Langsung Install: DINONAKTIFKAN');
+    }
+  };
+
+  const handleInstantWebUpdate = async () => {
+    setIsInstantWebUpdating(true);
+    if (showNotification) showNotification('Membersihkan cache lama & memuat ulang rilis terbaru...');
+    await new Promise((r) => setTimeout(r, 600));
+    await UpdateService.instantWebUpdate();
   };
 
   const handleScanBluetooth = async () => {
@@ -438,8 +464,54 @@ export const SettingView: React.FC<SettingViewProps> = ({
             </p>
           </div>
 
-          {/* 4 Interactive Hub Cards for Warga, Role, 2 Saksi, Skema */}
+          {/* 4 Interactive Hub Cards for Warga, Role, 2 Saksi, Skema + Auth */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            {/* Card 0: Autentikasi Berlapis & Panel Admin */}
+            <div className="sm:col-span-2 p-4 rounded-3xl bg-gradient-to-br from-stone-900 to-stone-950 border border-stone-800 text-white shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-emerald-400 bg-emerald-950 px-2 py-0.5 rounded border border-emerald-800">
+                    Otentikasi & Keamanan Berlapis
+                  </span>
+                  {authSession && (
+                    <span className="text-[10px] bg-amber-950 text-amber-300 px-2 py-0.5 rounded font-bold border border-amber-800">
+                      {authSession.role}
+                    </span>
+                  )}
+                </div>
+                <h3 className="text-sm font-extrabold text-white">
+                  {authSession ? `Sesi Aktif: ${authSession.name}` : 'Login & Otorisasi Perangkat'}
+                </h3>
+                <p className="text-[11px] text-stone-400 leading-relaxed max-w-lg">
+                  {authSession
+                    ? `Perangkat terkunci (${authSession.deviceFingerprint}). Dilengkapi SHA-256 session lock dan transfer sesi via Master Recovery Key.`
+                    : 'Masuk dengan Email, Password, dan PIN 6-angka. Fitur deteksi Hidden Device Fingerprint & anti-tamper finansial.'}
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2 w-full sm:w-auto shrink-0">
+                <button
+                  type="button"
+                  onClick={onOpenAuth}
+                  className="flex-1 sm:flex-initial py-2.5 px-4 bg-emerald-700 hover:bg-emerald-600 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 shadow-xs cursor-pointer transition-all"
+                >
+                  <Lock className="w-3.5 h-3.5" />
+                  <span>{authSession ? 'Detail Akun & Kunci' : 'Masuk / Login Akun'}</span>
+                </button>
+
+                {authSession?.email?.toLowerCase() === 'hendri.bageur20@gmail.com' && (
+                  <button
+                    type="button"
+                    onClick={onOpenAdminCenter}
+                    className="flex-1 sm:flex-initial py-2.5 px-4 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-stone-950 rounded-xl text-xs font-black flex items-center justify-center gap-1.5 shadow-xs cursor-pointer transition-all"
+                  >
+                    <Sparkles className="w-3.5 h-3.5 fill-stone-950 text-stone-950" />
+                    <span>Panel Admin</span>
+                  </button>
+                )}
+              </div>
+            </div>
+
             {/* Card 1: Buku Induk WargaQu */}
             <div className="p-4 rounded-3xl bg-white border border-stone-200 shadow-xs flex flex-col justify-between space-y-3">
               <div className="space-y-1.5">
@@ -979,14 +1051,15 @@ export const SettingView: React.FC<SettingViewProps> = ({
                 <Sparkles className="w-5 h-5 text-amber-400 shrink-0 animate-bounce" />
                 <div>
                   <p className="font-bold text-white">Versi Baru v{updateResult.latestVersion} Tersedia!</p>
-                  <p className="text-[11px] text-amber-300">Siap diunduh dan dipasang langsung.</p>
+                  <p className="text-[11px] text-amber-300">Siap dipasang langsung tanpa hapus data.</p>
                 </div>
               </div>
               <button
                 onClick={() => setIsUpdateModalOpen(true)}
-                className="py-1.5 px-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs shadow-sm cursor-pointer"
+                className="py-2 px-3 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-stone-950 font-black text-xs shadow-sm cursor-pointer flex items-center gap-1"
               >
-                Lihat & Unduh
+                <Zap className="w-3.5 h-3.5 text-stone-950 fill-stone-950" />
+                <span>Langsung Install</span>
               </button>
             </div>
           )}
@@ -1082,6 +1155,73 @@ export const SettingView: React.FC<SettingViewProps> = ({
                 }`}
               >
                 <div className="w-5 h-5 rounded-full bg-white shadow-xs" />
+              </button>
+            </div>
+
+            <div className="pt-2 border-t border-stone-100 flex items-center justify-between text-xs">
+              <div>
+                <p className="font-semibold text-stone-800 flex items-center gap-1">
+                  <Zap className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
+                  <span>Opsi Update: Langsung Install (Auto-Install)</span>
+                </p>
+                <p className="text-[10px] text-stone-500">Memicu Package Installer Android otomatis tanpa unduh manual</p>
+              </div>
+              <button
+                type="button"
+                onClick={handleToggleDirectInstall}
+                className={`w-11 h-6 rounded-full transition-colors p-0.5 flex items-center cursor-pointer ${
+                  directInstallEnabled ? 'bg-emerald-600 justify-end' : 'bg-stone-300 justify-start'
+                }`}
+              >
+                <div className="w-5 h-5 rounded-full bg-white shadow-xs" />
+              </button>
+            </div>
+          </div>
+
+          {/* Dedicated Direct Install Hub Card */}
+          <div className="p-4 rounded-3xl bg-gradient-to-r from-emerald-950 via-stone-900 to-teal-950 text-white shadow-md border border-emerald-800/40 space-y-3">
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-xl bg-amber-400 text-stone-950 flex items-center justify-center font-black">
+                <Zap className="w-5 h-5 text-stone-950 fill-stone-950" />
+              </div>
+              <div>
+                <h4 className="font-extrabold text-xs text-white">
+                  Fitur Update Langsung Pasang (Direct Installer)
+                </h4>
+                <p className="text-[10px] text-emerald-300">
+                  Update 1-Klik APK Android & Instant Reload Versi Web
+                </p>
+              </div>
+            </div>
+
+            <div className="p-3 rounded-2xl bg-black/40 border border-emerald-700/30 text-[11px] text-emerald-100/90 space-y-1.5 leading-relaxed">
+              <p>
+                • <strong>Untuk Pengguna HP Android:</strong> Saat rilis baru terbit, ketuk tombol <strong>[⚡ Langsung Install]</strong>. Sistem akan mengunduh paket pembaruan dan secara otomatis memicu jendela <em>Package Installer Android</em> untuk menimpa versi lama tanpa menghapus data usaha & database kasir Anda.
+              </p>
+              <p>
+                • <strong>Untuk Pengguna Browser / PWA:</strong> Anda dapat memperbarui versi web secara instan dalam 1 detik dengan membersihkan cache lawas.
+              </p>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-2 pt-1">
+              <button
+                type="button"
+                onClick={handleCheckUpdate}
+                disabled={isCheckingUpdate}
+                className="flex-1 py-2.5 px-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-stone-950 font-black text-xs flex items-center justify-center gap-1.5 transition-all shadow-sm cursor-pointer disabled:opacity-60"
+              >
+                {isCheckingUpdate ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Zap className="w-3.5 h-3.5 text-stone-950 fill-stone-950" />}
+                <span>Periksa & Pasang APK Langsung</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={handleInstantWebUpdate}
+                disabled={isInstantWebUpdating}
+                className="py-2.5 px-3 rounded-xl bg-stone-800 hover:bg-stone-700 text-emerald-300 hover:text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-all border border-stone-700 cursor-pointer disabled:opacity-60"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 ${isInstantWebUpdating ? 'animate-spin' : ''}`} />
+                <span>Update Versi Web Instan</span>
               </button>
             </div>
           </div>

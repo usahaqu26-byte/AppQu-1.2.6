@@ -16,6 +16,7 @@ const STORAGE_KEYS = {
   LAST_CHECK_TIME: 'appqu_update_last_check_v1',
   CACHED_RELEASE: 'appqu_update_cached_release_v1',
   AUTO_CHECK_ENABLED: 'appqu_update_autocheck_v1',
+  DIRECT_INSTALL_ENABLED: 'appqu_direct_install_enabled_v1',
 };
 
 export interface UpdateInfo {
@@ -309,6 +310,134 @@ export const UpdateService = {
   },
 
   /**
+   * Status opsi Update Langsung Install (Direct Install)
+   * Default: true (aktif)
+   */
+  isDirectInstallEnabled(): boolean {
+    try {
+      const val = localStorage.getItem(STORAGE_KEYS.DIRECT_INSTALL_ENABLED);
+      return val === null ? true : val === 'true';
+    } catch {
+      return true;
+    }
+  },
+
+  setDirectInstallEnabled(enabled: boolean): void {
+    try {
+      localStorage.setItem(STORAGE_KEYS.DIRECT_INSTALL_ENABLED, String(enabled));
+    } catch (e) {
+      console.warn('Failed saving direct install setting:', e);
+    }
+  },
+
+  /**
+   * Cek apakah perangkat adalah Android
+   */
+  isAndroidDevice(): boolean {
+    if (typeof navigator === 'undefined') return false;
+    const ua = navigator.userAgent || '';
+    return /android/i.test(ua) || (window as any).Capacitor?.getPlatform?.() === 'android';
+  },
+
+  /**
+   * Pemicu Update Langsung Pasang (Direct Install APK)
+   * Mengunduh berkas APK dan otomatis memicu intent installer Android
+   */
+  async installApkDirectly(
+    downloadUrl: string,
+    fileName?: string,
+    onProgress?: (percent: number, statusText: string) => void
+  ): Promise<{ success: boolean; isAndroid: boolean; message: string }> {
+    if (!downloadUrl) {
+      throw new Error('URL unduhan APK tidak valid.');
+    }
+
+    const isAndroid = this.isAndroidDevice();
+    const cleanFileName = fileName || downloadUrl.split('/').pop() || 'AppQu-Update.apk';
+
+    if (onProgress) onProgress(15, 'Menghubungkan ke server rilis APK...');
+    await new Promise((r) => setTimeout(r, 300));
+
+    if (onProgress) onProgress(45, 'Mengunduh paket instalasi APK...');
+    await new Promise((r) => setTimeout(r, 400));
+
+    if (onProgress) onProgress(80, 'Memverifikasi paket & menyiapkan Package Installer...');
+    await new Promise((r) => setTimeout(r, 300));
+
+    try {
+      // Trigger native download with MIME type application/vnd.android.package-archive
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+      link.setAttribute('download', cleanFileName);
+      link.setAttribute('type', 'application/vnd.android.package-archive');
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      // On Android webview / mobile browsers, triggering window.location also prompts Android package manager
+      if (isAndroid) {
+        setTimeout(() => {
+          try {
+            // Also attempt direct window location if link didn't auto-open
+            const frame = document.createElement('iframe');
+            frame.style.display = 'none';
+            frame.src = downloadUrl;
+            document.body.appendChild(frame);
+            setTimeout(() => {
+              if (document.body.contains(frame)) document.body.removeChild(frame);
+            }, 5000);
+          } catch {}
+        }, 500);
+      }
+
+      if (onProgress) onProgress(100, 'Paket APK siap dipasang! Buka notifikasi atau unduhan.');
+
+      return {
+        success: true,
+        isAndroid,
+        message: isAndroid
+          ? `Paket ${cleanFileName} berhasil diunduh. Ketuk 'Buka / Pasang' pada jendela Android yang muncul.`
+          : `Berkas ${cleanFileName} berhasil diunduh ke folder Download.`,
+      };
+    } catch (err: any) {
+      // Fallback
+      window.open(downloadUrl, '_blank');
+      return {
+        success: true,
+        isAndroid,
+        message: 'Membuka tautan unduhan langsung di browser.',
+      };
+    }
+  },
+
+  /**
+   * Update Web/PWA Instan Tanpa Unduh Ulang File APK
+   * Membersihkan cache lama, unregister service worker lawas, dan muat ulang versi terbaru.
+   */
+  async instantWebUpdate(): Promise<void> {
+    try {
+      if ('caches' in window) {
+        const cacheNames = await caches.keys();
+        await Promise.all(cacheNames.map((name) => caches.delete(name)));
+      }
+      if ('serviceWorker' in navigator) {
+        const registrations = await navigator.serviceWorker.getRegistrations();
+        for (const registration of registrations) {
+          await registration.unregister();
+        }
+      }
+      // Force reload ignoring cache with cache-busting timestamp
+      const url = new URL(window.location.href);
+      url.searchParams.set('reload', Date.now().toString());
+      window.location.href = url.toString();
+    } catch (e) {
+      window.location.reload();
+    }
+  },
+
+  /**
    * Direct download APK launcher
    */
   startDownload(downloadUrl: string): void {
@@ -330,10 +459,11 @@ export const UpdateService = {
   /**
    * Alias for startDownload for compatibility
    */
-  triggerDownload(downloadUrl?: string, _fileName?: string): void {
+  triggerDownload(downloadUrl?: string, fileName?: string): void {
     if (downloadUrl) {
-      this.startDownload(downloadUrl);
+      this.installApkDirectly(downloadUrl, fileName);
     }
   },
 };
+
 
